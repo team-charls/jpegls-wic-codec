@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28218.60
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpegls-wic-codec", "src\jpegls-wic-codec.vcxproj", "{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CharLS", "charls\src\CharLS.vcxproj", "{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}.Release|x64.Build.0 = Release|x64
 		{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}.Release|x86.ActiveCfg = Release|Win32
 		{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}.Release|x86.Build.0 = Release|Win32
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x64.ActiveCfg = Debug|x64
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x64.Build.0 = Debug|x64
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x86.ActiveCfg = Debug|Win32
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x86.Build.0 = Debug|Win32
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Release|x64.ActiveCfg = Release|x64
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Release|x64.Build.0 = Release|x64
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Release|x86.ActiveCfg = Release|Win32
+		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
