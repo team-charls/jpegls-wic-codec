@@ -1,7 +1,10 @@
 ﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
 #include "pch.h"
+
 #include "trace.h"
+#include "decoder.h"
+#include "bitmap_frame_decoder.h"
 
 using namespace winrt;
 using std::mutex;
@@ -60,12 +63,7 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         if (!stream)
             return E_INVALIDARG;
 
-
-        // Store the stream.
-        // Read the header.
-        // remember the current position.
-
-
+        stream_.attach(stream);
         return S_OK;
     }
 
@@ -136,31 +134,28 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         return S_OK;
     }
 
-    HRESULT __stdcall GetFrame(UINT index, IWICBitmapFrameDecode** ppIBitmapFrame) override
+    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmapFrameDecode) override
     {
-        TRACE("(%d, %p)\n", index, ppIBitmapFrame);
-        if (!ppIBitmapFrame)
+        TRACE("(%d, %p)\n", index, bitmapFrameDecode);
+        if (!bitmapFrameDecode)
             return E_POINTER;
 
         if (index != 0)
             return WINCODEC_ERR_FRAMEMISSING;
 
-        std::lock_guard<std::mutex> lock(mutex_);
+        if (!stream_)
+            return WINCODEC_ERR_NOTINITIALIZED;
 
-        //WINCODEC_ERR_NOTINITIALIZED
-
-        //if (frame_.get() == NULL) {
-        //    TRACE("No initialize - returning dummy frame\n");
-        //    *ppIBitmapFrame = new (std::nothrow) DummyFrame();
-        //    if (!*ppIBitmapFrame)
-        //        return E_OUTOFMEMORY;
-        //}
-        //else {
-        //    *ppIBitmapFrame = frame_.new_ref();
-        //}
-        //return S_OK;
-
-        return S_OK;
+        try
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            return make<bitmap_frame_decoder>(stream_.get())->QueryInterface(__uuidof(IWICBitmapFrameDecode),
+                reinterpret_cast<void**>(bitmapFrameDecode));
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
     }
 
 private:
@@ -176,6 +171,7 @@ private:
 
     mutex mutex_;
     com_ptr<IWICImagingFactory> factory_;
+    com_ptr<IStream> stream_;
 };
 
 

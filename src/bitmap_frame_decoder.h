@@ -3,19 +3,54 @@
 #pragma once
 
 #include "trace.h"
+
 #include <winrt/base.h>
 #include <wincodec.h>
+#include <shlwapi.h>
+#include <vector>
 
 struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWICBitmapFrameDecode>
 {
-    // IWICBitmapSource
-    HRESULT GetSize(UINT *puiWidth, UINT *puiHeight) noexcept override
+    std::vector<std::byte> buffer_;
+    charls::decoder decoder_;
+
+    explicit bitmap_frame_decoder(IStream* stream)
     {
+        ULARGE_INTEGER size;
+        winrt::check_hresult(IStream_Size(stream, &size));
+
+        try
+        {
+            buffer_.resize(size.LowPart);
+            decoder_.read_header(buffer_.data(), buffer_.size());
+
+        }
+        catch (...)
+        {
+            throw winrt::hresult_error(E_FAIL);
+        }
+    }
+
+    // IWICBitmapSource
+    HRESULT GetSize(uint32_t* width, uint32_t* height) noexcept override
+    {
+        TRACE("(%p, %p)\n", width, height);
+
+        if (!width || !height)
+            return E_POINTER;
+
+        *width = decoder_.metadata_info().width;
+        *height = decoder_.metadata_info().height;
+
         return S_OK;
     }
 
-    HRESULT GetPixelFormat(WICPixelFormatGUID *pPixelFormat) noexcept override
+    HRESULT GetPixelFormat(WICPixelFormatGUID* pixelFormat) noexcept override
     {
+        if (!pixelFormat)
+            return E_POINTER;
+
+        *pixelFormat = GUID_WICPixelFormat16bppGray;
         return S_OK;
     }
 
