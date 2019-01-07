@@ -5,6 +5,8 @@
 #include "trace.h"
 
 #include <winrt/base.h>
+#include <charls/jpegls_decoder.h>
+
 #include <wincodec.h>
 #include <shlwapi.h>
 #include <vector>
@@ -23,7 +25,6 @@ struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWIC
         {
             buffer_.resize(size.LowPart);
             decoder_.read_header(buffer_.data(), buffer_.size());
-
         }
         catch (...)
         {
@@ -45,28 +46,28 @@ struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWIC
         return S_OK;
     }
 
-    HRESULT GetPixelFormat(WICPixelFormatGUID* pixelFormat) noexcept override
+    HRESULT GetPixelFormat(WICPixelFormatGUID* pixel_format) noexcept override
     {
-        if (!pixelFormat)
+        if (!pixel_format)
             return E_POINTER;
 
-        *pixelFormat = GUID_WICPixelFormat16bppGray;
+        *pixel_format = GUID_WICPixelFormat16bppGray;
         return S_OK;
     }
 
-    HRESULT GetResolution(double* pDpiX, double* pDpiY) noexcept override
+    HRESULT GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
-        TRACE("(%p, %p)\n", pDpiX, pDpiY);
+        TRACE("(%p, %p)\n", dpi_x, dpi_y);
 
         // TODO: check JPEG-LS standard if dpi is in header.
 
         // Let's assume square pixels. 96dpi seems to be a reasonable default.
-        *pDpiX = 96;
-        *pDpiY = 96;
+        *dpi_x = 96;
+        *dpi_y = 96;
         return S_OK;
     }
 
-    HRESULT CopyPixels(const WICRect* prc, UINT cbStride, UINT cbBufferSize, BYTE* pbBuffer) noexcept override
+    HRESULT CopyPixels(const WICRect* /*rectangle*/, uint32_t /*stride*/, uint32_t /*buffer_size*/, BYTE* /*buffer*/) noexcept override
     {
         return S_OK;
     }
@@ -82,17 +83,17 @@ struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWIC
         return WINCODEC_ERR_CODECNOTHUMBNAIL;
     }
 
-    HRESULT GetColorContexts(const uint32_t count, IWICColorContext** colorContexts, UINT* actualCount) noexcept override
+    HRESULT GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
-        TRACE("(%d, %p, %p)\n", count, colorContexts, actualCount);
-        if (!actualCount)
+        TRACE("(%d, %p, %p)\n", count, color_contexts, actual_count);
+        if (!actual_count)
             return E_POINTER;
 
-        *actualCount = 0;
+        *actual_count = 0;
         return S_OK;
     }
 
-    HRESULT GetMetadataQueryReader(IWICMetadataQueryReader **ppIMetadataQueryReader) noexcept override
+    HRESULT GetMetadataQueryReader(IWICMetadataQueryReader** /*metadata_query_reader*/) noexcept override
     {
         return S_OK;
     }

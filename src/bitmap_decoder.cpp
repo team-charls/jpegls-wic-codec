@@ -3,8 +3,9 @@
 #include "pch.h"
 
 #include "trace.h"
-#include "decoder.h"
 #include "bitmap_frame_decoder.h"
+
+#include <charls/jpegls_decoder.h>
 
 using namespace winrt;
 using std::mutex;
@@ -18,7 +19,7 @@ static const GUID JpegLsDecoder
 static const GUID ContainerFormat
 { 0x52c25458, 0x282d, 0x4ef4, { 0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43 } };
 
-struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
+struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(IStream* stream, DWORD* capability) noexcept override
@@ -58,7 +59,7 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         }
     }
 
-    HRESULT __stdcall Initialize(IStream* stream, WICDecodeOptions /*cacheOptions*/) override
+    HRESULT __stdcall Initialize(IStream* stream, WICDecodeOptions /*cache_options*/) override
     {
         if (!stream)
             return E_INVALIDARG;
@@ -67,25 +68,25 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         return S_OK;
     }
 
-    HRESULT __stdcall GetContainerFormat(GUID* containerFormat) override
+    HRESULT __stdcall GetContainerFormat(GUID* container_format) override
     {
-        TRACE("(%p)\n", containerFormat);
-        if (!containerFormat)
+        TRACE("(%p)\n", container_format);
+        if (!container_format)
             return E_POINTER;
 
-        *containerFormat = ContainerFormat;
+        *container_format = ContainerFormat;
         return S_OK;
     }
 
-    HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo **ppIDecoderInfo) override
+    HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo** decoder_info) override
     {
-        TRACE("(%p)\n", ppIDecoderInfo);
+        TRACE("(%p)\n", decoder_info);
 
         try
         {
-            com_ptr<IWICComponentInfo> compInfo;
-            check_hresult(factory()->CreateComponentInfo(JpegLsDecoder, compInfo.put()));
-            check_hresult(compInfo->QueryInterface(IID_IWICBitmapDecoderInfo, reinterpret_cast<void**>(ppIDecoderInfo)));
+            com_ptr<IWICComponentInfo> component_info;
+            check_hresult(factory()->CreateComponentInfo(JpegLsDecoder, component_info.put()));
+            check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
             return S_OK;
         }
@@ -97,36 +98,36 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] IWICPalette* palette) override
     {
-        TRACE("bitmap_decoder::CopyPalette, this=%p, palette=%p\n", this, palette);
+        TRACE("jpegls_bitmap_decoder::CopyPalette, this=%p, palette=%p\n", this, palette);
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** ppIMetadataQueryReader) override
+    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) override
     {
         return S_OK;
     }
 
-    HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmapSource) override
+    HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmap_source) override
     {
-        TRACE("bitmap_decoder::GetPreview, this=%p, palette=%p\n", this, bitmapSource);
+        TRACE("jpegls_bitmap_decoder::GetPreview, this=%p, bitmap_source=%p\n", this, bitmap_source);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** colorContexts, [[maybe_unused]] uint32_t* actualCount) override
+    HRESULT __stdcall GetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actualCount) override
     {
-        TRACE("bitmap_decoder::GetPreview, this=%p, palette=%p\n", this, colorContexts);
+        TRACE("jpegls_bitmap_decoder::GetPreview, this=%p, color_contexts=%p\n", this, color_contexts);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetThumbnail(IWICBitmapSource** ppIThumbnail) override
+    HRESULT __stdcall GetThumbnail([[maybe_unused]] IWICBitmapSource** thumbnail) override
     {
-        TRACE("(%p)\n", ppIThumbnail);
+        TRACE("(%p)\n", thumbnail);
         return WINCODEC_ERR_CODECNOTHUMBNAIL;
     }
 
     HRESULT __stdcall GetFrameCount(uint32_t* count) override
     {
-        TRACE("bitmap_decoder::GetFrameCount, this=%p, count=%p\n", this, count);
+        TRACE("jpegls_bitmap_decoder::GetFrameCount, this=%p, count=%p\n", this, count);
         if (!count)
             return E_POINTER;
 
@@ -134,10 +135,10 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         return S_OK;
     }
 
-    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmapFrameDecode) override
+    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmap_frame_decode) override
     {
-        TRACE("(%d, %p)\n", index, bitmapFrameDecode);
-        if (!bitmapFrameDecode)
+        TRACE("(%d, %p)\n", index, bitmap_frame_decode);
+        if (!bitmap_frame_decode)
             return E_POINTER;
 
         if (index != 0)
@@ -149,8 +150,7 @@ struct bitmap_decoder : implements<bitmap_decoder, IWICBitmapDecoder>
         try
         {
             std::lock_guard<std::mutex> lock(mutex_);
-            return make<bitmap_frame_decoder>(stream_.get())->QueryInterface(__uuidof(IWICBitmapFrameDecode),
-                reinterpret_cast<void**>(bitmapFrameDecode));
+            return make<bitmap_frame_decoder>(stream_.get())->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
         }
         catch (...)
         {
@@ -175,11 +175,11 @@ private:
 };
 
 
-struct jpegls_container_factory final : implements<jpegls_container_factory, IClassFactory>
+struct bitmap_decoder_factory final : implements<bitmap_decoder_factory, IClassFactory>
 {
     HRESULT __stdcall CreateInstance(
         IUnknown* outer,
-        GUID const& iid,
+        GUID const& interface_id,
         void** result) noexcept override
     {
         *result = nullptr;
@@ -189,7 +189,7 @@ struct jpegls_container_factory final : implements<jpegls_container_factory, ICl
             return CLASS_E_NOAGGREGATION;
         }
 
-        return make<bitmap_decoder>()->QueryInterface(iid, result);
+        return make<jpegls_bitmap_decoder>()->QueryInterface(interface_id, result);
     }
 
     HRESULT __stdcall LockServer(BOOL) noexcept override
@@ -200,7 +200,7 @@ struct jpegls_container_factory final : implements<jpegls_container_factory, ICl
 
 // Purpose: Returns a class factory to create an object of the requested type
 _Check_return_
-STDAPI DllGetClassObject(_In_ GUID const& /*classId*/, _In_ GUID const& interfaceId, _Outptr_ void** result)
+STDAPI DllGetClassObject(_In_ GUID const& /*class_id*/, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
-    return make<jpegls_container_factory>()->QueryInterface(interfaceId, result);
+    return make<bitmap_decoder_factory>()->QueryInterface(interface_id, result);
 }

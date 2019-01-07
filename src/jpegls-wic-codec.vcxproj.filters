@@ -27,15 +27,6 @@
     <ClInclude Include="bitmap_frame_decoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="decoder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="encoder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="charls_error.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
