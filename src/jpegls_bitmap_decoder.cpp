@@ -4,6 +4,7 @@
 
 #include "trace.h"
 #include "bitmap_frame_decoder.h"
+#include "guids.h"
 
 #include <charls/jpegls_decoder.h>
 
@@ -15,9 +16,6 @@ using std::mutex;
 static const GUID JpegLsDecoder
 { 0xe57dc18b, 0x19c, 0x47f2, { 0x8e, 0xd0, 0xbf, 0x58, 0x7b, 0xe4, 0xff, 0x1b } };
 
-// {52C25458-282D-4EF4-A69F-021BB2984543}
-static const GUID ContainerFormat
-{ 0x52c25458, 0x282d, 0x4ef4, { 0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43 } };
 
 struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
@@ -59,7 +57,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
     }
 
-    HRESULT __stdcall Initialize(IStream* stream, WICDecodeOptions /*cache_options*/) override
+    HRESULT __stdcall Initialize(IStream* stream, WICDecodeOptions /*cache_options*/) noexcept override
     {
         if (!stream)
             return E_INVALIDARG;
@@ -68,17 +66,17 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return S_OK;
     }
 
-    HRESULT __stdcall GetContainerFormat(GUID* container_format) override
+    HRESULT __stdcall GetContainerFormat(GUID* container_format) noexcept override
     {
-        TRACE("(%p)\n", container_format);
+        TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, container_format=%p\n", container_format);
         if (!container_format)
             return E_POINTER;
 
-        *container_format = ContainerFormat;
+        *container_format = GUID_ContainerFormatJpegLS;
         return S_OK;
     }
 
-    HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo** decoder_info) override
+    HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo** decoder_info) noexcept override
     {
         TRACE("(%p)\n", decoder_info);
 
@@ -96,18 +94,18 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
     }
 
-    HRESULT __stdcall CopyPalette([[maybe_unused]] IWICPalette* palette) override
+    HRESULT __stdcall CopyPalette([[maybe_unused]] IWICPalette* palette) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::CopyPalette, this=%p, palette=%p\n", this, palette);
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) override
+    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         return S_OK;
     }
 
-    HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmap_source) override
+    HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetPreview, this=%p, bitmap_source=%p\n", this, bitmap_source);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
@@ -182,12 +180,13 @@ struct bitmap_decoder_factory final : implements<bitmap_decoder_factory, IClassF
         GUID const& interface_id,
         void** result) noexcept override
     {
+        if (!result)
+            return E_POINTER;
+
         *result = nullptr;
 
         if (outer)
-        {
             return CLASS_E_NOAGGREGATION;
-        }
 
         return make<jpegls_bitmap_decoder>()->QueryInterface(interface_id, result);
     }
@@ -200,7 +199,10 @@ struct bitmap_decoder_factory final : implements<bitmap_decoder_factory, IClassF
 
 // Purpose: Returns a class factory to create an object of the requested type
 _Check_return_
-STDAPI DllGetClassObject(_In_ GUID const& /*class_id*/, _In_ GUID const& interface_id, _Outptr_ void** result)
+STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
-    return make<bitmap_decoder_factory>()->QueryInterface(interface_id, result);
+    if (class_id == JpegLsDecoder)
+        return make<bitmap_decoder_factory>()->QueryInterface(interface_id, result);
+
+    return CLASS_E_CLASSNOTAVAILABLE;
 }

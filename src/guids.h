@@ -1,0 +1,6 @@
+#pragma once
+
+#include <guiddef.h>
+
+// {52C25458-282D-4EF4-A69F-021BB2984543}
+const GUID GUID_ContainerFormatJpegLS { 0x52c25458, 0x282d, 0x4ef4, { 0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43 } };

@@ -10,7 +10,7 @@ template <typename... Args>
 void TRACE(char const* const message, Args... args) noexcept
 {
     char buffer[1024];
-    (void)snprintf(buffer, sizeof(buffer), message, args...);
+    static_cast<void>(snprintf(buffer, sizeof(buffer), message, args...));
     OutputDebugStringA(buffer);
 }
 
