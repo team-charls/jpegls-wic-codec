@@ -20,7 +20,7 @@ static const GUID JpegLsDecoder
 TEST_CLASS(jpegls_bitmap_decoder_test)
 {
 public:
-    jpegls_bitmap_decoder_test() noexcept
+    jpegls_bitmap_decoder_test() noexcept(false)
     {
         library_ = LoadLibrary(L"jpegls-wic-codec.dll");
     }
@@ -35,6 +35,8 @@ public:
 
     jpegls_bitmap_decoder_test(const jpegls_bitmap_decoder_test&) = delete;
     jpegls_bitmap_decoder_test(jpegls_bitmap_decoder_test&&) = delete;
+    jpegls_bitmap_decoder_test& operator=(const jpegls_bitmap_decoder_test&) = delete;
+    jpegls_bitmap_decoder_test& operator=(jpegls_bitmap_decoder_test&&) = delete;
 
     TEST_METHOD(GetContainerFormat)
     {
@@ -51,7 +53,24 @@ public:
         com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
 
         const HRESULT result = wic_bitmap_decoder->GetContainerFormat(nullptr);
-        Assert::AreEqual(E_POINTER, result);
+        Assert::IsTrue(FAILED(result));
+    }
+
+    TEST_METHOD(GetDecoderInfo)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        com_ptr<IWICBitmapDecoderInfo> decoder_info;
+        const HRESULT result = wic_bitmap_decoder->GetDecoderInfo(decoder_info.put());
+        Assert::IsTrue(result == S_OK || result == WINCODEC_ERR_COMPONENTNOTFOUND);
+    }
+
+    TEST_METHOD(GetDecoderInfo_with_nullptr)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        const HRESULT result = wic_bitmap_decoder->GetDecoderInfo(nullptr);
+        Assert::IsTrue(FAILED(result));
     }
 
 private:
@@ -64,10 +83,10 @@ private:
             throw_last_error();
 
         com_ptr<IClassFactory> class_factory;
-        check_hresult(dll_get_class_object(JpegLsDecoder, __uuidof(IClassFactory), (void**)class_factory.put()));
+        check_hresult(dll_get_class_object(JpegLsDecoder, IID_PPV_ARGS(class_factory.put())));
 
         com_ptr<IWICBitmapDecoder> wic_bitmap_decoder;
-        check_hresult(class_factory->CreateInstance(nullptr, __uuidof(IWICBitmapDecoder), (void**)wic_bitmap_decoder.put()));
+        check_hresult(class_factory->CreateInstance(nullptr, IID_PPV_ARGS(wic_bitmap_decoder.put())));
 
         return wic_bitmap_decoder;
     }
