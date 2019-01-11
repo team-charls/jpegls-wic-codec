@@ -95,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="jpegls_bitmap_decoder_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\jpegls-wic-codec.vcxproj">
+      <Project>{e3900ae2-ae06-4e77-9055-bc4d23ae4f36}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

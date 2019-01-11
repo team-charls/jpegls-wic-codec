@@ -68,7 +68,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
     HRESULT __stdcall GetContainerFormat(GUID* container_format) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, container_format=%p\n", container_format);
+        TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, container_format=%p\n", this, container_format);
         if (!container_format)
             return E_POINTER;
 
@@ -78,7 +78,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
     HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo** decoder_info) noexcept override
     {
-        TRACE("(%p)\n", decoder_info);
+        TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, decoder_info=%p\n", this, decoder_info);
 
         try
         {
@@ -96,24 +96,29 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] IWICPalette* palette) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::CopyPalette, this=%p, palette=%p\n", this, palette);
+        TRACE("jpegls_bitmap_decoder::CopyPalette, instance=%p, palette=%p\n", this, palette);
+
+        // Palettes are for JPEG-LS on frame level.
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        return S_OK;
+        TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
+
+        // Keep the initial design simple: no support for container-level metadata.
+        return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmap_source) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::GetPreview, this=%p, bitmap_source=%p\n", this, bitmap_source);
+        TRACE("jpegls_bitmap_decoder::GetPreview, instance=%p, bitmap_source=%p\n", this, bitmap_source);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actualCount) override
     {
-        TRACE("jpegls_bitmap_decoder::GetPreview, this=%p, color_contexts=%p\n", this, color_contexts);
+        TRACE("jpegls_bitmap_decoder::GetColorContexts, instance=%p, color_contexts=%p\n", this, color_contexts);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 

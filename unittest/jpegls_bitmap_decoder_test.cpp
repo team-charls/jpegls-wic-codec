@@ -73,6 +73,24 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
+    TEST_METHOD(CopyPalette)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        com_ptr<IWICPalette> palette;
+        const HRESULT result = wic_bitmap_decoder->CopyPalette(palette.get());
+        Assert::AreEqual(WINCODEC_ERR_PALETTEUNAVAILABLE, result);
+    }
+
+    TEST_METHOD(GetMetadataQueryReader)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        com_ptr<IWICMetadataQueryReader> metadata_query_reader;
+        const HRESULT result = wic_bitmap_decoder->GetMetadataQueryReader(metadata_query_reader.put());
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
 private:
     com_ptr<IWICBitmapDecoder> CreateDecoder()
     {
