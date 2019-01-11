@@ -91,6 +91,34 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
+    TEST_METHOD(GetPreview)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        com_ptr<IWICBitmapSource> bitmap_source;
+        const HRESULT result = wic_bitmap_decoder->GetPreview(bitmap_source.put());
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
+    TEST_METHOD(GetThumbnail)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        com_ptr<IWICBitmapSource> bitmap_source;
+        const HRESULT result = wic_bitmap_decoder->GetThumbnail(bitmap_source.put());
+        Assert::AreEqual(WINCODEC_ERR_CODECNOTHUMBNAIL, result);
+    }
+
+    TEST_METHOD(GetFrameCount)
+    {
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        uint32_t frame_count;
+        const HRESULT result = wic_bitmap_decoder->GetFrameCount(&frame_count);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(1u, frame_count);
+    }
+
 private:
     com_ptr<IWICBitmapDecoder> CreateDecoder()
     {
