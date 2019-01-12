@@ -6,6 +6,7 @@
 
 #include <Windows.h>
 #include <wincodec.h>
+#include <Shlwapi.h>
 
 #include <unknwn.h>
 #include <winrt/base.h>

@@ -8,9 +8,10 @@
 
 #include <charls/jpegls_decoder.h>
 
-using namespace winrt;
 using std::mutex;
-
+using std::error_code;
+using charls::decoder;
+using namespace winrt;
 
 // {E57DC18B-019C-47F2-8ED0-BF587BE4FF1B}
 static const GUID JpegLsDecoder
@@ -22,7 +23,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(IStream* stream, DWORD* capability) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, capability=&p\n", this, stream, capability);
+        TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, capability=%p\n", this, stream, capability);
 
         if (!stream)
             return E_INVALIDARG;
@@ -44,10 +45,18 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             offset.QuadPart = -static_cast<int64_t>(read_byte_count);
             check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
-            // TODO ReadHeader.
-            *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
+            decoder decoder;
+            std::error_code error;
+            decoder.read_header(header, read_byte_count, error);
 
-            //WICBitmapDecoderCapabilitySameEncoder
+            if (error)
+            {
+                *capability = 0;
+            }
+            else
+            {
+                *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
+            }
 
             return S_OK;
         }
@@ -59,7 +68,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
     HRESULT __stdcall Initialize(IStream* stream, [[maybe_unused]] WICDecodeOptions cache_options) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, cache_options=&d\n", this, stream, cache_options);
+        TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, cache_options=%d\n", this, stream, cache_options);
 
         if (!stream)
             return E_INVALIDARG;

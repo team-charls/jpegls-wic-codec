@@ -119,6 +119,32 @@ public:
         Assert::AreEqual(1u, frame_count);
     }
 
+    TEST_METHOD(QueryCapability_cannot_decode_empty)
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        DWORD capability;
+        const HRESULT result = wic_bitmap_decoder->QueryCapability(stream.get(), &capability);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(0ul, capability);
+    }
+
+    TEST_METHOD(QueryCapability_can_decode_8bit_monochrome)
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+
+        DWORD capability;
+        const HRESULT result = wic_bitmap_decoder->QueryCapability(stream.get(), &capability);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
+    }
+
 private:
     com_ptr<IWICBitmapDecoder> CreateDecoder()
     {
