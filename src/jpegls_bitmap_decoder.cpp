@@ -167,6 +167,11 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             std::lock_guard<std::mutex> lock(mutex_);
             return make<bitmap_frame_decoder>(stream_.get())->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
         }
+        catch (const charls::jpegls_error&)
+        {
+            // TODO: trace.
+            return WINCODEC_ERR_BADHEADER;
+        }
         catch (...)
         {
             return to_hresult();

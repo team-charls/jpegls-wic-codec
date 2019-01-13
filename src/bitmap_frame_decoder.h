@@ -9,27 +9,21 @@
 
 #include <wincodec.h>
 #include <shlwapi.h>
-#include <vector>
+#include <memory>
 
 struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWICBitmapFrameDecode>
 {
-    std::vector<std::byte> buffer_;
-    charls::decoder decoder_;
-
     explicit bitmap_frame_decoder(IStream* stream)
     {
         ULARGE_INTEGER size;
         winrt::check_hresult(IStream_Size(stream, &size));
 
-        try
-        {
-            buffer_.resize(size.LowPart);
-            decoder_.read_header(buffer_.data(), buffer_.size());
-        }
-        catch (...)
-        {
-            throw winrt::hresult_error(E_FAIL);
-        }
+        buffer_size_ = size.LowPart;
+        buffer_ = std::unique_ptr<std::byte[]>(new std::byte[buffer_size_]);
+
+        winrt::check_hresult(IStream_Read(stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
+
+        decoder_.read_header(buffer_.get(), buffer_size_);
     }
 
     // IWICBitmapSource
@@ -99,5 +93,8 @@ struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWIC
     }
 
 private:
+    size_t buffer_size_;
+    std::unique_ptr<std::byte[]> buffer_;
+    charls::decoder decoder_;
     std::mutex mutex_;
 };

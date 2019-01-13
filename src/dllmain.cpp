@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-BOOL APIENTRY DllMain(HMODULE /*module*/, const DWORD  reason_for_call,LPVOID /*reserved*/)
+BOOL APIENTRY DllMain(HMODULE /*module*/, const DWORD reason_for_call, void* /*reserved*/)
 {
     switch (reason_for_call)
     {

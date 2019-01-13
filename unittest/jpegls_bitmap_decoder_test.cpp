@@ -145,6 +145,26 @@ public:
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
     }
 
+    TEST_METHOD(GetFrame)
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        HRESULT result = wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand);
+        Assert::AreEqual(S_OK, result);
+
+        uint32_t frame_count;
+        result = wic_bitmap_decoder->GetFrameCount(&frame_count);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(1u, frame_count);
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        result = wic_bitmap_decoder->GetFrame(0, bitmap_frame_decode.put());
+        Assert::AreEqual(S_OK, result);
+        Assert::IsTrue(bitmap_frame_decode.get() != nullptr);
+    }
+
 private:
     com_ptr<IWICBitmapDecoder> CreateDecoder()
     {
