@@ -8,6 +8,8 @@
 
 #include <CppUnitTest.h>
 
+#include <vector>
+
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -78,6 +80,23 @@ public:
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const HRESULT result = bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put());
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
+    TEST_METHOD(CopyPixels)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = CreateFrameDecoder(L"lena8b.jls");
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
+
+        HRESULT result = bitmap_frame_decoder->CopyPixels(nullptr, 0, static_cast<uint32_t>(buffer.size()), buffer.data());
+        Assert::AreEqual(S_OK, result);
+
+        result = bitmap_frame_decoder->CopyPixels(nullptr, 0, static_cast<uint32_t>(buffer.size()), buffer.data());
+        Assert::AreEqual(S_OK, result);
     }
 
 private:
