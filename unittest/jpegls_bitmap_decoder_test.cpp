@@ -2,8 +2,11 @@
 
 #include "pch.h"
 
+#include "factory.h"
+
+#include "../src/util.h"
+
 #include <CppUnitTest.h>
-#include "../src/guids.h"
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -11,36 +14,13 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using DllGetClassObjectPtr = HRESULT (_stdcall *) (GUID const&, GUID const&, void** result);
 
-// {E57DC18B-019C-47F2-8ED0-BF587BE4FF1B}
-static const GUID JpegLsDecoder
-{ 0xe57dc18b, 0x19c, 0x47f2, { 0x8e, 0xd0, 0xbf, 0x58, 0x7b, 0xe4, 0xff, 0x1b } };
-
-
 
 TEST_CLASS(jpegls_bitmap_decoder_test)
 {
 public:
-    jpegls_bitmap_decoder_test() noexcept(false)
-    {
-        library_ = LoadLibrary(L"jpegls-wic-codec.dll");
-    }
-
-    ~jpegls_bitmap_decoder_test()
-    {
-        if (library_)
-        {
-            FreeLibrary(library_);
-        }
-    }
-
-    jpegls_bitmap_decoder_test(const jpegls_bitmap_decoder_test&) = delete;
-    jpegls_bitmap_decoder_test(jpegls_bitmap_decoder_test&&) = delete;
-    jpegls_bitmap_decoder_test& operator=(const jpegls_bitmap_decoder_test&) = delete;
-    jpegls_bitmap_decoder_test& operator=(jpegls_bitmap_decoder_test&&) = delete;
-
     TEST_METHOD(GetContainerFormat)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         GUID container_format;
         const HRESULT result = wic_bitmap_decoder->GetContainerFormat(&container_format);
@@ -50,15 +30,18 @@ public:
 
     TEST_METHOD(GetContainerFormat_with_nullptr)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
+        WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result = wic_bitmap_decoder->GetContainerFormat(nullptr);
+        WARNING_UNSUPPRESS()
+
         Assert::IsTrue(FAILED(result));
     }
 
     TEST_METHOD(GetDecoderInfo)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         com_ptr<IWICBitmapDecoderInfo> decoder_info;
         const HRESULT result = wic_bitmap_decoder->GetDecoderInfo(decoder_info.put());
@@ -67,15 +50,18 @@ public:
 
     TEST_METHOD(GetDecoderInfo_with_nullptr)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
+        WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result = wic_bitmap_decoder->GetDecoderInfo(nullptr);
+        WARNING_UNSUPPRESS()
+
         Assert::IsTrue(FAILED(result));
     }
 
     TEST_METHOD(CopyPalette)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         com_ptr<IWICPalette> palette;
         const HRESULT result = wic_bitmap_decoder->CopyPalette(palette.get());
@@ -84,7 +70,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryReader)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const HRESULT result = wic_bitmap_decoder->GetMetadataQueryReader(metadata_query_reader.put());
@@ -93,7 +79,7 @@ public:
 
     TEST_METHOD(GetPreview)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         com_ptr<IWICBitmapSource> bitmap_source;
         const HRESULT result = wic_bitmap_decoder->GetPreview(bitmap_source.put());
@@ -102,7 +88,7 @@ public:
 
     TEST_METHOD(GetThumbnail)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         com_ptr<IWICBitmapSource> bitmap_source;
         const HRESULT result = wic_bitmap_decoder->GetThumbnail(bitmap_source.put());
@@ -111,7 +97,7 @@ public:
 
     TEST_METHOD(GetFrameCount)
     {
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         uint32_t frame_count;
         const HRESULT result = wic_bitmap_decoder->GetFrameCount(&frame_count);
@@ -124,7 +110,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         DWORD capability;
         const HRESULT result = wic_bitmap_decoder->QueryCapability(stream.get(), &capability);
@@ -137,7 +123,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
 
         DWORD capability;
         const HRESULT result = wic_bitmap_decoder->QueryCapability(stream.get(), &capability);
@@ -150,7 +136,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
         HRESULT result = wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand);
         Assert::AreEqual(S_OK, result);
 
@@ -166,22 +152,5 @@ public:
     }
 
 private:
-    com_ptr<IWICBitmapDecoder> CreateDecoder()
-    {
-        com_ptr<IWICBitmapDecoder> decoder;
-
-        DllGetClassObjectPtr dll_get_class_object = reinterpret_cast<DllGetClassObjectPtr>(GetProcAddress(library_, "DllGetClassObject"));
-        if (!dll_get_class_object)
-            throw_last_error();
-
-        com_ptr<IClassFactory> class_factory;
-        check_hresult(dll_get_class_object(JpegLsDecoder, IID_PPV_ARGS(class_factory.put())));
-
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder;
-        check_hresult(class_factory->CreateInstance(nullptr, IID_PPV_ARGS(wic_bitmap_decoder.put())));
-
-        return wic_bitmap_decoder;
-    }
-
-    HINSTANCE library_{};
+    factory factory_;
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "trace.h"
+#include "util.h"
 
 #include <winrt/base.h>
 #include <charls/jpegls_decoder.h>
@@ -11,17 +12,19 @@
 #include <shlwapi.h>
 #include <memory>
 
-struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWICBitmapFrameDecode>
+struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame_decoder, IWICBitmapFrameDecode>
 {
-    explicit bitmap_frame_decoder(IStream* stream)
+    explicit jpegls_bitmap_frame_decoder(IStream& stream)
     {
         ULARGE_INTEGER size;
-        winrt::check_hresult(IStream_Size(stream, &size));
+        winrt::check_hresult(IStream_Size(&stream, &size));
 
+        WARNING_SUPPRESS(26409) // use std::make_unique (explictly not used to prevent unneeded initialization of the buffer)
         buffer_size_ = size.LowPart;
         buffer_ = std::unique_ptr<std::byte[]>(new std::byte[buffer_size_]);
+        WARNING_UNSUPPRESS()
 
-        winrt::check_hresult(IStream_Read(stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
+        winrt::check_hresult(IStream_Read(&stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
 
         decoder_.read_header(buffer_.get(), buffer_size_);
     }
@@ -29,7 +32,7 @@ struct bitmap_frame_decoder final : winrt::implements<bitmap_frame_decoder, IWIC
     // IWICBitmapSource
     HRESULT GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
-        TRACE("(%p, %p)\n", width, height);
+        TRACE("jpegls_bitmap_frame_decoder::GetSize, instance=%p, width=%p, height=%p\n", this, width, height);
 
         if (!width || !height)
             return E_POINTER;

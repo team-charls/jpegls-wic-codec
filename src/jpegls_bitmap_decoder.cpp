@@ -3,7 +3,7 @@
 #include "pch.h"
 
 #include "trace.h"
-#include "bitmap_frame_decoder.h"
+#include "jpegls_bitmap_frame_decoder.h"
 #include "guids.h"
 
 #include <charls/jpegls_decoder.h>
@@ -12,10 +12,6 @@ using std::mutex;
 using std::error_code;
 using charls::decoder;
 using namespace winrt;
-
-// {E57DC18B-019C-47F2-8ED0-BF587BE4FF1B}
-static const GUID JpegLsDecoder
-{ 0xe57dc18b, 0x19c, 0x47f2, { 0x8e, 0xd0, 0xbf, 0x58, 0x7b, 0xe4, 0xff, 0x1b } };
 
 
 struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
@@ -95,7 +91,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         try
         {
             com_ptr<IWICComponentInfo> component_info;
-            check_hresult(factory()->CreateComponentInfo(JpegLsDecoder, component_info.put()));
+            check_hresult(factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
             check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
             return S_OK;
@@ -165,7 +161,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         try
         {
             std::lock_guard<std::mutex> lock(mutex_);
-            return make<bitmap_frame_decoder>(stream_.get())->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
+            return make<jpegls_bitmap_frame_decoder>(*stream_)->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
         }
         catch (const charls::jpegls_error&)
         {
@@ -223,7 +219,7 @@ struct bitmap_decoder_factory final : implements<bitmap_decoder_factory, IClassF
 _Check_return_
 STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
-    if (class_id == JpegLsDecoder)
+    if (class_id == CLSID_JpegLSDecoder)
         return make<bitmap_decoder_factory>()->QueryInterface(interface_id, result);
 
     return CLASS_E_CLASSNOTAVAILABLE;

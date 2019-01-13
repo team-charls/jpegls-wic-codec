@@ -21,10 +21,13 @@
     <ClInclude Include="trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bitmap_frame_decoder.h">
+    <ClInclude Include="guids.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="guids.h">
+    <ClInclude Include="jpegls_bitmap_frame_decoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

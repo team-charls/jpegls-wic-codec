@@ -93,10 +93,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="bitmap_frame_decoder.h" />
+    <ClInclude Include="jpegls_bitmap_frame_decoder.h" />
     <ClInclude Include="guids.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="trace.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
