@@ -73,8 +73,15 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
         return S_OK;
     }
 
-    HRESULT CopyPixels(const WICRect* /*rectangle*/, uint32_t /*stride*/, uint32_t /*buffer_size*/, BYTE* /*buffer*/) noexcept override
+    HRESULT CopyPixels(const WICRect* /*rectangle*/, uint32_t /*stride*/, uint32_t buffer_size, BYTE* buffer) noexcept override
     {
+        TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, buffer_size=%d, buffer=%p\n", this, buffer_size, buffer);
+
+        std::error_code error;
+        decoder_.decode(buffer, buffer_size, error);
+        if (error)
+            return WINCODEC_ERR_BADIMAGE;
+
         return S_OK;
     }
 
@@ -91,7 +98,7 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
 
     HRESULT GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
-        TRACE("(%d, %p, %p)\n", count, color_contexts, actual_count);
+        TRACE("jpegls_bitmap_frame_decoder::GetColorContexts, instance=%p, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
         if (!actual_count)
             return E_POINTER;
 
@@ -99,9 +106,12 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
         return S_OK;
     }
 
-    HRESULT GetMetadataQueryReader(IWICMetadataQueryReader** /*metadata_query_reader*/) noexcept override
+    HRESULT GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        return S_OK;
+        TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
+
+        // Keep the initial design simple: no support for metadata.
+        return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     static bool can_decode_to_wic_pixel_format(int32_t bits_per_sample, int32_t component_count)

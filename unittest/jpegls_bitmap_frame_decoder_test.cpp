@@ -56,6 +56,30 @@ public:
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
+    TEST_METHOD(GetColorContexts)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = CreateFrameDecoder(L"lena8b.jls");
+
+        uint32_t actual_count;
+        HRESULT result = bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(0u, actual_count);
+
+        IWICColorContext* color_contexts[1]{};
+        result = bitmap_frame_decoder->GetColorContexts(1, color_contexts, &actual_count);
+        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(0u, actual_count);
+    }
+
+    TEST_METHOD(GetMetadataQueryReader)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = CreateFrameDecoder(L"lena8b.jls");
+
+        com_ptr<IWICMetadataQueryReader> metadata_query_reader;
+        const HRESULT result = bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put());
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
 private:
     com_ptr<IWICBitmapFrameDecode> CreateFrameDecoder(PCWSTR filename)
     {
