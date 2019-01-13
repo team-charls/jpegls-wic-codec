@@ -27,6 +27,9 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
         winrt::check_hresult(IStream_Read(&stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
 
         decoder_.read_header(buffer_.get(), buffer_size_);
+
+        if (!can_decode_to_wic_pixel_format(decoder_.metadata_info().bits_per_sample, decoder_.metadata_info().component_count))
+            winrt::throw_hresult(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
     }
 
     // IWICBitmapSource
@@ -43,18 +46,24 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
         return S_OK;
     }
 
-    HRESULT GetPixelFormat(WICPixelFormatGUID* pixel_format) noexcept override
+    HRESULT GetPixelFormat(GUID* pixel_format) noexcept override
     {
+        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat, instance=%p, pixel_format=%p\n", this, pixel_format);
+
         if (!pixel_format)
             return E_POINTER;
 
-        *pixel_format = GUID_WICPixelFormat16bppGray;
+        WINRT_VERIFY(try_get_get_pixel_format(decoder_.metadata_info().bits_per_sample,
+            decoder_.metadata_info().component_count, *pixel_format));
         return S_OK;
     }
 
     HRESULT GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
-        TRACE("(%p, %p)\n", dpi_x, dpi_y);
+        TRACE("jpegls_bitmap_frame_decoder::GetResolution, instance=%p,  dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
+
+        if (!dpi_x || !dpi_y)
+            return E_POINTER;
 
         // TODO: check JPEG-LS standard if dpi is in header.
 
@@ -93,6 +102,37 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
     HRESULT GetMetadataQueryReader(IWICMetadataQueryReader** /*metadata_query_reader*/) noexcept override
     {
         return S_OK;
+    }
+
+    static bool can_decode_to_wic_pixel_format(int32_t bits_per_sample, int32_t component_count)
+    {
+        GUID pixel_format_dummy;
+        return try_get_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy);
+    }
+
+    static bool try_get_get_pixel_format(int32_t bits_per_sample, int32_t component_count, GUID& pixel_format)
+    {
+        switch (component_count)
+        {
+        case 1:
+            switch (bits_per_sample)
+            {
+            case 2:
+                pixel_format = GUID_WICPixelFormat2bppGray;
+                return true;
+            case 4:
+                pixel_format = GUID_WICPixelFormat4bppGray;
+                return true;
+            case 8:
+                pixel_format = GUID_WICPixelFormat8bppGray;
+                return true;
+            case 16:
+                pixel_format = GUID_WICPixelFormat16bppGray;
+                return true;
+            }
+        }
+
+        return false;
     }
 
 private:

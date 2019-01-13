@@ -46,6 +46,16 @@ public:
         Assert::AreEqual(WINCODEC_ERR_CODECNOTHUMBNAIL, result);
     }
 
+    TEST_METHOD(GetPixelFormat)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = CreateFrameDecoder(L"lena8b.jls");
+
+        GUID pixel_format;
+        const HRESULT result = bitmap_frame_decoder->GetPixelFormat(&pixel_format);
+        Assert::AreEqual(S_OK, result);
+        Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
+    }
+
 private:
     com_ptr<IWICBitmapFrameDecode> CreateFrameDecoder(PCWSTR filename)
     {

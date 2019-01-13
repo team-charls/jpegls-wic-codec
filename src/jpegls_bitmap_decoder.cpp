@@ -45,7 +45,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             std::error_code error;
             decoder.read_header(header, read_byte_count, error);
 
-            if (error)
+            if (error ||
+                !jpegls_bitmap_frame_decoder::can_decode_to_wic_pixel_format(decoder.metadata_info().bits_per_sample, decoder.metadata_info().component_count))
             {
                 *capability = 0;
             }
