@@ -92,10 +92,10 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
 
-        HRESULT result = bitmap_frame_decoder->CopyPixels(nullptr, 0, static_cast<uint32_t>(buffer.size()), buffer.data());
+        HRESULT result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
         Assert::AreEqual(S_OK, result);
 
-        result = bitmap_frame_decoder->CopyPixels(nullptr, 0, static_cast<uint32_t>(buffer.size()), buffer.data());
+        result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
         Assert::AreEqual(S_OK, result);
     }
 

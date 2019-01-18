@@ -24,10 +24,10 @@
     <ClInclude Include="guids.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jpegls_bitmap_frame_decoder.h">
+    <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="jpegls_bitmap_frame_decode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

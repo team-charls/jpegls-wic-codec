@@ -93,7 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="jpegls_bitmap_frame_decoder.h" />
+    <ClInclude Include="jpegls_bitmap_frame_decode.h" />
     <ClInclude Include="guids.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="trace.h" />

@@ -3,7 +3,7 @@
 #include "pch.h"
 
 #include "trace.h"
-#include "jpegls_bitmap_frame_decoder.h"
+#include "jpegls_bitmap_frame_decode.h"
 #include "guids.h"
 
 #include <charls/jpegls_decoder.h>
@@ -47,7 +47,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             decoder.read_header(header, read_byte_count, error);
 
             if (error ||
-                !jpegls_bitmap_frame_decoder::can_decode_to_wic_pixel_format(decoder.metadata_info().bits_per_sample, decoder.metadata_info().component_count))
+                !jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(decoder.metadata_info().bits_per_sample, decoder.metadata_info().component_count))
             {
                 *capability = 0;
             }
@@ -72,7 +72,11 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (!stream)
             return E_INVALIDARG;
 
+        scoped_lock lock{mutex_};
+
         stream_.copy_from(stream);
+        bitmap_frame_decode_.attach(nullptr);
+
         return S_OK;
     }
 
@@ -158,18 +162,20 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (index != 0)
             return WINCODEC_ERR_FRAMEMISSING;
 
+        scoped_lock lock{mutex_};
+
         if (!stream_)
             return WINCODEC_ERR_NOTINITIALIZED;
 
         try
         {
-            scoped_lock lock{mutex_};
-            return make<jpegls_bitmap_frame_decoder>(stream_.get())->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
-        }
-        catch (const charls::jpegls_error&)
-        {
-            // TODO: trace.
-            return WINCODEC_ERR_BADHEADER;
+            if (!bitmap_frame_decode_)
+            {
+                bitmap_frame_decode_ = make<jpegls_bitmap_frame_decode>(stream_.get(), factory());
+            }
+
+            bitmap_frame_decode_.copy_to(bitmap_frame_decode);
+            return S_OK;
         }
         catch (...)
         {
@@ -191,6 +197,7 @@ private:
     mutex mutex_;
     com_ptr<IWICImagingFactory> factory_;
     com_ptr<IStream> stream_;
+    com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
 
 
