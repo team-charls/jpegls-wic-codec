@@ -14,17 +14,21 @@
 
 struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame_decoder, IWICBitmapFrameDecode>
 {
-    explicit jpegls_bitmap_frame_decoder(IStream& stream)
+    explicit jpegls_bitmap_frame_decoder(IStream* stream)
     {
         ULARGE_INTEGER size;
-        winrt::check_hresult(IStream_Size(&stream, &size));
+        winrt::check_hresult(IStream_Size(stream, &size));
 
         WARNING_SUPPRESS(26409) // use std::make_unique (explictly not used to prevent unneeded initialization of the buffer)
         buffer_size_ = size.LowPart;
         buffer_ = std::unique_ptr<std::byte[]>(new std::byte[buffer_size_]);
         WARNING_UNSUPPRESS()
 
-        winrt::check_hresult(IStream_Read(&stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
+        winrt::check_hresult(IStream_Read(stream, buffer_.get(), static_cast<ULONG>(buffer_size_)));
+
+        LARGE_INTEGER offset;
+        offset.QuadPart = -static_cast<int64_t>(buffer_size_);
+        winrt::check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
         decoder_.read_header(buffer_.get(), buffer_size_);
 
@@ -73,9 +77,9 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
         return S_OK;
     }
 
-    HRESULT CopyPixels(const WICRect* /*rectangle*/, uint32_t /*stride*/, uint32_t buffer_size, BYTE* buffer) noexcept override
+    HRESULT CopyPixels(const WICRect* rectangle, uint32_t /*stride*/, uint32_t buffer_size, BYTE* buffer) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, buffer_size=%d, buffer=%p\n", this, buffer_size, buffer);
+        TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
 
         std::error_code error;
         decoder_.decode(buffer, buffer_size, error);
@@ -138,6 +142,18 @@ struct jpegls_bitmap_frame_decoder final : winrt::implements<jpegls_bitmap_frame
                 return true;
             case 16:
                 pixel_format = GUID_WICPixelFormat16bppGray;
+                return true;
+            }
+            break;
+
+        case 3:
+            switch (bits_per_sample)
+            {
+            case 8:
+                pixel_format = GUID_WICPixelFormat24bppRGB;
+                return true;
+            case 16:
+                pixel_format = GUID_WICPixelFormat48bppRGB;
                 return true;
             }
         }

@@ -10,6 +10,7 @@
 
 using std::mutex;
 using std::error_code;
+using std::scoped_lock;
 using charls::decoder;
 using namespace winrt;
 
@@ -19,7 +20,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(IStream* stream, DWORD* capability) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, capability=%p\n", this, stream, capability);
+        TRACE("jpegls_bitmap_decoder::QueryCapability.1, instance=%p, stream=%p, capability=%p\n", this, stream, capability);
 
         if (!stream)
             return E_INVALIDARG;
@@ -54,6 +55,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             {
                 *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
             }
+            TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, stream=%p, capability=%d\n", this, stream, *capability);
 
             return S_OK;
         }
@@ -70,7 +72,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (!stream)
             return E_INVALIDARG;
 
-        stream_.attach(stream);
+        stream_.copy_from(stream);
         return S_OK;
     }
 
@@ -161,8 +163,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
         try
         {
-            std::lock_guard<std::mutex> lock(mutex_);
-            return make<jpegls_bitmap_frame_decoder>(*stream_)->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
+            scoped_lock lock{mutex_};
+            return make<jpegls_bitmap_frame_decoder>(stream_.get())->QueryInterface(IID_PPV_ARGS(bitmap_frame_decode));
         }
         catch (const charls::jpegls_error&)
         {
