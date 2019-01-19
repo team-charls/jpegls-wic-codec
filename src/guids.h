@@ -2,11 +2,11 @@
 
 #include <guiddef.h>
 
-// {52C25458-282D-4EF4-A69F-021BB2984543}
+// {52c25458-282d-4ef4-a69f-021bb2984543}
 constexpr GUID GUID_ContainerFormatJpegLS { 0x52c25458, 0x282d, 0x4ef4, { 0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43 } };
 
-// {E57DC18B-019C-47F2-8ED0-BF587BE4FF1B}
+// {e57dc18b-019c-47f2-8ed0-bf587be4ff1b}
 constexpr GUID CLSID_JpegLSDecoder { 0xe57dc18b, 0x19c, 0x47f2, { 0x8e, 0xd0, 0xbf, 0x58, 0x7b, 0xe4, 0xff, 0x1b } };
  
-// {8ADBE21C-A720-424E-B238-45AD1052B98C}
+// {8adbe21c-a720-424e-b238-45ad1052b98c}
 constexpr GUID GUID_VendorTeamCharLS { 0x8adbe21c, 0xa720, 0x424e, { 0xb2, 0x38, 0x45, 0xad, 0x10, 0x52, 0xb9, 0x8c } };
