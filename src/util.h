@@ -54,22 +54,27 @@ struct registry
     static void set_value(PCWSTR sub_key, PCWSTR value_name, PCWSTR value)
     {
         const auto length = wcslen(value) + 1;
-        const auto result = RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t)));
-        if (result != ERROR_SUCCESS)
-            throw std::exception();
+        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
     }
 
     static void set_value(PCWSTR sub_key, PCWSTR value_name, uint32_t value)
     {
-        const auto retCode = RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value);
-        if (retCode != ERROR_SUCCESS)
-            throw std::exception();
+        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value));
     }
 
     static void set_value(PCWSTR sub_key, PCWSTR value_name, const void* value, DWORD value_size_in_bytes)
     {
-        const auto retCode = RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_BINARY, value, value_size_in_bytes);
-        if (retCode != ERROR_SUCCESS)
-            throw std::exception();
+        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
+    }
+
+    static HRESULT delete_tree(PCWSTR sub_key) noexcept
+    {
+        const LSTATUS result = RegDeleteTreeW(HKEY_LOCAL_MACHINE, sub_key);
+        if (result != ERROR_SUCCESS)
+        {
+            return HRESULT_FROM_WIN32(result);
+        }
+
+        return S_OK;
     }
 };

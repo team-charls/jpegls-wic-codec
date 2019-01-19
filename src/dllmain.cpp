@@ -91,7 +91,7 @@ STDAPI DllRegisterServer()
         registry::set_value(inproc_server_sub_key.c_str(), L"", get_module_path().c_str());
         registry::set_value(inproc_server_sub_key.c_str(), L"ThreadingModel", L"Both");
 
-        const wstring category_id_key = wstring{ LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)" }
+        const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"}
             + guid_to_string(CLSID_JpegLSDecoder);
         registry::set_value(category_id_key.c_str(), L"FriendlyName", L"Team CharLS JPEG-LS Decoder");
         registry::set_value(category_id_key.c_str(), L"CLSID", guid_to_string(CLSID_JpegLSDecoder).c_str());
@@ -104,4 +104,17 @@ STDAPI DllRegisterServer()
     {
         return SELFREG_E_CLASS;
     }
+}
+
+__control_entrypoint(DllExport)
+STDAPI DllUnregisterServer()
+{
+    const wstring sub_key = wstring{LR"(SOFTWARE\Classes\CLSID\)"} + guid_to_string(CLSID_JpegLSDecoder);
+    const HRESULT result1 = registry::delete_tree(sub_key.c_str());
+
+    const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"}
+        + guid_to_string(CLSID_JpegLSDecoder);
+    const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
+
+    return FAILED(result1) ? result1 : result2;
 }
