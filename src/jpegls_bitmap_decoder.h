@@ -40,7 +40,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
             offset.QuadPart = -static_cast<int64_t>(read_byte_count);
             winrt::check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
-            charls::decoder decoder;
+            charls::jpegls_decoder decoder;
             std::error_code error;
             decoder.read_header(header, read_byte_count, error);
 

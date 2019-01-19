@@ -172,6 +172,6 @@ private:
 
     size_t buffer_size_;
     std::unique_ptr<std::byte[]> buffer_;
-    charls::decoder decoder_;
+    charls::jpegls_decoder decoder_;
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
 };
