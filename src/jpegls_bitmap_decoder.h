@@ -1,21 +1,19 @@
-﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
-#include "pch.h"
+#pragma once
 
 #include "trace.h"
-#include "jpegls_bitmap_frame_decode.h"
 #include "guids.h"
+#include "jpegls_bitmap_frame_decode.h"
 
 #include <charls/jpegls_decoder.h>
 
-using std::mutex;
-using std::error_code;
-using std::scoped_lock;
-using charls::decoder;
-using namespace winrt;
+#include <wincodec.h>
+#include <winrt/base.h>
 
+#include <mutex>
 
-struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
+struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(IStream* stream, DWORD* capability) noexcept override
@@ -36,13 +34,13 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             std::byte header[4 * 1024];
             unsigned long read_byte_count;
 
-            check_hresult(stream->Read(header, sizeof header, &read_byte_count));
+            winrt::check_hresult(stream->Read(header, sizeof header, &read_byte_count));
 
             LARGE_INTEGER offset;
             offset.QuadPart = -static_cast<int64_t>(read_byte_count);
-            check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
+            winrt::check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
-            decoder decoder;
+            charls::decoder decoder;
             std::error_code error;
             decoder.read_header(header, read_byte_count, error);
 
@@ -61,7 +59,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
         catch (...)
         {
-            return to_hresult();
+            return winrt::to_hresult();
         }
     }
 
@@ -72,7 +70,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (!stream)
             return E_INVALIDARG;
 
-        scoped_lock lock{mutex_};
+        std::scoped_lock lock{ mutex_ };
 
         stream_.copy_from(stream);
         bitmap_frame_decode_.attach(nullptr);
@@ -97,15 +95,15 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
 
         try
         {
-            com_ptr<IWICComponentInfo> component_info;
-            check_hresult(factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
-            check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
+            winrt::com_ptr<IWICComponentInfo> component_info;
+            winrt::check_hresult(factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
+            winrt::check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
             return S_OK;
         }
         catch (...)
         {
-            return to_hresult();
+            return winrt::to_hresult();
         }
     }
 
@@ -162,7 +160,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (index != 0)
             return WINCODEC_ERR_FRAMEMISSING;
 
-        scoped_lock lock{mutex_};
+        std::scoped_lock lock{mutex_};
 
         if (!stream_)
             return WINCODEC_ERR_NOTINITIALIZED;
@@ -171,7 +169,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         {
             if (!bitmap_frame_decode_)
             {
-                bitmap_frame_decode_ = make<jpegls_bitmap_frame_decode>(stream_.get(), factory());
+                bitmap_frame_decode_ = winrt::make<jpegls_bitmap_frame_decode>(stream_.get(), factory());
             }
 
             bitmap_frame_decode_.copy_to(bitmap_frame_decode);
@@ -179,7 +177,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
         catch (...)
         {
-            return to_hresult();
+            return winrt::to_hresult();
         }
     }
 
@@ -188,49 +186,14 @@ private:
     {
         if (!factory_)
         {
-            check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, factory_.put_void()));
+            winrt::check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, factory_.put_void()));
         }
 
         return factory_.get();
     }
 
-    mutex mutex_;
-    com_ptr<IWICImagingFactory> factory_;
-    com_ptr<IStream> stream_;
-    com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
+    std::mutex mutex_;
+    winrt::com_ptr<IWICImagingFactory> factory_;
+    winrt::com_ptr<IStream> stream_;
+    winrt::com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
-
-
-struct bitmap_decoder_factory final : implements<bitmap_decoder_factory, IClassFactory>
-{
-    HRESULT __stdcall CreateInstance(
-        IUnknown* outer,
-        GUID const& interface_id,
-        void** result) noexcept override
-    {
-        if (!result)
-            return E_POINTER;
-
-        *result = nullptr;
-
-        if (outer)
-            return CLASS_E_NOAGGREGATION;
-
-        return make<jpegls_bitmap_decoder>()->QueryInterface(interface_id, result);
-    }
-
-    HRESULT __stdcall LockServer(BOOL) noexcept override
-    {
-        return S_OK;
-    }
-};
-
-// Purpose: Returns a class factory to create an object of the requested type
-_Check_return_
-STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
-{
-    if (class_id == CLSID_JpegLSDecoder)
-        return make<bitmap_decoder_factory>()->QueryInterface(interface_id, result);
-
-    return CLASS_E_CLASSNOTAVAILABLE;
-}

@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "guids.h"
+#include "jpegls_bitmap_decoder_factory.h"
 #include "util.h"
 
 #include <olectl.h>
@@ -10,11 +10,14 @@
 
 using std::wstring;
 
-BOOL APIENTRY DllMain(HMODULE /*module*/, const DWORD reason_for_call, void* /*reserved*/)
+BOOL APIENTRY DllMain(HMODULE module, const DWORD reason_for_call, void* /*reserved*/)
 {
     switch (reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+        WINRT_VERIFY(DisableThreadLibraryCalls(module));
+        break;
+
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
@@ -33,6 +36,16 @@ __control_entrypoint(DllExport)
 STDAPI DllCanUnloadNow()
 {
     return winrt::get_module_lock() ? S_FALSE : S_OK;
+}
+
+// Purpose: Returns a class factory to create an object of the requested type
+_Check_return_
+STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
+{
+    if (class_id == CLSID_JpegLSDecoder)
+        return winrt::make<jpegls_bitmap_decoder_factory>()->QueryInterface(interface_id, result);
+
+    return CLASS_E_CLASSNOTAVAILABLE;
 }
 
 __control_entrypoint(DllExport)

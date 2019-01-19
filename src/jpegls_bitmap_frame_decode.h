@@ -50,7 +50,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             bitmap_lock->GetStride(&stride);
             if (stride != compute_stride(metadata_info))
             {
-                assert(false);
+                WINRT_ASSERT(false);
                 winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
             }
 
