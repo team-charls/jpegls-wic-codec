@@ -10,7 +10,7 @@
 
 using std::wstring;
 
-BOOL APIENTRY DllMain(HMODULE module, const DWORD reason_for_call, void* /*reserved*/)
+BOOL APIENTRY DllMain(HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
     switch (reason_for_call)
     {

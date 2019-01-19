@@ -94,14 +94,13 @@
 
   </ItemDefinitionGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Checked'">
-    <LinkIncremental>true</LinkIncremental>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
 
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Checked'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
-      <!-- For checked builds, enable the MS static analyzer build into the compiler. -->
+      <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
       <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>

@@ -9,7 +9,7 @@
 #define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable : x))  // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses)
 #define WARNING_UNSUPPRESS() __pragma(warning(pop))
 
-inline HMODULE get_current_module()
+inline HMODULE get_current_module() noexcept
 {
     HMODULE module;
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,

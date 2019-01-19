@@ -121,7 +121,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    static bool can_decode_to_wic_pixel_format(int32_t bits_per_sample, int32_t component_count)
+    static bool can_decode_to_wic_pixel_format(int32_t bits_per_sample, int32_t component_count) noexcept
     {
         GUID pixel_format_dummy;
         return try_get_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy);

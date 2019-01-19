@@ -7,6 +7,15 @@
 #include <olectl.h>
 #include <Shlobj.h>
 #include <unknwn.h>
+
+#pragma warning(push)
+#pragma warning(disable: 4946) // reinterpret_cast used between related classes
 #include <winrt/base.h>
+#pragma warning(pop)
 
 #include <wincodec.h>
+
+#pragma warning(push)
+#pragma warning(disable: 26492) // Don't use const cast
+#include <charls/jpegls_decoder.h>
+#pragma warning(pop)
