@@ -131,19 +131,19 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actualCount) override
+    HRESULT __stdcall GetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actualCount) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetColorContexts, instance=%p, color_contexts=%p\n", this, color_contexts);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetThumbnail([[maybe_unused]] IWICBitmapSource** thumbnail) override
+    HRESULT __stdcall GetThumbnail([[maybe_unused]] IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetThumbnail, instance=%p, thumbnail=%p\n", this, thumbnail);
         return WINCODEC_ERR_CODECNOTHUMBNAIL;
     }
 
-    HRESULT __stdcall GetFrameCount(uint32_t* count) override
+    HRESULT __stdcall GetFrameCount(uint32_t* count) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetFrameCount, instance=%p, count=%p\n", this, count);
         if (!count)
@@ -153,7 +153,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return S_OK;
     }
 
-    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmap_frame_decode) override
+    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetFrame, instance=%p, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
         if (!bitmap_frame_decode)

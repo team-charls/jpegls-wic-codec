@@ -128,7 +128,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     }
 
 private:
-    static bool try_get_get_pixel_format(int32_t bits_per_sample, int32_t component_count, GUID& pixel_format)
+    static bool try_get_get_pixel_format(int32_t bits_per_sample, int32_t component_count, GUID& pixel_format) noexcept
     {
         switch (component_count)
         {
@@ -165,7 +165,7 @@ private:
         return false;
     }
 
-    static uint32_t compute_stride(const charls::metadata_info_t& metadata_info)
+    static uint32_t compute_stride(const charls::metadata_info_t& metadata_info) noexcept
     {
         return metadata_info.width * ((metadata_info.bits_per_sample + 7) / 8) * metadata_info.component_count;
     }
