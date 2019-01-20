@@ -70,7 +70,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         if (!stream)
             return E_INVALIDARG;
 
-        std::scoped_lock lock{ mutex_ };
+        std::scoped_lock lock{mutex_};
 
         stream_.copy_from(stream);
         bitmap_frame_decode_.attach(nullptr);

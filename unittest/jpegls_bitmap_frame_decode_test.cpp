@@ -14,7 +14,7 @@ using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-TEST_CLASS(jpegls_bitmap_frame_decoder_test)
+TEST_CLASS(jpegls_bitmap_frame_decode_test)
 {
 public:
     TEST_METHOD(GetSize)
@@ -97,6 +97,14 @@ public:
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
         Assert::AreEqual(S_OK, result);
+    }
+
+    TEST_METHOD(IsIWICBitmapSource)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = CreateFrameDecoder(L"lena8b.jls");
+
+        com_ptr<IWICBitmapSource> bitmap_source(bitmap_frame_decoder);
+        Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
 private:

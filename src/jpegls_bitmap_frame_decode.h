@@ -13,7 +13,7 @@
 
 #include <memory>
 
-struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode>
+struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
     explicit jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
     {

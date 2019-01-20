@@ -24,7 +24,7 @@ The following table lists the GUIDs used to identify the native JPEG-LS codec co
 
 ## Build Instructions
 
-1. Open Visual Studio 20175 or newer and open jpeg-wic-codec.sln
+1. Open Visual Studio 2017 or newer and open jpeg-wic-codec.sln
 2. Batch build all projects
 
 ## Installation
