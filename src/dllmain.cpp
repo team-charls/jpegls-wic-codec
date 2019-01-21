@@ -4,6 +4,7 @@
 
 #include "jpegls_bitmap_decoder_factory.h"
 #include "util.h"
+#include "trace.h"
 
 #include <olectl.h>
 #include <Shlobj.h>
@@ -35,7 +36,9 @@ BOOL APIENTRY DllMain(HMODULE module, const DWORD reason_for_call, void* /*reser
 __control_entrypoint(DllExport)
 STDAPI DllCanUnloadNow()
 {
-    return winrt::get_module_lock() ? S_FALSE : S_OK;
+    const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
+    TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
+    return result;
 }
 
 // Purpose: Returns a class factory to create an object of the requested type
@@ -96,6 +99,19 @@ STDAPI DllRegisterServer()
         registry::set_value(category_id_key.c_str(), L"FriendlyName", L"Team CharLS JPEG-LS Decoder");
         registry::set_value(category_id_key.c_str(), L"CLSID", guid_to_string(CLSID_JpegLSDecoder).c_str());
 
+        registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"", L"jlsfile");
+        registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"Content Type", L"image/jls");
+        registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"PerceivedType", L"image"); // Can be used by Windows Vista and newer 
+
+        registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", L".jls", L"picture");
+
+        // Register with the Windows Thumbnail Cache
+        registry::set_value(LR"(SOFTWARE\Classes\jlsfile\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+        registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+
+        // Register with the legacy Windows Photo Viewer (still installed on Windows 10), just forward to the TIFF registration.
+        registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".jls", L"PhotoViewer.FileAssoc.Tiff");
+
         SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
         return S_OK;
@@ -115,6 +131,8 @@ STDAPI DllUnregisterServer()
     const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"}
         + guid_to_string(CLSID_JpegLSDecoder);
     const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
+
+    // Note: keep the .jls file registration intact.
 
     return FAILED(result1) ? result1 : result2;
 }

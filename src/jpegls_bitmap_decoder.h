@@ -96,7 +96,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         try
         {
             winrt::com_ptr<IWICComponentInfo> component_info;
-            winrt::check_hresult(factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
+            winrt::check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
             winrt::check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
             return S_OK;
@@ -169,7 +169,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         {
             if (!bitmap_frame_decode_)
             {
-                bitmap_frame_decode_ = winrt::make<jpegls_bitmap_frame_decode>(stream_.get(), factory());
+                bitmap_frame_decode_ = winrt::make<jpegls_bitmap_frame_decode>(stream_.get(), imaging_factory());
             }
 
             bitmap_frame_decode_.copy_to(bitmap_frame_decode);
@@ -182,18 +182,19 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
     }
 
 private:
-    IWICImagingFactory* factory()
+    IWICImagingFactory* imaging_factory()
     {
-        if (!factory_)
+        if (!imaging_factory_)
         {
-            winrt::check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, factory_.put_void()));
+            winrt::check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
+                nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory_.put_void()));
         }
 
-        return factory_.get();
+        return imaging_factory_.get();
     }
 
     std::mutex mutex_;
-    winrt::com_ptr<IWICImagingFactory> factory_;
+    winrt::com_ptr<IWICImagingFactory> imaging_factory_;
     winrt::com_ptr<IStream> stream_;
     winrt::com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
