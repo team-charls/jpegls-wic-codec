@@ -6,10 +6,15 @@
 
 #include "jpegls_bitmap_frame_encode.h"
 #include "class_factory.h"
-#include "trace.h"
 #include "guids.h"
 
-struct jpegls_bitmap_encoder final : winrt::implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
+using winrt::implements;
+using winrt::com_ptr;
+using winrt::check_hresult;
+using winrt::to_hresult;
+using winrt::make;
+
+struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
     // IWICBitmapEncoder
     HRESULT Initialize(_In_ IStream* destination, [[maybe_unused]] WICBitmapEncoderCacheOption cache_option) noexcept override
@@ -39,15 +44,15 @@ struct jpegls_bitmap_encoder final : winrt::implements<jpegls_bitmap_encoder, IW
 
         try
         {
-            winrt::com_ptr<IWICComponentInfo> component_info;
-            winrt::check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
-            winrt::check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
+            com_ptr<IWICComponentInfo> component_info;
+            check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
+            check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
 
             return S_OK;
         }
         catch (...)
         {
-            return winrt::to_hresult();
+            return to_hresult();
         }
     }
 
@@ -109,10 +114,10 @@ private:
         return imaging_factory_.get();
     }
 
-    winrt::com_ptr<IWICImagingFactory> imaging_factory_;
+    com_ptr<IWICImagingFactory> imaging_factory_;
 };
 
 HRESULT jpegls_bitmap_encoder_create_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
 {
-    return winrt::make<class_factory<jpegls_bitmap_encoder>>()->QueryInterface(interface_id, result);
+    return make<class_factory<jpegls_bitmap_encoder>>()->QueryInterface(interface_id, result);
 }

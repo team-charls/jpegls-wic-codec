@@ -83,7 +83,6 @@
   <ItemGroup>
     <ClInclude Include="class_factory.h" />
     <ClInclude Include="jpegls_bitmap_decoder.h" />
-    <ClInclude Include="jpegls_bitmap_decoder_factory.h" />
     <ClInclude Include="jpegls_bitmap_encoder.h" />
     <ClInclude Include="jpegls_bitmap_frame_decode.h" />
     <ClInclude Include="guids.h" />
@@ -99,6 +98,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="jpegls_bitmap_decoder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\charls\src\CharLS.vcxproj">

@@ -2,10 +2,11 @@
 
 #include "pch.h"
 
-#include "jpegls_bitmap_decoder_factory.h"
+#include "jpegls_bitmap_decoder.h"
 #include "jpegls_bitmap_encoder.h"
 #include "util.h"
 #include "trace.h"
+#include "guids.h"
 
 #include <olectl.h>
 #include <Shlobj.h>
@@ -47,7 +48,7 @@ _Check_return_
 STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
     if (class_id == CLSID_JpegLSDecoder)
-        return winrt::make<jpegls_bitmap_decoder_factory>()->QueryInterface(interface_id, result);
+        return jpegls_bitmap_decoder_create_factory(interface_id, result);
 
     if (class_id == CLSID_JpegLSEncoder)
         return jpegls_bitmap_encoder_create_factory(interface_id, result);
