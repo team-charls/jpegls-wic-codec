@@ -43,6 +43,15 @@ public:
         com_ptr<IWICBitmapDecoderInfo> decoder_info;
         const HRESULT result = wic_bitmap_decoder->GetDecoderInfo(decoder_info.put());
         Assert::IsTrue(result == S_OK || result == WINCODEC_ERR_COMPONENTNOTFOUND);
+
+        if (SUCCEEDED(result))
+        {
+            Assert::IsNotNull(decoder_info.get());
+        }
+        else
+        {
+            Assert::IsNull(decoder_info.get());
+        }
     }
 
     TEST_METHOD(GetDecoderInfo_with_nullptr)

@@ -45,7 +45,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         try
         {
             com_ptr<IWICComponentInfo> component_info;
-            check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
+            check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSEncoder, component_info.put()));
             check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
 
             return S_OK;

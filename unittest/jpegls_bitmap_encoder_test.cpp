@@ -42,6 +42,15 @@ public:
         com_ptr<IWICBitmapEncoderInfo> encoder_info;
         const HRESULT result = encoder->GetEncoderInfo(encoder_info.put());
         Assert::IsTrue(result == S_OK || result == WINCODEC_ERR_COMPONENTNOTFOUND);
+
+        if (SUCCEEDED(result))
+        {
+            Assert::IsNotNull(encoder_info.get());
+        }
+        else
+        {
+            Assert::IsNull(encoder_info.get());
+        }
     }
 
     TEST_METHOD(GetEncoderInfo_with_nullptr)
@@ -53,6 +62,22 @@ public:
         WARNING_UNSUPPRESS()
 
        Assert::IsTrue(FAILED(result));
+    }
+
+    TEST_METHOD(SetPreview)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        const HRESULT result = encoder->SetPreview(nullptr);
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
+    TEST_METHOD(SetThumbnail)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        const HRESULT result = encoder->SetThumbnail(nullptr);
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
 private:
