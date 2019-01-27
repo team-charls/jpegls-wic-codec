@@ -80,6 +80,33 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
+    TEST_METHOD(SetColorContexts)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        const HRESULT result = encoder->SetColorContexts(0, nullptr);
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
+    TEST_METHOD(GetMetadataQueryWriter)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
+        const HRESULT result = encoder->GetMetadataQueryWriter(metadata_query_writer.put());
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+        Assert::IsNull(metadata_query_writer.get());
+    }
+
+    TEST_METHOD(SetPalette)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        com_ptr<IWICPalette> palette;
+        const HRESULT result = encoder->SetPalette(palette.get());
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+    }
+
 private:
     factory factory_;
 };

@@ -99,7 +99,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     HRESULT SetPalette(_In_ IWICPalette* palette) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::SetPalette, instance=%p, palette=%p\n", this, palette);
-        return E_FAIL;
+        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
 private:
