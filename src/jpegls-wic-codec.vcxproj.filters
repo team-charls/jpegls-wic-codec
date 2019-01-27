@@ -36,12 +36,24 @@
     <ClInclude Include="jpegls_bitmap_decoder_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="jpegls_bitmap_encoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="class_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jpegls_bitmap_frame_encode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jpegls_bitmap_encoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

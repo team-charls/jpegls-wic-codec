@@ -12,9 +12,6 @@ using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-using DllGetClassObjectPtr = HRESULT (_stdcall *) (GUID const&, GUID const&, void** result);
-
-
 TEST_CLASS(jpegls_bitmap_decoder_test)
 {
 public:

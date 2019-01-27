@@ -35,6 +35,9 @@
     <ClCompile Include="jpegls_bitmap_frame_decode_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="jpegls_bitmap_encoder_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\lena8b.jls">

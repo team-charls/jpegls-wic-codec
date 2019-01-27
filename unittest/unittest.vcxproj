@@ -82,6 +82,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="jpegls_bitmap_encoder_test.cpp" />
     <ClCompile Include="jpegls_bitmap_frame_decode_test.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

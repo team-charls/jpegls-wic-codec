@@ -30,8 +30,6 @@ public:
 
     winrt::com_ptr<IWICBitmapDecoder> CreateDecoder()
     {
-        winrt::com_ptr<IWICBitmapDecoder> decoder;
-
         DllGetClassObjectPtr get_class_object = reinterpret_cast<DllGetClassObjectPtr>(GetProcAddress(library_, "DllGetClassObject"));
         if (!get_class_object)
             winrt::throw_last_error();
@@ -39,10 +37,25 @@ public:
         winrt::com_ptr<IClassFactory> class_factory;
         winrt::check_hresult(get_class_object(CLSID_JpegLSDecoder, IID_PPV_ARGS(class_factory.put())));
 
-        winrt::com_ptr<IWICBitmapDecoder> wic_bitmap_decoder;
-        winrt::check_hresult(class_factory->CreateInstance(nullptr, IID_PPV_ARGS(wic_bitmap_decoder.put())));
+        winrt::com_ptr<IWICBitmapDecoder> decoder;
+        winrt::check_hresult(class_factory->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
 
-        return wic_bitmap_decoder;
+        return decoder;
+    }
+
+    winrt::com_ptr<IWICBitmapEncoder> CreateEncoder()
+    {
+        DllGetClassObjectPtr get_class_object = reinterpret_cast<DllGetClassObjectPtr>(GetProcAddress(library_, "DllGetClassObject"));
+        if (!get_class_object)
+            winrt::throw_last_error();
+
+        winrt::com_ptr<IClassFactory> class_factory;
+        winrt::check_hresult(get_class_object(CLSID_JpegLSEncoder, IID_PPV_ARGS(class_factory.put())));
+
+        winrt::com_ptr<IWICBitmapEncoder> encoder;
+        winrt::check_hresult(class_factory->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
+
+        return encoder;
     }
 
 private:
