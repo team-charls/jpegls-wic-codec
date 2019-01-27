@@ -29,7 +29,7 @@ using winrt::make;
 struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
     // IWICBitmapDecoder
-    HRESULT __stdcall QueryCapability(IStream* stream, DWORD* capability) noexcept override
+    HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::QueryCapability.1, instance=%p, stream=%p, capability=%p\n", this, stream, capability);
 
@@ -76,7 +76,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
     }
 
-    HRESULT __stdcall Initialize(IStream* stream, [[maybe_unused]] WICDecodeOptions cache_options) noexcept override
+    HRESULT __stdcall Initialize(_In_ IStream* stream, [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::Initialize, instance=%p, stream=%p, cache_options=%d\n", this, stream, cache_options);
 
@@ -91,7 +91,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return S_OK;
     }
 
-    HRESULT __stdcall GetContainerFormat(GUID* container_format) noexcept override
+    HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, container_format=%p\n", this, container_format);
 
@@ -102,7 +102,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return S_OK;
     }
 
-    HRESULT __stdcall GetDecoderInfo(IWICBitmapDecoderInfo** decoder_info) noexcept override
+    HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetContainerFormat, instance=%p, decoder_info=%p\n", this, decoder_info);
 
@@ -120,7 +120,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         }
     }
 
-    HRESULT __stdcall CopyPalette([[maybe_unused]] IWICPalette* palette) noexcept override
+    HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::CopyPalette, instance=%p, palette=%p\n", this, palette);
 
@@ -128,7 +128,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
 
@@ -136,7 +136,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetPreview([[maybe_unused]] IWICBitmapSource** bitmap_source) noexcept override
+    HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetPreview, instance=%p, bitmap_source=%p\n", this, bitmap_source);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
@@ -148,13 +148,13 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetThumbnail([[maybe_unused]] IWICBitmapSource** thumbnail) noexcept override
+    HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetThumbnail, instance=%p, thumbnail=%p\n", this, thumbnail);
         return WINCODEC_ERR_CODECNOTHUMBNAIL;
     }
 
-    HRESULT __stdcall GetFrameCount(uint32_t* count) noexcept override
+    HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetFrameCount, instance=%p, count=%p\n", this, count);
         if (!count)
@@ -164,7 +164,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return S_OK;
     }
 
-    HRESULT __stdcall GetFrame(const uint32_t index, IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
+    HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetFrame, instance=%p, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
         if (!bitmap_frame_decode)

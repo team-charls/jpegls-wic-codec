@@ -84,7 +84,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT SetColorContexts([[maybe_unused]] uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
+    HRESULT SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::SetColorContexts, instance=%p, count=%u, color_context=%p\n", this, count, color_context);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
