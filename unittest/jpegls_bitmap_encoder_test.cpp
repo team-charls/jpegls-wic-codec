@@ -35,6 +35,26 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
+    TEST_METHOD(GetEncoderInfo)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        com_ptr<IWICBitmapEncoderInfo> encoder_info;
+        const HRESULT result = encoder->GetEncoderInfo(encoder_info.put());
+        Assert::IsTrue(result == S_OK || result == WINCODEC_ERR_COMPONENTNOTFOUND);
+    }
+
+    TEST_METHOD(GetEncoderInfo_with_nullptr)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        WARNING_SUPPRESS(6387) // don't pass nullptr
+        const HRESULT result = encoder->GetEncoderInfo(nullptr);
+        WARNING_UNSUPPRESS()
+
+       Assert::IsTrue(FAILED(result));
+    }
+
 private:
     factory factory_;
 };
