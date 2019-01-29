@@ -24,7 +24,12 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         if (!destination)
             return E_INVALIDARG;
 
-        return E_FAIL;
+        if (destination_)
+            return WINCODEC_ERR_WRONGSTATE;
+
+        destination_.copy_from(destination);
+
+        return S_OK;
     }
 
     HRESULT GetContainerFormat(_Out_ GUID* container_format) noexcept override
@@ -63,11 +68,30 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         if (!bitmap_frame_encode)
             return E_POINTER;
 
-        return E_FAIL;
+        if (!destination_)
+            return WINCODEC_ERR_NOTINITIALIZED;
+
+        if (bitmap_frame_encode_)
+            return WINCODEC_ERR_WRONGSTATE; // Only 1 frame is supported.
+
+        bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_);
+        bitmap_frame_encode_.copy_to(bitmap_frame_encode);
+
+        if (encoder_options)
+        {
+            *encoder_options = nullptr;
+        }
+
+        return S_OK;
     }
 
     HRESULT Commit() noexcept override
     {
+        if (destination_)
+            return WINCODEC_ERR_NOTINITIALIZED;
+
+        bitmap_frame_encode_.detach();
+        destination_.detach();
         return E_FAIL;
     }
 
@@ -114,7 +138,10 @@ private:
         return imaging_factory_.get();
     }
 
+    charls::jpegls_encoder jpegls_encoder_;
     com_ptr<IWICImagingFactory> imaging_factory_;
+    com_ptr<IStream> destination_;
+    com_ptr<IWICBitmapFrameEncode> bitmap_frame_encode_;
 };
 
 HRESULT jpegls_bitmap_encoder_create_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
