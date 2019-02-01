@@ -4,7 +4,6 @@
 
 #include <Windows.h>
 #include <wincodec.h>
-#include <unknwn.h>
 #include <winrt/base.h>
 
 class factory
@@ -13,6 +12,8 @@ public:
     factory() noexcept(false)
     {
         library_ = LoadLibrary(L"jpegls-wic-codec.dll");
+        if (!library_)
+            winrt::throw_last_error();
     }
 
     ~factory()
@@ -28,9 +29,9 @@ public:
     factory& operator=(const factory&) = delete;
     factory& operator=(factory&&) = delete;
 
-    winrt::com_ptr<IWICBitmapDecoder> CreateDecoder()
+    winrt::com_ptr<IWICBitmapDecoder> CreateDecoder() const
     {
-        DllGetClassObjectPtr get_class_object = reinterpret_cast<DllGetClassObjectPtr>(GetProcAddress(library_, "DllGetClassObject"));
+        const auto get_class_object = reinterpret_cast<dll_get_class_object_ptr>(GetProcAddress(library_, "DllGetClassObject"));
         if (!get_class_object)
             winrt::throw_last_error();
 
@@ -45,7 +46,7 @@ public:
 
     winrt::com_ptr<IWICBitmapEncoder> CreateEncoder()
     {
-        DllGetClassObjectPtr get_class_object = reinterpret_cast<DllGetClassObjectPtr>(GetProcAddress(library_, "DllGetClassObject"));
+        const auto get_class_object = reinterpret_cast<dll_get_class_object_ptr>(GetProcAddress(library_, "DllGetClassObject"));
         if (!get_class_object)
             winrt::throw_last_error();
 
@@ -59,7 +60,7 @@ public:
     }
 
 private:
-    using DllGetClassObjectPtr = HRESULT(_stdcall *) (GUID const&, GUID const&, void** result);
+    using dll_get_class_object_ptr = HRESULT(_stdcall *) (GUID const&, GUID const&, void** result);
 
     HINSTANCE library_{};
 };

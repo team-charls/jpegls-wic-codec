@@ -185,6 +185,15 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
+    TEST_METHOD(Commit_while_not_initialized)
+    {
+        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+
+        const HRESULT result = encoder->Commit();
+        Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
+    }
+
+
 
 private:
     factory factory_;

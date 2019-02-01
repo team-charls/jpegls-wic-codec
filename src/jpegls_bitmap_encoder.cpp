@@ -87,7 +87,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
     HRESULT Commit() noexcept override
     {
-        if (destination_)
+        if (!destination_)
             return WINCODEC_ERR_NOTINITIALIZED;
 
         bitmap_frame_encode_.detach();
