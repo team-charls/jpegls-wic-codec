@@ -113,7 +113,7 @@ private:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.CreateDecoder();
+        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.create_decoder();
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;

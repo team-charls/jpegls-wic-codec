@@ -17,7 +17,7 @@ TEST_CLASS(jpegls_bitmap_encoder_test)
 public:
     TEST_METHOD(GetContainerFormat)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         GUID container_format;
         const HRESULT result = encoder->GetContainerFormat(&container_format);
@@ -27,7 +27,7 @@ public:
 
     TEST_METHOD(GetContainerFormat_with_nullptr)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result = encoder->GetContainerFormat(nullptr);
@@ -38,7 +38,7 @@ public:
 
     TEST_METHOD(GetEncoderInfo)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICBitmapEncoderInfo> encoder_info;
         const HRESULT result = encoder->GetEncoderInfo(encoder_info.put());
@@ -56,7 +56,7 @@ public:
 
     TEST_METHOD(GetEncoderInfo_with_nullptr)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result = encoder->GetEncoderInfo(nullptr);
@@ -67,7 +67,7 @@ public:
 
     TEST_METHOD(SetPreview)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->SetPreview(nullptr);
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
@@ -75,7 +75,7 @@ public:
 
     TEST_METHOD(SetThumbnail)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->SetThumbnail(nullptr);
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
@@ -83,7 +83,7 @@ public:
 
     TEST_METHOD(SetColorContexts)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->SetColorContexts(0, nullptr);
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
@@ -91,7 +91,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryWriter)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
         const HRESULT result = encoder->GetMetadataQueryWriter(metadata_query_writer.put());
@@ -101,7 +101,7 @@ public:
 
     TEST_METHOD(SetPalette)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICPalette> palette;
         const HRESULT result = encoder->SetPalette(palette.get());
@@ -113,7 +113,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(S_OK, result);
@@ -121,7 +121,7 @@ public:
 
     TEST_METHOD(Initialize_with_nullptr)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(E_INVALIDARG, result);
@@ -132,7 +132,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         HRESULT result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(S_OK, result);
@@ -146,7 +146,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         HRESULT result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(S_OK, result);
@@ -162,7 +162,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         HRESULT result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(S_OK, result);
@@ -178,7 +178,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
         const HRESULT result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
@@ -187,7 +187,7 @@ public:
 
     TEST_METHOD(Commit_while_not_initialized)
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.CreateEncoder();
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         const HRESULT result = encoder->Commit();
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);

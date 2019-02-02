@@ -6,7 +6,7 @@
 #include <wincodec.h>
 #include <winrt/base.h>
 
-class factory
+class factory final
 {
 public:
     factory() noexcept(false)
@@ -29,7 +29,7 @@ public:
     factory& operator=(const factory&) = delete;
     factory& operator=(factory&&) = delete;
 
-    winrt::com_ptr<IWICBitmapDecoder> CreateDecoder() const
+    winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {
         const auto get_class_object = reinterpret_cast<dll_get_class_object_ptr>(GetProcAddress(library_, "DllGetClassObject"));
         if (!get_class_object)
@@ -44,7 +44,7 @@ public:
         return decoder;
     }
 
-    winrt::com_ptr<IWICBitmapEncoder> CreateEncoder()
+    winrt::com_ptr<IWICBitmapEncoder> create_encoder() const
     {
         const auto get_class_object = reinterpret_cast<dll_get_class_object_ptr>(GetProcAddress(library_, "DllGetClassObject"));
         if (!get_class_object)
