@@ -101,16 +101,12 @@
     <ClCompile Include="jpegls_bitmap_decoder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\charls\src\CharLS.vcxproj">
-      <Project>{1e31f9f1-f175-4082-b3e2-b1f0eca3f44c}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </ProjectReference>
+    <None Include="jpegls-wic-codec.def" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="jpegls-wic-codec.def" />
+    <ProjectReference Include="..\charls\src\CharLS.vcxproj">
+      <Project>{1e31f9f1-f175-4082-b3e2-b1f0eca3f44c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
