@@ -3,7 +3,6 @@
 #pragma once
 
 #include "trace.h"
-#include "util.h"
 
 #include <charls/jpegls_decoder.h>
 
@@ -20,16 +19,12 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         ULARGE_INTEGER size;
         winrt::check_hresult(IStream_Size(stream, &size));
 
-        WARNING_SUPPRESS(26409) // use std::make_unique (explicitly not used to prevent unneeded initialization of the buffer)
-        const size_t buffer_size = size.LowPart;
-        auto buffer = std::unique_ptr<std::byte[]>(new std::byte[buffer_size]);
-        WARNING_UNSUPPRESS()
-
-        winrt::check_hresult(IStream_Read(stream, buffer.get(), static_cast<ULONG>(buffer_size)));
+        storage_buffer buffer{size.LowPart};
+        winrt::check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
 
         charls::jpegls_decoder decoder;
         std::error_code error;
-        decoder.read_header(buffer.get(), buffer_size, error);
+        decoder.read_header(buffer.data(), buffer.size(), error);
         if (error)
             winrt::throw_hresult(WINCODEC_ERR_BADHEADER);
 
@@ -172,4 +167,34 @@ private:
     }
 
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
+
+    // purpose: replacement container that does't initialize its content (provided in C++20)
+    struct storage_buffer final
+    {
+        explicit storage_buffer(const size_t size) :
+            size_{size},
+            buffer_{std::make_unique<std::byte[]>(size)}
+        {
+        }
+
+        ~storage_buffer() = default;
+        storage_buffer(const storage_buffer&) = delete;
+        storage_buffer(storage_buffer&&) = delete;
+        storage_buffer& operator=(const storage_buffer&) = delete;
+        storage_buffer& operator=(storage_buffer&&) = delete;
+
+        size_t size() const noexcept
+        {
+            return size_;
+        }
+
+        std::byte* data() const noexcept
+        {
+            return buffer_.get();
+        }
+
+    private:
+        size_t size_;
+        std::unique_ptr<std::byte[]> buffer_;
+    };
 };
