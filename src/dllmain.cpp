@@ -13,7 +13,10 @@
 
 using std::wstring;
 
-BOOL APIENTRY DllMain(HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppParameterNamesMismatch
+
+BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
     switch (reason_for_call)
     {
@@ -71,10 +74,10 @@ STDAPI DllRegisterServer()
         registry::set_value(sub_key.c_str(), L"FriendlyName", L"Team CharLS JPEG-LS Decoder");
         registry::set_value(sub_key.c_str(), L"MimeTypes", L"image/jls");
         registry::set_value(sub_key.c_str(), L"SpecVersion", L"1.0.0.0"); // TODO: Read from .rc
-        registry::set_value(sub_key.c_str(), L"SupportAnimation", 0u);
-        registry::set_value(sub_key.c_str(), L"SupportChromaKey", 0u);
-        registry::set_value(sub_key.c_str(), L"SupportLossless", 1u);
-        registry::set_value(sub_key.c_str(), L"SupportMultiframe", 0u);
+        registry::set_value(sub_key.c_str(), L"SupportAnimation", 0U);
+        registry::set_value(sub_key.c_str(), L"SupportChromaKey", 0U);
+        registry::set_value(sub_key.c_str(), L"SupportLossless", 1U);
+        registry::set_value(sub_key.c_str(), L"SupportMultiframe", 0U);
         registry::set_value(sub_key.c_str(), L"Vendor", guid_to_string(GUID_VendorTeamCharLS).c_str());
         registry::set_value(sub_key.c_str(), L"Version", L"1.0.0.0");  // TODO: Read from .rc
 
@@ -88,7 +91,7 @@ STDAPI DllRegisterServer()
 
         const wstring patterns_sub_key = sub_key + LR"(\Patterns\0)";
         registry::set_value(patterns_sub_key.c_str(), L"Length", 3);
-        registry::set_value(patterns_sub_key.c_str(), L"Position", 0u);
+        registry::set_value(patterns_sub_key.c_str(), L"Position", 0U);
 
         const std::byte mask[]{std::byte{0xFF}, std::byte{0xFF}, std::byte{0xFF}};
         registry::set_value(patterns_sub_key.c_str(), L"Mask", mask, sizeof mask);
@@ -106,7 +109,7 @@ STDAPI DllRegisterServer()
 
         registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"", L"jlsfile");
         registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"Content Type", L"image/jls");
-        registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"PerceivedType", L"image"); // Can be used by Windows Vista and newer 
+        registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"PerceivedType", L"image"); // Can be used by Windows Vista and newer
 
         registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", L".jls", L"picture");
 
@@ -141,3 +144,6 @@ STDAPI DllUnregisterServer()
 
     return FAILED(result1) ? result1 : result2;
 }
+
+// ReSharper restore CppParameterNamesMismatch
+// ReSharper restore CppInconsistentNaming

@@ -19,7 +19,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         ULARGE_INTEGER size;
         winrt::check_hresult(IStream_Size(stream, &size));
 
-        storage_buffer buffer{size.LowPart};
+        const storage_buffer buffer{size.LowPart};
         winrt::check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
 
         charls::jpegls_decoder decoder;
@@ -81,7 +81,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
-    HRESULT CopyPixels(const WICRect* rectangle, uint32_t stride, uint32_t buffer_size, BYTE* buffer) noexcept override
+    HRESULT CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
@@ -168,7 +168,7 @@ private:
 
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
 
-    // purpose: replacement container that does't initialize its content (provided in C++20)
+    // purpose: replacement container that doesn't initialize its content (provided in C++20)
     struct storage_buffer final
     {
         explicit storage_buffer(const size_t size) :
@@ -183,12 +183,12 @@ private:
         storage_buffer& operator=(const storage_buffer&) = delete;
         storage_buffer& operator=(storage_buffer&&) = delete;
 
-        size_t size() const noexcept
+        [[nodiscard]] size_t size() const noexcept
         {
             return size_;
         }
 
-        std::byte* data() const noexcept
+        [[nodiscard]] std::byte* data() const noexcept
         {
             return buffer_.get();
         }

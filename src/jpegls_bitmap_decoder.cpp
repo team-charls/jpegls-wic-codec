@@ -142,9 +142,9 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actualCount) noexcept override
+    HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::GetColorContexts, instance=%p, color_contexts=%p\n", this, color_contexts);
+        TRACE("jpegls_bitmap_decoder::GetColorContexts, instance=%p, count=%u, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 

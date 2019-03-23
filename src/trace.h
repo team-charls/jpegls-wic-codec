@@ -4,16 +4,20 @@
 
 #include <Windows.h>
 
-#ifdef _DEBUG
+#ifdef NDEBUG
+
+#define TRACE __noop
+
+#else
 
 template <typename... Args>
-void TRACE(char const* const message, Args... args) noexcept
+void trace(char const* const message, Args... args) noexcept
 {
     char buffer[1024];
     static_cast<void>(snprintf(buffer, sizeof(buffer), message, args...));
     OutputDebugStringA(buffer);
 }
 
-#else
-#define TRACE __noop
+#define TRACE trace
+
 #endif

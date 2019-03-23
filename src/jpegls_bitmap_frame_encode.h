@@ -30,15 +30,44 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetResolution([[maybe_unused]] double dpi_x, [[maybe_unused]] double dpi_y) noexcept override
+    HRESULT SetResolution([[maybe_unused]] const double dpi_x, [[maybe_unused]] const double dpi_y) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetResolution, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
         return E_FAIL;
     }
 
-    HRESULT SetPixelFormat(WICPixelFormatGUID* /*pPixelFormat*/) noexcept override
+    HRESULT SetPixelFormat(GUID* pixel_format) noexcept override
     {
-        return E_FAIL;
+        TRACE("jpegls_bitmap_frame_encode::SetPixelFormat, instance=%p, pixel_format=%p\n", this, pixel_format);
+        if (!pixel_format)
+            return E_INVALIDARG;
+
+        if (!initialized_called_)
+            return WINCODEC_ERR_WRONGSTATE;
+
+        if (*pixel_format == GUID_WICPixelFormat8bppGray)
+        {
+            metadata_.bits_per_sample = 8;
+            metadata_.component_count = 1;
+            return S_OK;
+        }
+
+        if (*pixel_format == GUID_WICPixelFormat16bppGray)
+        {
+            metadata_.bits_per_sample = 16;
+            metadata_.component_count = 1;
+            return S_OK;
+        }
+
+        if (*pixel_format == GUID_WICPixelFormat24bppRGB)
+        {
+            metadata_.bits_per_sample = 8;
+            metadata_.component_count = 3;
+            return S_OK;
+        }
+
+        *pixel_format = GUID_WICPixelFormatUndefined;
+        return WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT;
     }
 
     HRESULT SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
@@ -80,6 +109,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
     }
 
 private:
+    bool initialized_called_{};
     winrt::com_ptr<IStream> destination_;
     charls::metadata metadata_{};
     charls::jpegls_encoder encoder_;

@@ -17,7 +17,7 @@ using winrt::make;
 struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
     // IWICBitmapEncoder
-    HRESULT Initialize(_In_ IStream* destination, [[maybe_unused]] WICBitmapEncoderCacheOption cache_option) noexcept override
+    HRESULT Initialize(_In_ IStream* destination, [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::Initialize, instance=%p, stream=%p, cache_option=%d\n", this, destination, cache_option);
 
@@ -131,7 +131,7 @@ private:
     {
         if (!imaging_factory_)
         {
-            winrt::check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
+            check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
                 nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory_.put_void()));
         }
 
