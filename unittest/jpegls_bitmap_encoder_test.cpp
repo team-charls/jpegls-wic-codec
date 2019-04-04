@@ -104,6 +104,8 @@ public:
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICPalette> palette;
+        check_hresult(imaging_factory()->CreatePalette(palette.put()));
+
         const HRESULT result = encoder->SetPalette(palette.get());
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
@@ -193,8 +195,15 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
-
-
 private:
+    static com_ptr<IWICImagingFactory> imaging_factory()
+    {
+        com_ptr<IWICImagingFactory> imaging_factory;
+        check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
+            nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+
+        return imaging_factory;
+    }
+
     factory factory_;
 };

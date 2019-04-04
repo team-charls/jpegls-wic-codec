@@ -143,6 +143,8 @@ private:
             case 16:
                 pixel_format = GUID_WICPixelFormat16bppGray;
                 return true;
+            default:
+                break;
             }
             break;
 
@@ -155,7 +157,13 @@ private:
             case 16:
                 pixel_format = GUID_WICPixelFormat48bppRGB;
                 return true;
+            default:
+                break;
             }
+            break;
+
+        default:
+            break;
         }
 
         return false;

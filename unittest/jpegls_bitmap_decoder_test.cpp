@@ -145,5 +145,14 @@ public:
     }
 
 private:
+    static com_ptr<IWICImagingFactory> imaging_factory()
+    {
+        com_ptr<IWICImagingFactory> imaging_factory;
+        check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
+            nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+
+        return imaging_factory;
+    }
+
     factory factory_;
 };
