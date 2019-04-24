@@ -59,6 +59,7 @@ STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_i
     return CLASS_E_CLASSNOTAVAILABLE;
 }
 
+WARNING_SUPPRESS(28301) // No annotations for first declaration (latest Windows SDK doesn't have annotations)
 __control_entrypoint(DllExport)
 STDAPI DllRegisterServer()
 {
@@ -144,6 +145,8 @@ STDAPI DllUnregisterServer()
 
     return FAILED(result1) ? result1 : result2;
 }
+
+WARNING_UNSUPPRESS()
 
 // ReSharper restore CppParameterNamesMismatch
 // ReSharper restore CppInconsistentNaming

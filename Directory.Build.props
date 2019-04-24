@@ -16,6 +16,9 @@
 
     <!-- Assist VC package manager which configuration to use (checked is debug+static checking) -->
     <VcpkgConfiguration Condition="'$(Configuration)' == 'Checked'">Debug</VcpkgConfiguration>
+
+    <!-- Ensure that the output of the referenced CharLs project is explicitly copied. -->
+    <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -42,7 +45,6 @@
         C4191 = operator/operation' : unsafe conversion from 'type of expression' to 'type required'
         C4263 = function' : member function does not override any base class virtual member function
         C4264 = virtual_function' : no override available for virtual member function from base 'class'; function is hidden
-        C4265 = class' : class has virtual functions, but destructor is not virtual
         C4266 = function' : no override available for virtual member function from base 'type'; function is hidden
         C4365 = action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
         C4464 = A #include directive has a path that includes a '..' parent directory specifier.
@@ -62,11 +64,11 @@
         C5027 = 'type': move assignment operator was implicitly defined as deleted
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc.
         C5042 = 'declaration': function declarations at block scope cannot be specified 'inline' in standard C++; remove 'inline' specifier
-        C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
+        C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified  [Just informational]
       -->
       <AdditionalOptions>
         /Zc:__cplusplus /Zc:throwingNew
-        /wd4061 /wd4191 /wd4263 /wd4264 /wd4265 /wd4266
+        /wd4061 /wd4191 /wd4263 /wd4264 /wd4266
         /wd4365 /wd4464 /wd4514 /wd4571 /wd4599
         /wd4623 /wd4625 /wd4626 /wd4668
         /wd4710 /wd4711 /wd4738 /wd4774 /wd4820
