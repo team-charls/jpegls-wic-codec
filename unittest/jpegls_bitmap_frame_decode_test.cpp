@@ -110,7 +110,7 @@ public:
     }
 
 private:
-    com_ptr<IWICBitmapFrameDecode> create_frame_decoder(const PCWSTR filename) const
+    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(const PCWSTR filename) const
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
@@ -124,7 +124,7 @@ private:
         return bitmap_frame_decode;
     }
 
-    static com_ptr<IWICImagingFactory> imaging_factory()
+    [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;
         check_hresult(CoCreateInstance(CLSID_WICImagingFactory,

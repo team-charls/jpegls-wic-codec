@@ -196,7 +196,7 @@ public:
     }
 
 private:
-    static com_ptr<IWICImagingFactory> imaging_factory()
+    [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;
         check_hresult(CoCreateInstance(CLSID_WICImagingFactory,

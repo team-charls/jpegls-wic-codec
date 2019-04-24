@@ -74,7 +74,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         if (bitmap_frame_encode_)
             return WINCODEC_ERR_WRONGSTATE; // Only 1 frame is supported.
 
-        bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_);
+        bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_.get());
         bitmap_frame_encode_.copy_to(bitmap_frame_encode);
 
         if (encoder_options)

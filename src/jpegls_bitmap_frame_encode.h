@@ -8,9 +8,9 @@
 
 struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
-    explicit jpegls_bitmap_frame_encode(const winrt::com_ptr<IStream>& destination) noexcept :
-        destination_{destination}
+    explicit jpegls_bitmap_frame_encode(IStream* destination) noexcept
     {
+        destination_.copy_from(destination);
     }
 
     // Required methods
@@ -30,10 +30,12 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetResolution([[maybe_unused]] const double dpi_x, [[maybe_unused]] const double dpi_y) noexcept override
+    HRESULT SetResolution(const double dpi_x, const double dpi_y) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetResolution, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
-        return E_FAIL;
+        dpi_x_ = dpi_x;
+        dpi_y_ = dpi_y;
+        return S_OK;
     }
 
     HRESULT SetPixelFormat(GUID* pixel_format) noexcept override
@@ -113,4 +115,6 @@ private:
     winrt::com_ptr<IStream> destination_;
     charls::metadata metadata_{};
     charls::jpegls_encoder encoder_;
+    double dpi_x_{};
+    double dpi_y_{};
 };
