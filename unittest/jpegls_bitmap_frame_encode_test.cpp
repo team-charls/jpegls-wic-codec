@@ -45,7 +45,11 @@ public:
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        const HRESULT result = bitmap_frame_encoder->SetColorContexts(1, nullptr);
+        com_ptr<IWICColorContext> color_context;
+        check_hresult(imaging_factory()->CreateColorContext(color_context.put()));
+        IWICColorContext* color_contexts[]{color_context.get()};
+
+        const HRESULT result = bitmap_frame_encoder->SetColorContexts(1, color_contexts);
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
@@ -65,5 +69,17 @@ private:
         return frame_encode;
     }
 
+    [[nodiscard]] IWICImagingFactory* imaging_factory()
+    {
+        if (!imaging_factory_)
+        {
+            check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
+                nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+        }
+
+        return imaging_factory_.get();
+    }
+
+    com_ptr<IWICImagingFactory> imaging_factory_;
     factory factory_;
 };

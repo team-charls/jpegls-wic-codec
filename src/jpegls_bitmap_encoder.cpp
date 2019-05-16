@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
 #include "pch.h"
 
@@ -141,7 +141,7 @@ private:
         if (!imaging_factory_)
         {
             check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory_.put_void()));
+                nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();
