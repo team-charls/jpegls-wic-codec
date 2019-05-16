@@ -42,8 +42,13 @@ inline std::wstring get_module_path()
 
 inline std::wstring guid_to_string(const GUID& guid)
 {
-    std::wstring guid_text{L"{########-####-####-####-#############}"};
-    WINRT_VERIFY(StringFromGUID2(guid, guid_text.data(), 39) != 0);
+	std::wstring guid_text;
+
+	guid_text.resize(39);
+    WINRT_VERIFY(StringFromGUID2(guid, guid_text.data(), static_cast<int>(guid_text.size())) != 0);
+
+	// Remove the double null terminator.
+	guid_text.resize(guid_text.size() - 1);
 
     return guid_text;
 }
