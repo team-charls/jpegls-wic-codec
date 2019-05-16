@@ -111,18 +111,27 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     HRESULT SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::SetColorContexts, instance=%p, count=%u, color_context=%p\n", this, count, color_context);
+
+        // Note: the current implementation doesn't support color contexts.
+        //       Normally ICC color context profiles can be stored in the JPEG APP2 marker section.
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     HRESULT GetMetadataQueryWriter([[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::GetMetadataQueryWriter, instance=%p, metadata_query_writer=%p\n", this, metadata_query_writer);
+
+        // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
+        //       The SPIFF header can be used to store metadata items.
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     HRESULT SetPalette(_In_ IWICPalette* palette) noexcept override
     {
         TRACE("jpegls_bitmap_encoder::SetPalette, instance=%p, palette=%p\n", this, palette);
+
+        // Note: the current implementation doesn't support storing a palette to the JPEG-LS stream.
+        //       The JPEG-LS standard does support it.
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 

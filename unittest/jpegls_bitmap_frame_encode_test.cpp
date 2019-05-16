@@ -37,6 +37,16 @@ public:
 
         const HRESULT result = bitmap_frame_encoder->SetResolution(96., 96.);
         Assert::AreEqual(S_OK, result);
+
+        // TODO: extend this test by encode\decode a sample image.
+    }
+
+    TEST_METHOD(SetColorContextsIsUnsupported)
+    {
+        com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
+
+        const HRESULT result = bitmap_frame_encoder->SetColorContexts(1, nullptr);
+        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
 private:
