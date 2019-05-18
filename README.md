@@ -1,6 +1,6 @@
 # JPEG-LS Windows Imaging Component Codec
 
-This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files in Windows applications that can leverage WIC codecs. This makes it possible to see JPEG-LS files in Windows PhotoViewer, Windows Explorer and import .jls in Microsoft Office documents.
+This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can leverage WIC codecs. This makes it possible to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
 
 [![Build Status](https://dev.azure.com/team-charls/jpegls-wic-codec/_apis/build/status/team-charls.jpegls-wic-codec?branchName=master)](https://dev.azure.com/team-charls/jpegls-wic-codec/_build/latest?definitionId=1&branchName=master)
 
@@ -29,9 +29,10 @@ The following application have been validated to work with the JPEG-LS WIC codec
 
 - Windows Explorer Thumbnail cache. This functionality allows Windows Explorer to show previews of images.
 - Windows Photo Viewer.  
- Note: On clean installations of Windows 10 this component is installed but not registered. Instructions how to enable this Photo viewer can be found on the Internet.
+ Note: On clean installations of Windows 10 this component is installed but not registered. An Registry file called restore-windows-photo-viewer.reg is provided to restore this functionality. The Registry Editor can be used to add import this .reg file. Microsoft provides the Windows 10 Photos app that is intended to be the replacement for the Windows Photo Viewer, however this app cannot use WIC codecs from 3rd party providers.
 - WIC Explorer (sample application from Microsoft). An updated version of this application can be found at <https://github.com/vbaderks/WICExplorer>
 - ZackViewer <https://github.com/peirick/ZackViewer>. This viewer can also be used to convert from one image encoding format to another.
+- Microsoft Office applications like Word, Excel, Powerpoint. The applications can when the JPEG-LS codec is installed, import these images in their documents.
 
 #### Windows 10 Microsoft Photos Application not supported
 
