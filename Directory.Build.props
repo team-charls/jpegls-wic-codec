@@ -16,9 +16,6 @@
 
     <!-- Assist VC package manager which configuration to use (checked is debug+static checking) -->
     <VcpkgConfiguration Condition="'$(Configuration)' == 'Checked'">Debug</VcpkgConfiguration>
-
-    <!-- Ensure that the output of the referenced CharLs project is explicitly copied. -->
-    <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
