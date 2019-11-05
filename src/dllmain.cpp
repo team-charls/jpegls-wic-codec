@@ -8,8 +8,8 @@
 #include "trace.h"
 #include "guids.h"
 
-#include <olectl.h>
-#include <Shlobj.h>
+#include <OleCtl.h>
+#include <ShlObj.h>
 
 using std::wstring;
 
