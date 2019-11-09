@@ -1,4 +1,5 @@
-# GIT ignore file
+# Copyright (c) Team CharLS.
+# SPDX-License-Identifier: MIT
 
 obj/
 bin/

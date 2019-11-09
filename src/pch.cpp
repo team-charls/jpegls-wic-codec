@@ -1,3 +1,4 @@
-﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+﻿// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: MIT
 
 #include "pch.h"
