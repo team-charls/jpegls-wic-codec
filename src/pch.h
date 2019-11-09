@@ -14,10 +14,6 @@
 #include <winrt/base.h>
 #pragma warning(pop)
 
-#pragma warning(push)
-#pragma warning(disable: 26492) // Don't use const cast
-#include <charls/jpegls_decoder.h>
-#include <charls/jpegls_encoder.h>
-#pragma warning(pop)
+#include <charls/charls.h>
 
 #include <string>

@@ -1,10 +1,10 @@
-// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
 #pragma once
 
 #include "trace.h"
 
-#include <charls/jpegls_encoder.h>
+#include <charls/charls.h>
 
 struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
@@ -24,8 +24,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("jpegls_bitmap_frame_encode::SetSize, instance=%p, width=%u, height=%u\n", this, width, height);
 
-        metadata_.width = width;
-        metadata_.height = height;
+        frame_info_.width = width;
+        frame_info_.height = height;
 
         return S_OK;
     }
@@ -49,22 +49,22 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
         if (*pixel_format == GUID_WICPixelFormat8bppGray)
         {
-            metadata_.bits_per_sample = 8;
-            metadata_.component_count = 1;
+            frame_info_.bits_per_sample = 8;
+            frame_info_.component_count = 1;
             return S_OK;
         }
 
         if (*pixel_format == GUID_WICPixelFormat16bppGray)
         {
-            metadata_.bits_per_sample = 16;
-            metadata_.component_count = 1;
+            frame_info_.bits_per_sample = 16;
+            frame_info_.component_count = 1;
             return S_OK;
         }
 
         if (*pixel_format == GUID_WICPixelFormat24bppRGB)
         {
-            metadata_.bits_per_sample = 8;
-            metadata_.component_count = 3;
+            frame_info_.bits_per_sample = 8;
+            frame_info_.component_count = 3;
             return S_OK;
         }
 
@@ -113,7 +113,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 private:
     bool initialized_called_{};
     winrt::com_ptr<IStream> destination_;
-    charls::metadata metadata_{};
+    charls::frame_info frame_info_{};
     charls::jpegls_encoder encoder_;
     double dpi_x_{};
     double dpi_y_{};

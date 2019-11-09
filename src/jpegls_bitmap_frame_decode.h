@@ -1,10 +1,10 @@
-// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
 #pragma once
 
 #include "trace.h"
 
-#include <charls/jpegls_decoder.h>
+#include <charls/charls.h>
 
 #include <wincodec.h>
 #include <Shlwapi.h>
@@ -23,28 +23,34 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         winrt::check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
 
         charls::jpegls_decoder decoder;
-        std::error_code error;
-        decoder.read_header(buffer.data(), buffer.size(), error);
-        if (error)
-            winrt::throw_hresult(WINCODEC_ERR_BADHEADER);
+        decoder.source(buffer);
 
-        const auto& metadata_info = decoder.metadata_info();
+        try
+        {
+            decoder.read_header();
+        }
+        catch (charls::jpegls_error&)
+        {
+            winrt::throw_hresult(WINCODEC_ERR_BADHEADER);
+        }
+
+        const auto& frame_info = decoder.frame_info();
         GUID pixel_format;
-        if (!try_get_get_pixel_format(metadata_info.bits_per_sample, metadata_info.component_count, pixel_format))
+        if (!try_get_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format))
             winrt::throw_hresult(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
 
         winrt::com_ptr<IWICBitmap> bitmap;
-        winrt::check_hresult(factory->CreateBitmap(metadata_info.width, metadata_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
+        winrt::check_hresult(factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
         winrt::check_hresult(bitmap->SetResolution(96, 96));
 
         {
             winrt::com_ptr<IWICBitmapLock> bitmap_lock;
-            WICRect complete_image{0, 0, metadata_info.width, metadata_info.height};
+            WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
             winrt::check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
             uint32_t stride;
             winrt::check_hresult(bitmap_lock->GetStride(&stride));
-            if (stride != compute_stride(metadata_info))
+            if (stride != compute_stride(frame_info))
             {
                 WINRT_ASSERT(false);
                 winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
@@ -54,9 +60,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             uint32_t data_buffer_size;
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
 
-            decoder.decode(data_buffer, data_buffer_size, error);
-            if (error)
-                winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
+            decoder.decode(data_buffer, data_buffer_size);
         }
 
         winrt::check_hresult(bitmap->QueryInterface(bitmap_source_.put()));
@@ -169,9 +173,9 @@ private:
         return false;
     }
 
-    static uint32_t compute_stride(const charls::metadata_info_t& metadata_info) noexcept
+    static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     {
-        return metadata_info.width * ((metadata_info.bits_per_sample + 7) / 8) * metadata_info.component_count;
+        return frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count;
     }
 
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
@@ -179,6 +183,8 @@ private:
     // purpose: replacement container that doesn't initialize its content (provided in C++20)
     struct storage_buffer final
     {
+        using value_type = std::byte;
+
         explicit storage_buffer(const size_t size) :
             size_{size},
             buffer_{std::make_unique<std::byte[]>(size)}

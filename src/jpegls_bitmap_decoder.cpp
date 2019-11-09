@@ -8,7 +8,7 @@
 #include "class_factory.h"
 #include "guids.h"
 
-#include <charls/jpegls_decoder.h>
+#include <charls/charls.h>
 
 #include <wincodec.h>
 #include <winrt/base.h>
@@ -19,6 +19,7 @@ using std::mutex;
 using std::error_code;
 using std::scoped_lock;
 using charls::jpegls_decoder;
+using charls::jpegls_error;
 using winrt::implements;
 using winrt::com_ptr;
 using winrt::check_hresult;
@@ -44,6 +45,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         // it can provide for the supplied stream, and restore the stream position.
         try
         {
+            *capability = 0;
+
             std::byte header[4 * 1024];
             unsigned long read_byte_count;
 
@@ -54,20 +57,24 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
             jpegls_decoder decoder;
-            error_code error;
-            decoder.read_header(header, read_byte_count, error);
+            decoder.source(header, read_byte_count);
 
-            if (error ||
-                !jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(decoder.metadata_info().bits_per_sample, decoder.metadata_info().component_count))
+            try
             {
-                *capability = 0;
+                decoder.read_header();
             }
-            else
+            catch (const jpegls_error& error)
+            {
+                TRACE("jpegls_bitmap_decoder::QueryCapability.3, instance=%p, stream=%p, capability=0 (reason=%s)\n", this, stream, error.what());
+                return S_OK;
+            }
+
+            if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(decoder.frame_info().bits_per_sample, decoder.frame_info().component_count))
             {
                 *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
             }
-            TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, stream=%p, capability=%d\n", this, stream, *capability);
 
+            TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, stream=%p, capability=%d\n", this, stream, *capability);
             return S_OK;
         }
         catch (...)

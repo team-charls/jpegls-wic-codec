@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
+﻿// Copyright (c) Team CharLS. All rights reserved. See the accompanying "LICENSE.md" for licensed use.
 
 #include "pch.h"
 
@@ -62,7 +62,7 @@ public:
 
     TEST_METHOD(CopyPalette)
     {
-        com_ptr<IWICPalette> palette;
+        const com_ptr<IWICPalette> palette;
         const HRESULT result = factory_.create_decoder()->CopyPalette(palette.get());
 
         Assert::AreEqual(WINCODEC_ERR_PALETTEUNAVAILABLE, result);
@@ -98,7 +98,7 @@ public:
         const HRESULT result = factory_.create_decoder()->GetFrameCount(&frame_count);
 
         Assert::AreEqual(S_OK, result);
-        Assert::AreEqual(1u, frame_count);
+        Assert::AreEqual(1U, frame_count);
     }
 
     TEST_METHOD(QueryCapability_cannot_decode_empty)
@@ -110,7 +110,7 @@ public:
         const HRESULT result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
 
         Assert::AreEqual(S_OK, result);
-        Assert::AreEqual(0ul, capability);
+        Assert::AreEqual(0UL, capability);
     }
 
     TEST_METHOD(QueryCapability_can_decode_8bit_monochrome)
