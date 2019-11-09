@@ -4,6 +4,7 @@
 #pragma once
 
 #include "trace.h"
+#include "util.h"
 
 #include <charls/charls.h>
 
@@ -71,25 +72,37 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     HRESULT GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetSize, instance=%p, width=%p, height=%p\n", this, width, height);
+
+        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetSize(width, height);
+        WARNING_UNSUPPRESS()
     }
 
     HRESULT GetPixelFormat(GUID* pixel_format) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat, instance=%p, pixel_format=%p\n", this, pixel_format);
+
+        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetPixelFormat(pixel_format);
+        WARNING_UNSUPPRESS()
     }
 
     HRESULT GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetResolution, instance=%p,  dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
+
+        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
+        WARNING_UNSUPPRESS()
     }
 
     HRESULT CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
+
+        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
+        WARNING_UNSUPPRESS()
     }
 
     HRESULT CopyPalette(IWICPalette*) noexcept override

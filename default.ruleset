@@ -2,11 +2,8 @@
 <RuleSet Name="Default Rules for JPEG-LS WIC Codec code" Description="These rules define the standards rules for the JPEG-LS WIC Codec projects." ToolsVersion="15.0">
   <IncludeAll Action="Error" />
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
-    <Rule Id="C26050" Action="None" />
-    <Rule Id="C26052" Action="None" />
     <Rule Id="C26429" Action="None" />
     <Rule Id="C26446" Action="None" />
-    <Rule Id="C26447" Action="None" />
     <Rule Id="C26466" Action="None" />
     <Rule Id="C26472" Action="None" />
     <Rule Id="C26474" Action="None" />

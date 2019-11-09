@@ -1,22 +1,10 @@
 ﻿# Comments on disabled C++ Core Guidelines Rules
 
-C26050: 
--> Rationale: internal warning of the checker
-
-C26052: ?
--> Rationale: ?
-
 C26429: Use a not_null to indicate that "null" is not a valid value
 -> Rationale: Prefast attributes are better.
 
-C26440 can be declared noexcept
- => Rationale: generates false warnings, can be enabled for analysis purposes.
-
 C26446: Prefer to use gsl::at() instead of unchecked subscript operator.
  -> Rationale: gsl:at() cannot be used. debug STL already checks.
-
-C26447: The function is declared noexcept but calls a function that may throw exceptions.
- -> Rationale: Many COM interface calls are not marked noexcept, generate false warnings.
 
 C26466: Don't use static_cast downcasts. A cast from a polymorphic type should use dynamic_cast.
  -> Rationale: not using RTTI to support dynamic_cast.

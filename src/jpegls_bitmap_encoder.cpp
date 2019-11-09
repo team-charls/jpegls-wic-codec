@@ -9,6 +9,7 @@
 #include "class_factory.h"
 #include "guids.h"
 
+using charls::jpegls_encoder;
 using winrt::implements;
 using winrt::com_ptr;
 using winrt::check_hresult;
@@ -75,7 +76,15 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         if (bitmap_frame_encode_)
             return WINCODEC_ERR_WRONGSTATE; // Only 1 frame is supported.
 
-        bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_.get());
+        try
+        {
+            bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_.get());
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
+
         bitmap_frame_encode_.copy_to(bitmap_frame_encode);
 
         if (encoder_options)
@@ -148,7 +157,7 @@ private:
         return imaging_factory_.get();
     }
 
-    charls::jpegls_encoder jpegls_encoder_;
+    jpegls_encoder jpegls_encoder_;
     com_ptr<IWICImagingFactory> imaging_factory_;
     com_ptr<IStream> destination_;
     com_ptr<IWICBitmapFrameEncode> bitmap_frame_encode_;

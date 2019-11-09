@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -19,7 +19,14 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
         if (outer)
             return CLASS_E_NOAGGREGATION;
 
-        return winrt::make<Class>()->QueryInterface(interface_id, result);
+        try
+        {
+            return winrt::make<Class>()->QueryInterface(interface_id, result);
+        }
+        catch (...)
+        {
+            return winrt::to_hresult();
+        }
     }
 
     HRESULT __stdcall LockServer(BOOL) noexcept override
