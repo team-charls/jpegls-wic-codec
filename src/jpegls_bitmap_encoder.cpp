@@ -9,7 +9,9 @@
 #include "class_factory.h"
 #include "guids.h"
 
+using std::vector;
 using charls::jpegls_encoder;
+using charls::interleave_mode;
 using winrt::implements;
 using winrt::com_ptr;
 using winrt::check_hresult;
@@ -78,31 +80,58 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
         try
         {
-            bitmap_frame_encode_ = make<jpegls_bitmap_frame_encode>(destination_.get());
+            bitmap_frame_encode_ = winrt::make_self<jpegls_bitmap_frame_encode>();
+
+            *bitmap_frame_encode = bitmap_frame_encode_.get();
+            (*bitmap_frame_encode)->AddRef();
+
+            if (encoder_options)
+            {
+                *encoder_options = nullptr;
+            }
+
+            return S_OK;
         }
         catch (...)
         {
             return to_hresult();
         }
-
-        bitmap_frame_encode_.copy_to(bitmap_frame_encode);
-
-        if (encoder_options)
-        {
-            *encoder_options = nullptr;
-        }
-
-        return S_OK;
     }
 
     HRESULT Commit() noexcept override
     {
-        if (!destination_)
-            return WINCODEC_ERR_NOTINITIALIZED;
+        try
+        {
+            if (!destination_)
+                return WINCODEC_ERR_NOTINITIALIZED;
 
-        bitmap_frame_encode_.detach();
-        destination_.detach();
-        return E_FAIL;
+            if (!bitmap_frame_encode_)
+                return WINCODEC_ERR_WRONGSTATE; // No frame was created.
+
+            jpegls_encoder encoder;
+            encoder.frame_info(bitmap_frame_encode_->frame_info());
+
+            vector<std::byte> destination(encoder.estimated_destination_size());
+            encoder.destination(destination);
+
+            if (bitmap_frame_encode_->frame_info().component_count > 1)
+            {
+                encoder.interleave_mode(interleave_mode::sample);
+            }
+
+            const auto bytes_written = encoder.encode(bitmap_frame_encode_->source());
+            check_hresult(destination_->Write(destination.data(), static_cast<ULONG>(bytes_written), nullptr));
+            check_hresult(destination_->Commit(STGC_DEFAULT));
+
+            bitmap_frame_encode_.detach();
+            destination_.detach();
+
+            return S_OK;
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
     }
 
     // Optional methods
@@ -160,7 +189,7 @@ private:
     jpegls_encoder jpegls_encoder_;
     com_ptr<IWICImagingFactory> imaging_factory_;
     com_ptr<IStream> destination_;
-    com_ptr<IWICBitmapFrameEncode> bitmap_frame_encode_;
+    com_ptr<jpegls_bitmap_frame_encode> bitmap_frame_encode_;
 };
 
 HRESULT jpegls_bitmap_encoder_create_factory(_In_ GUID const& interface_id, _Outptr_ void** result)

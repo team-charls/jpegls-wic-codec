@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -55,10 +55,18 @@ public:
     }
 
 private:
-    [[nodiscard]] com_ptr<IWICBitmapFrameEncode> create_frame_encoder() const
+    [[nodiscard]] com_ptr<IWICBitmapFrameEncode> create_frame_encoder(const wchar_t* filename = nullptr) const
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        if (filename)
+        {
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        }
+        else
+        {
+            stream.attach(SHCreateMemStream(nullptr, 0));
+        }
 
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 

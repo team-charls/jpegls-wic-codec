@@ -38,7 +38,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
         const auto& frame_info = decoder.frame_info();
         GUID pixel_format;
-        if (!try_get_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format))
+        if (!try_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format))
             winrt::throw_hresult(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
 
         winrt::com_ptr<IWICBitmap> bitmap;
@@ -54,7 +54,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             winrt::check_hresult(bitmap_lock->GetStride(&stride));
             if (stride != compute_stride(frame_info))
             {
-                WINRT_ASSERT(false);
+                ASSERT(false);
                 winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
             }
 
@@ -138,11 +138,11 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     static bool can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
     {
         GUID pixel_format_dummy;
-        return try_get_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy);
+        return try_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy);
     }
 
 private:
-    static bool try_get_get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, GUID& pixel_format) noexcept
+    static bool try_get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, GUID& pixel_format) noexcept
     {
         switch (component_count)
         {

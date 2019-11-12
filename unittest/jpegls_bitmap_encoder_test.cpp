@@ -1,17 +1,72 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
 
 #include "factory.h"
+#include "portable_anymap_file.h"
 
 #include "../src/util.h"
 
+#include <charls/charls.h>
 #include <CppUnitTest.h>
 
+using charls::jpegls_decoder;
+using std::ifstream;
+using std::vector;
 using winrt::com_ptr;
 using winrt::check_hresult;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace {
+
+GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_count)
+{
+    switch (component_count)
+    {
+    case 1:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return GUID_WICPixelFormat8bppGray;
+        default:
+            Assert::Fail();
+        }
+
+    case 3:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return GUID_WICPixelFormat24bppRGB;
+        default:
+            Assert::Fail();
+        }
+
+    default:
+        break;
+    }
+
+    Assert::Fail();
+}
+
+vector<std::byte> read_file(const char* filename)
+{
+    ifstream input;
+    input.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+    input.open(filename, ifstream::in | ifstream::binary);
+
+    input.seekg(0, ifstream::end);
+    const auto byte_count_file = static_cast<int>(input.tellg());
+    input.seekg(0, ifstream::beg);
+
+    vector<std::byte> buffer(byte_count_file);
+    input.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+
+    return buffer;
+}
+
+}
+
 
 TEST_CLASS(jpegls_bitmap_encoder_test)
 {
@@ -178,9 +233,6 @@ public:
 
     TEST_METHOD(CreateNewFrame_while_not_initialized)
     {
-        com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
-
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
@@ -196,6 +248,44 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
+    TEST_METHOD(encode_conformance_color_lossless)
+    {
+        portable_anymap_file anymap_file{ "test8.ppm" };
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+            com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(anymap_file.width(), anymap_file.height(),
+                pixel_format, anymap_file.width() * anymap_file.component_count(),
+                static_cast<uint32_t>(anymap_file.image_data().size()), reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+            Assert::AreEqual(S_OK, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(S_OK, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(S_OK, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(S_OK, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(S_OK, result);
+        }
+
+        compare("output.jls", anymap_file.image_data());
+    }
+
 private:
     [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
@@ -204,6 +294,27 @@ private:
             nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
 
         return imaging_factory;
+    }
+
+    static void compare(const char* filename, const vector<std::byte>& decoded_source)
+    {
+        const auto encoded_source = read_file(filename);
+
+        jpegls_decoder decoder;
+        decoder.source(encoded_source);
+        decoder.read_header();
+
+        vector<std::byte> destination{decoder.destination_size()};
+        decoder.decode(destination);
+
+        for (size_t i = 0; i < destination.size(); ++i)
+        {
+            if (decoded_source[i] != destination[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
     }
 
     factory factory_;

@@ -22,7 +22,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
     switch (reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        WINRT_VERIFY(DisableThreadLibraryCalls(module));
+        VERIFY(DisableThreadLibraryCalls(module));
         break;
 
     case DLL_THREAD_ATTACH:
@@ -31,7 +31,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
         break;
 
     default:
-        WINRT_ASSERT(false);
+        ASSERT(false);
         break;
     }
 

@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -6,9 +6,24 @@
 #include <winrt/base.h>
 
 #include <string>
+#include <cassert>
 
 #define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable : x))  // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 #define WARNING_UNSUPPRESS() __pragma(warning(pop))  // NOLINT(cppcoreguidelines-macro-usage)
+
+
+#ifdef NDEBUG
+
+#define ASSERT(expression) ((void)0)
+#define VERIFY(expression) (void)(expression)
+
+#else
+
+#define ASSERT(expression) assert(expression)
+#define VERIFY(expression) assert(expression)
+
+#endif
+
 
 inline HMODULE get_current_module() noexcept
 {
@@ -43,13 +58,13 @@ inline std::wstring get_module_path()
 
 inline std::wstring guid_to_string(const GUID& guid)
 {
-	std::wstring guid_text;
+    std::wstring guid_text;
 
-	guid_text.resize(39);
-    WINRT_VERIFY(StringFromGUID2(guid, guid_text.data(), static_cast<int>(guid_text.size())) != 0);
+    guid_text.resize(39);
+    VERIFY(StringFromGUID2(guid, guid_text.data(), static_cast<int>(guid_text.size())) != 0);
 
-	// Remove the double null terminator.
-	guid_text.resize(guid_text.size() - 1);
+    // Remove the double null terminator.
+    guid_text.resize(guid_text.size() - 1);
 
     return guid_text;
 }
