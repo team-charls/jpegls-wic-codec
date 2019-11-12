@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../src/guids.h"
 
@@ -64,7 +64,7 @@ public:
     }
 
 private:
-    using dll_get_class_object_ptr = HRESULT(_stdcall *) (GUID const&, GUID const&, void** result);
+    using dll_get_class_object_ptr = HRESULT(_stdcall*)(GUID const&, GUID const&, void** result);
 
     HINSTANCE library_{};
 };

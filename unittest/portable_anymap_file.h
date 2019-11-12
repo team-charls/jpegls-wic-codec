@@ -5,11 +5,11 @@
 
 #include "../src/util.h"
 
-#include <vector>
-#include <string>
-#include <sstream>
 #include <fstream>
 #include <ios>
+#include <sstream>
+#include <string>
+#include <vector>
 
 constexpr int32_t log_2(int32_t n) noexcept
 {

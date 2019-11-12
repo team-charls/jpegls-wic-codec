@@ -5,18 +5,18 @@
 
 #include "jpegls_bitmap_encoder.h"
 
-#include "jpegls_bitmap_frame_encode.h"
 #include "class_factory.h"
 #include "guids.h"
+#include "jpegls_bitmap_frame_encode.h"
 
-using std::vector;
-using charls::jpegls_encoder;
 using charls::interleave_mode;
-using winrt::implements;
-using winrt::com_ptr;
+using charls::jpegls_encoder;
+using std::vector;
 using winrt::check_hresult;
-using winrt::to_hresult;
+using winrt::com_ptr;
+using winrt::implements;
 using winrt::make;
+using winrt::to_hresult;
 
 struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
@@ -180,7 +180,7 @@ private:
         if (!imaging_factory_)
         {
             check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+                                           nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();

@@ -5,11 +5,12 @@
 
 #include <winrt/base.h>
 
-#include <string>
 #include <cassert>
+#include <string>
 
-#define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable : x))  // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
-#define WARNING_UNSUPPRESS() __pragma(warning(pop))  // NOLINT(cppcoreguidelines-macro-usage)
+#define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable \
+                                                                     : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
+#define WARNING_UNSUPPRESS() __pragma(warning(pop))                        // NOLINT(cppcoreguidelines-macro-usage)
 
 
 #ifdef NDEBUG
@@ -29,8 +30,8 @@ inline HMODULE get_current_module() noexcept
 {
     HMODULE module;
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        reinterpret_cast<PCTSTR>(get_current_module),
-        &module);
+                      reinterpret_cast<PCTSTR>(get_current_module),
+                      &module);
 
     return module;
 }

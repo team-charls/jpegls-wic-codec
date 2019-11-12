@@ -8,8 +8,8 @@
 
 #include <charls/charls.h>
 
-#include <wincodec.h>
 #include <Shlwapi.h>
+#include <wincodec.h>
 #include <winrt/base.h>
 
 #include <memory>
@@ -132,7 +132,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for metadata.
-        return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     static bool can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept

@@ -5,9 +5,9 @@
 
 #include "jpegls_bitmap_decoder.h"
 
-#include "jpegls_bitmap_frame_decode.h"
 #include "class_factory.h"
 #include "guids.h"
+#include "jpegls_bitmap_frame_decode.h"
 
 #include <charls/charls.h>
 
@@ -16,16 +16,16 @@
 
 #include <mutex>
 
-using std::mutex;
-using std::error_code;
-using std::scoped_lock;
 using charls::jpegls_decoder;
 using charls::jpegls_error;
-using winrt::implements;
-using winrt::com_ptr;
+using std::error_code;
+using std::mutex;
+using std::scoped_lock;
 using winrt::check_hresult;
-using winrt::to_hresult;
+using winrt::com_ptr;
+using winrt::implements;
 using winrt::make;
+using winrt::to_hresult;
 
 
 struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
@@ -143,7 +143,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for container-level metadata.
-        return  WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
@@ -212,7 +212,7 @@ private:
         if (!imaging_factory_)
         {
             check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+                                           nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();

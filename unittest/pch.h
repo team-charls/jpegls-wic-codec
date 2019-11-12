@@ -1,13 +1,13 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
 
 #include <SDKDDKVer.h> // Defines the highest available Windows platform.
 
+#include <Shlwapi.h>
 #include <Windows.h>
 #include <wincodec.h>
-#include <Shlwapi.h>
 
 #include <unknwn.h>
 #include <winrt/base.h>

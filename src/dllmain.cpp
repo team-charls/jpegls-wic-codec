@@ -3,11 +3,11 @@
 
 #include "pch.h"
 
+#include "guids.h"
 #include "jpegls_bitmap_decoder.h"
 #include "jpegls_bitmap_encoder.h"
-#include "util.h"
 #include "trace.h"
-#include "guids.h"
+#include "util.h"
 
 #include <OleCtl.h>
 #include <ShlObj.h>
@@ -40,7 +40,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
 __control_entrypoint(DllExport)
-STDAPI DllCanUnloadNow()
+    STDAPI DllCanUnloadNow()
 {
     const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
     TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
@@ -49,7 +49,8 @@ STDAPI DllCanUnloadNow()
 
 // Purpose: Returns a class factory to create an object of the requested type
 _Check_return_
-STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
+    STDAPI
+    DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
     if (class_id == CLSID_JpegLSDecoder)
         return jpegls_bitmap_decoder_create_factory(interface_id, result);
@@ -62,7 +63,7 @@ STDAPI DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_i
 
 WARNING_SUPPRESS(28301) // No annotations for first declaration (latest Windows SDK doesn't have annotations)
 __control_entrypoint(DllExport)
-STDAPI DllRegisterServer()
+    STDAPI DllRegisterServer()
 {
     try
     {
@@ -81,7 +82,7 @@ STDAPI DllRegisterServer()
         registry::set_value(sub_key.c_str(), L"SupportLossless", 1U);
         registry::set_value(sub_key.c_str(), L"SupportMultiframe", 0U);
         registry::set_value(sub_key.c_str(), L"Vendor", guid_to_string(GUID_VendorTeamCharLS).c_str());
-        registry::set_value(sub_key.c_str(), L"Version", L"1.0.0.0");  // TODO: Read from .rc
+        registry::set_value(sub_key.c_str(), L"Version", L"1.0.0.0"); // TODO: Read from .rc
 
         const wstring formats_sub_key = sub_key + LR"(\Formats\)";
         registry::set_value((formats_sub_key + guid_to_string(GUID_WICPixelFormat2bppGray)).c_str(), L"", L"");
@@ -104,8 +105,7 @@ STDAPI DllRegisterServer()
         registry::set_value(inproc_server_sub_key.c_str(), L"", get_module_path().c_str());
         registry::set_value(inproc_server_sub_key.c_str(), L"ThreadingModel", L"Both");
 
-        const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"}
-            + guid_to_string(CLSID_JpegLSDecoder);
+        const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"} + guid_to_string(CLSID_JpegLSDecoder);
         registry::set_value(category_id_key.c_str(), L"FriendlyName", L"Team CharLS JPEG-LS Decoder");
         registry::set_value(category_id_key.c_str(), L"CLSID", guid_to_string(CLSID_JpegLSDecoder).c_str());
 
@@ -133,13 +133,12 @@ STDAPI DllRegisterServer()
 }
 
 __control_entrypoint(DllExport)
-STDAPI DllUnregisterServer()
+    STDAPI DllUnregisterServer()
 {
     const wstring sub_key = wstring{LR"(SOFTWARE\Classes\CLSID\)"} + guid_to_string(CLSID_JpegLSDecoder);
     const HRESULT result1 = registry::delete_tree(sub_key.c_str());
 
-    const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"}
-        + guid_to_string(CLSID_JpegLSDecoder);
+    const wstring category_id_key = wstring{LR"(SOFTWARE\Classes\CLSID\{7ED96837-96F0-4812-B211-F13C24117ED3}\Instance\)"} + guid_to_string(CLSID_JpegLSDecoder);
     const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
 
     // Note: keep the .jls file registration intact.

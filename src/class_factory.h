@@ -3,7 +3,7 @@
 
 #pragma once
 
-template <typename Class>
+template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
     HRESULT __stdcall CreateInstance(

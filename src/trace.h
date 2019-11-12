@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -11,7 +11,7 @@
 
 #else
 
-template <typename... Args>
+template<typename... Args>
 void trace(char const* const message, Args... args) noexcept
 {
     char buffer[1024];

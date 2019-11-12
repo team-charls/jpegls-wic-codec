@@ -8,14 +8,14 @@
 
 #include "../src/util.h"
 
-#include <charls/charls.h>
 #include <CppUnitTest.h>
+#include <charls/charls.h>
 
 using charls::jpegls_decoder;
 using std::ifstream;
 using std::vector;
-using winrt::com_ptr;
 using winrt::check_hresult;
+using winrt::com_ptr;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace {
@@ -65,7 +65,7 @@ vector<std::byte> read_file(const wchar_t* filename)
     return buffer;
 }
 
-}
+} // namespace
 
 
 TEST_CLASS(jpegls_bitmap_encoder_test)
@@ -118,7 +118,7 @@ public:
         const HRESULT result = encoder->GetEncoderInfo(nullptr);
         WARNING_UNSUPPRESS()
 
-       Assert::IsTrue(FAILED(result));
+        Assert::IsTrue(FAILED(result));
     }
 
     TEST_METHOD(SetPreview)
@@ -251,7 +251,7 @@ public:
     TEST_METHOD(encode_conformance_color_lossless)
     {
         const wchar_t* filename = L"encode_conformance_color_lossless.jls";
-        portable_anymap_file anymap_file{ "test8.ppm" };
+        portable_anymap_file anymap_file{"test8.ppm"};
 
         {
             com_ptr<IStream> stream;
@@ -264,8 +264,8 @@ public:
 
             com_ptr<IWICBitmap> bitmap;
             check_hresult(imaging_factory()->CreateBitmapFromMemory(anymap_file.width(), anymap_file.height(),
-                pixel_format, anymap_file.width() * anymap_file.component_count(),
-                static_cast<uint32_t>(anymap_file.image_data().size()), reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+                                                                    pixel_format, anymap_file.width() * anymap_file.component_count(),
+                                                                    static_cast<uint32_t>(anymap_file.image_data().size()), reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
             HRESULT result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
@@ -292,7 +292,7 @@ private:
     {
         com_ptr<IWICImagingFactory> imaging_factory;
         check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-            nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+                                       nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
 
         return imaging_factory;
     }

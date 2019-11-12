@@ -97,7 +97,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT WritePixels(UINT /*lineCount*/,  UINT /*cbStride*/,  UINT /*cbBufferSize*/,  BYTE* /*pbPixels*/) noexcept override
+    HRESULT WritePixels(UINT /*lineCount*/, UINT /*cbStride*/, UINT /*cbBufferSize*/, BYTE* /*pbPixels*/) noexcept override
     {
         return E_FAIL;
     }
