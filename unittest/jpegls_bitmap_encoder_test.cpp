@@ -49,7 +49,7 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
     Assert::Fail();
 }
 
-vector<std::byte> read_file(const char* filename)
+vector<std::byte> read_file(const wchar_t* filename)
 {
     ifstream input;
     input.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
@@ -169,7 +169,7 @@ public:
     TEST_METHOD(Initialize)
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        stream.attach(SHCreateMemStream(nullptr, 0));
 
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -188,7 +188,7 @@ public:
     TEST_METHOD(Initialize_twice)
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        stream.attach(SHCreateMemStream(nullptr, 0));
 
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -202,7 +202,7 @@ public:
     TEST_METHOD(CreateNewFrame)
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        stream.attach(SHCreateMemStream(nullptr, 0));
 
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -218,7 +218,7 @@ public:
     TEST_METHOD(CreateNewFrame_with_nullptr)
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        stream.attach(SHCreateMemStream(nullptr, 0));
 
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -250,11 +250,12 @@ public:
 
     TEST_METHOD(encode_conformance_color_lossless)
     {
+        const wchar_t* filename = L"encode_conformance_color_lossless.jls";
         portable_anymap_file anymap_file{ "test8.ppm" };
 
         {
             com_ptr<IStream> stream;
-            check_hresult(SHCreateStreamOnFileEx(L"output.jls", STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
             com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
@@ -283,7 +284,7 @@ public:
             Assert::AreEqual(S_OK, result);
         }
 
-        compare("output.jls", anymap_file.image_data());
+        compare(filename, anymap_file.image_data());
     }
 
 private:
@@ -296,7 +297,7 @@ private:
         return imaging_factory;
     }
 
-    static void compare(const char* filename, const vector<std::byte>& decoded_source)
+    static void compare(const wchar_t* filename, const vector<std::byte>& decoded_source)
     {
         const auto encoded_source = read_file(filename);
 
