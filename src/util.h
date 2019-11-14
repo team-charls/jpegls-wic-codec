@@ -73,15 +73,30 @@ inline std::wstring guid_to_string(const GUID& guid)
 
 struct registry
 {
+    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)
+    {
+        set_value(sub_key.c_str(), value_name, value);
+    }
+
     static void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
     {
         const auto length = wcslen(value) + 1;
         winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
     }
 
+    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint32_t value)
+    {
+        set_value(sub_key.c_str(), value_name, value);
+    }
+
     static void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t value)
     {
         winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value));
+    }
+
+    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
+    {
+        set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
     }
 
     static void set_value(const PCWSTR sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)

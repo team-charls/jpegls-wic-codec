@@ -11,11 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
+    <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>jpeglswiccodec</RootNamespace>
-    <WindowsTargetPlatformVersion Condition="'$(MSBuildVersion)' &gt;= '16.0'">10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
