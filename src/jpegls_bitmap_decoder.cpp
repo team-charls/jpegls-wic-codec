@@ -16,6 +16,7 @@
 
 #include <mutex>
 
+using charls::jpegls_category;
 using charls::jpegls_decoder;
 using charls::jpegls_error;
 using std::error_code;
@@ -41,13 +42,13 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (!capability)
             return E_POINTER;
 
+        *capability = 0;
+
         // Custom decoder implementations should save the current position of the specified IStream,
         // read whatever information is necessary in order to determine which capabilities
         // it can provide for the supplied stream, and restore the stream position.
         try
         {
-            *capability = 0;
-
             std::byte header[4 * 1024];
             unsigned long read_byte_count;
 
@@ -60,13 +61,12 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             jpegls_decoder decoder;
             decoder.source(header, read_byte_count);
 
-            try
+            error_code ec;
+            decoder.read_header(ec);
+            if (!ec)
             {
-                decoder.read_header();
-            }
-            catch (const jpegls_error& error)
-            {
-                TRACE("jpegls_bitmap_decoder::QueryCapability.3, instance=%p, stream=%p, capability=0 (reason=%s)\n", this, stream, error.what());
+                TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, capability=0, ec=%d, (reason=%s)\n", this, ec.value(),
+                      jpegls_category().message(ec.value()).c_str());
                 return S_OK;
             }
 
@@ -75,7 +75,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
                 *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
             }
 
-            TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, stream=%p, capability=%d\n", this, stream, *capability);
+            TRACE("jpegls_bitmap_decoder::QueryCapability.3, instance=%p, stream=%p, capability=%d\n", this, stream, *capability);
             return S_OK;
         }
         catch (...)
