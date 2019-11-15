@@ -70,8 +70,7 @@ inline std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-#ifndef NDEBUG
-inline const char* pixel_format_to_string(const GUID& guid)
+inline const char* pixel_format_to_string(const GUID& guid) noexcept
 {
     if (guid == GUID_WICPixelFormat2bppGray)
         return "GUID_WICPixelFormat2bppGray";
@@ -93,7 +92,6 @@ inline const char* pixel_format_to_string(const GUID& guid)
 
     return "Unknown";
 }
-#endif
 
 namespace registry {
 
