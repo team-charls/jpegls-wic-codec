@@ -61,12 +61,12 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             jpegls_decoder decoder;
             decoder.source(header, read_byte_count);
 
-            error_code ec;
-            decoder.read_header(ec);
-            if (!ec)
+            error_code error;
+            decoder.read_header(error);
+            if (error)
             {
-                TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, capability=0, ec=%d, (reason=%s)\n", this, ec.value(),
-                      jpegls_category().message(ec.value()).c_str());
+                TRACE("jpegls_bitmap_decoder::QueryCapability.2, instance=%p, capability=0, ec=%d, (reason=%s)\n", this, error.value(),
+                      jpegls_category().message(error.value()).c_str());
                 return S_OK;
             }
 
