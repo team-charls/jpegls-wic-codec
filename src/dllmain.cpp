@@ -17,9 +17,6 @@ using namespace std::string_literals;
 
 namespace {
 
-constexpr GUID wic_bitmap_decoders_category{0x7ED96837, 0x96F0, 0x4812, {0xB2, 0x11, 0xF1, 0x3C, 0x24, 0x11, 0x7E, 0xD3}};
-constexpr GUID wic_bitmap_encoders_category{0xAC757296, 0x3522, 0x4E11, {0x98, 0x62, 0xC1, 0x7B, 0xE5, 0xA1, 0x76, 0x7E}};
-
 void register_general_decoder_encoder_settings(const GUID& class_id, const GUID& wic_category_id, const wchar_t* friendly_name)
 {
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
@@ -52,14 +49,15 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(inproc_server_sub_key, L"", get_module_path().c_str());
     registry::set_value(inproc_server_sub_key, L"ThreadingModel", L"Both");
 
+    // WIC category registration.
     const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(CLSID_JpegLSDecoder);
-    registry::set_value(category_id_key, L"FriendlyName", L"Team CharLS JPEG-LS Decoder");
+    registry::set_value(category_id_key, L"FriendlyName", friendly_name);
     registry::set_value(category_id_key, L"CLSID", guid_to_string(class_id).c_str());
 }
 
 void register_decoder()
 {
-    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, wic_bitmap_decoders_category, L"JPEG-LS Decoder");
+    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder");
 
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder);
 
@@ -88,7 +86,7 @@ void register_decoder()
 
 void register_encoder()
 {
-    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, wic_bitmap_encoders_category, L"JPEG-LS Encoder");
+    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder");
 }
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
@@ -169,8 +167,8 @@ HRESULT __stdcall DllRegisterServer()
 
 HRESULT __stdcall DllUnregisterServer()
 {
-    const HRESULT result_decoder = unregister(CLSID_JpegLSDecoder, wic_bitmap_decoders_category);
-    const HRESULT result_encoder = unregister(CLSID_JpegLSEncoder, wic_bitmap_encoders_category);
+    const HRESULT result_decoder = unregister(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders);
+    const HRESULT result_encoder = unregister(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders);
 
     // Note: keep the .jls file registration intact.
 
