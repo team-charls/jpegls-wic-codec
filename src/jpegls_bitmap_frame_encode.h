@@ -10,27 +10,41 @@
 
 struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
-    const charls::frame_info& frame_info() const noexcept
+    [[nodiscard]] const charls::frame_info& frame_info() const noexcept
     {
+        ASSERT(state_ == state::commited);
         return frame_info_;
     }
 
-    const std::vector<BYTE>& source() const noexcept
+    [[nodiscard]] const std::vector<BYTE>& source() const noexcept
     {
+        ASSERT(state_ == state::commited);
         return source_;
     }
 
-    // Required methods
     HRESULT Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_encode::Initialize, instance=%p, encoder_options=%p\n", this, encoder_options);
-        initialized_called_ = true;
+        TRACE("jpegls_bitmap_frame_encode::Initialize.1, instance=%p, encoder_options=%p\n", this, encoder_options);
+
+        if (state_ != state::created)
+        {
+            TRACE("jpegls_bitmap_frame_encode::Initialize.2, instance=%p, failed with WINCODEC_ERR_WRONGSTATE\n", this);
+            return WINCODEC_ERR_WRONGSTATE;
+        }
+
+        state_ = state::initialized;
         return S_OK;
     }
 
     HRESULT SetSize(const uint32_t width, const uint32_t height) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_encode::SetSize, instance=%p, width=%u, height=%u\n", this, width, height);
+        TRACE("jpegls_bitmap_frame_encode::SetSize.1, instance=%p, width=%u, height=%u\n", this, width, height);
+
+        if (state_ != state::initialized)
+        {
+            TRACE("jpegls_bitmap_frame_encode::SetSize.2, instance=%p, failed with WINCODEC_ERR_WRONGSTATE\n", this);
+            return WINCODEC_ERR_WRONGSTATE;
+        }
 
         frame_info_.width = width;
         frame_info_.height = height;
@@ -41,7 +55,13 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT SetResolution(const double dpi_x, const double dpi_y) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_encode::SetResolution, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
+        TRACE("jpegls_bitmap_frame_encode::SetResolution.1, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
+
+        if (state_ != state::initialized)
+        {
+            TRACE("jpegls_bitmap_frame_encode::SetResolution.2, instance=%p, failed with WINCODEC_ERR_WRONGSTATE\n", this);
+            return WINCODEC_ERR_WRONGSTATE;
+        }
 
         dpi_x_ = dpi_x;
         dpi_y_ = dpi_y;
@@ -55,7 +75,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         if (!pixel_format)
             return E_INVALIDARG;
 
-        if (!initialized_called_)
+        if (state_ != state::initialized)
             return WINCODEC_ERR_WRONGSTATE;
 
         if (*pixel_format == GUID_WICPixelFormat8bppGray)
@@ -99,6 +119,11 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT WritePixels(UINT /*lineCount*/, UINT /*cbStride*/, UINT /*cbBufferSize*/, BYTE* /*pbPixels*/) noexcept override
     {
+        if (state_ != state::initialized)
+            return WINCODEC_ERR_WRONGSTATE;
+
+        // TODO: implement
+
         return E_FAIL;
     }
 
@@ -107,6 +132,9 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         TRACE("jpegls_bitmap_frame_encode::WriteSource, instance=%p, bitmap_source=%p, rectangle=%p\n", this, bitmap_source, rectangle);
         if (!bitmap_source)
             return E_INVALIDARG;
+
+        if (state_ != state::initialized)
+            return WINCODEC_ERR_WRONGSTATE;
 
         try
         {
@@ -141,6 +169,10 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT Commit() noexcept override
     {
+        if (state_ != state::initialized || !size_set_ || !pixel_format_set_)
+            return WINCODEC_ERR_WRONGSTATE;
+
+        state_ = state::commited;
         return S_OK;
     }
 
@@ -158,13 +190,20 @@ private:
         pixel_format_set_ = true;
     }
 
-    uint32_t stride() const noexcept
+    [[nodiscard]] uint32_t stride() const noexcept
     {
         ASSERT(size_set_ && pixel_format_set_);
         return frame_info_.width * frame_info_.component_count;
     }
 
-    bool initialized_called_{};
+    enum class state
+    {
+        created,
+        initialized,
+        commited
+    };
+
+    state state_{};
     bool size_set_{};
     bool pixel_format_set_{};
     std::vector<BYTE> source_;

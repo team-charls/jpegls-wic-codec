@@ -71,20 +71,28 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     // IWICBitmapSource
     HRESULT GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetSize, instance=%p, width=%p, height=%p\n", this, width, height);
+        TRACE("jpegls_bitmap_frame_decoder::GetSize.1, instance=%p, width=%p, height=%p\n", this, width, height);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
-        return bitmap_source_->GetSize(width, height);
+        const auto result = bitmap_source_->GetSize(width, height);
         WARNING_UNSUPPRESS()
+
+        TRACE("jpegls_bitmap_frame_decoder::GetSize.2, instance=%p, width=%u, height=%u\n", this,
+              width ? *width : 0, height ? *height : 0);
+        return result;
     }
 
     HRESULT GetPixelFormat(GUID* pixel_format) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat, instance=%p, pixel_format=%p\n", this, pixel_format);
+        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat.1, instance=%p, pixel_format=%p\n", this, pixel_format);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
-        return bitmap_source_->GetPixelFormat(pixel_format);
+        const auto result = bitmap_source_->GetPixelFormat(pixel_format);
         WARNING_UNSUPPRESS()
+
+        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat.2, instance=%p, pixel_format=%s\n", this,
+              pixel_format ? pixel_format_to_string(*pixel_format) : "");
+        return result;
     }
 
     HRESULT GetResolution(double* dpi_x, double* dpi_y) noexcept override

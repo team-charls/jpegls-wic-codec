@@ -70,48 +70,73 @@ inline std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-
-struct registry
+#ifndef NDEBUG
+inline const char* pixel_format_to_string(const GUID& guid)
 {
-    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)
+    if (guid == GUID_WICPixelFormat2bppGray)
+        return "GUID_WICPixelFormat2bppGray";
+
+    if (guid == GUID_WICPixelFormat4bppGray)
+        return "GUID_WICPixelFormat4bppGray";
+
+    if (guid == GUID_WICPixelFormat8bppGray)
+        return "GUID_WICPixelFormat8bppGray";
+
+    if (guid == GUID_WICPixelFormat16bppGray)
+        return "GUID_WICPixelFormat16bppGray";
+
+    if (guid == GUID_WICPixelFormat24bppRGB)
+        return "GUID_WICPixelFormat24bppRGB";
+
+    if (guid == GUID_WICPixelFormat48bppRGB)
+        return "GUID_WICPixelFormat48bppRGB";
+
+    return "Unknown";
+}
+#endif
+
+namespace registry {
+
+inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
+{
+    const auto length = wcslen(value) + 1;
+    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
+}
+
+inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)
+{
+    set_value(sub_key.c_str(), value_name, value);
+}
+
+inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t value)
+{
+    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value));
+}
+
+inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint32_t value)
+{
+    set_value(sub_key.c_str(), value_name, value);
+}
+
+inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
+{
+    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
+}
+
+inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
+{
+    set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
+}
+
+inline HRESULT delete_tree(const PCWSTR sub_key) noexcept
+{
+    const LSTATUS result = RegDeleteTreeW(HKEY_LOCAL_MACHINE, sub_key);
+    if (result != ERROR_SUCCESS)
     {
-        set_value(sub_key.c_str(), value_name, value);
+        return HRESULT_FROM_WIN32(result);
     }
 
-    static void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
-    {
-        const auto length = wcslen(value) + 1;
-        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
-    }
+    return S_OK;
+}
 
-    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint32_t value)
-    {
-        set_value(sub_key.c_str(), value_name, value);
-    }
-
-    static void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t value)
-    {
-        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value));
-    }
-
-    static void set_value(const std::wstring& sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
-    {
-        set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
-    }
-
-    static void set_value(const PCWSTR sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
-    {
-        winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
-    }
-
-    static HRESULT delete_tree(const PCWSTR sub_key) noexcept
-    {
-        const LSTATUS result = RegDeleteTreeW(HKEY_LOCAL_MACHINE, sub_key);
-        if (result != ERROR_SUCCESS)
-        {
-            return HRESULT_FROM_WIN32(result);
-        }
-
-        return S_OK;
-    }
-};
+} // namespace registry
