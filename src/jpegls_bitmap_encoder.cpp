@@ -106,7 +106,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
                 return WINCODEC_ERR_NOTINITIALIZED;
 
             if (!bitmap_frame_encode_)
-                return WINCODEC_ERR_WRONGSTATE; // No frame was created.
+                return WINCODEC_ERR_FRAMEMISSING;
 
             jpegls_encoder encoder;
             encoder.frame_info(bitmap_frame_encode_->frame_info());

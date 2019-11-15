@@ -248,6 +248,20 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
+    TEST_METHOD(Commit_without_a_frame)
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+
+        HRESULT result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        Assert::AreEqual(S_OK, result);
+
+        result = encoder->Commit();
+        Assert::AreEqual(WINCODEC_ERR_FRAMEMISSING, result);
+    }
+
     TEST_METHOD(encode_conformance_color_lossless)
     {
         const wchar_t* filename = L"encode_conformance_color_lossless.jls";
