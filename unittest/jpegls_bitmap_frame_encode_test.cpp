@@ -11,6 +11,7 @@
 
 #include <array>
 
+using std::vector;
 using std::array;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -185,6 +186,8 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         check_hresult(bitmap_frame_encoder->SetSize(512, 512));
         set_pixel_format(bitmap_frame_encoder.get(), GUID_WICPixelFormat8bppGray);
+        vector<uint8_t> source(512 * 512);
+        bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data());
 
         const HRESULT result = bitmap_frame_encoder->Commit();
         Assert::AreEqual(S_OK, result); // TODO: commit should fail.
@@ -219,6 +222,10 @@ private:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         check_hresult(bitmap_frame_encoder->SetSize(512, 512));
         set_pixel_format(bitmap_frame_encoder, GUID_WICPixelFormat8bppGray);
+
+        vector<uint8_t> source(512 * 512);
+        bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data());
+
         check_hresult(bitmap_frame_encoder->Commit());
     }
 

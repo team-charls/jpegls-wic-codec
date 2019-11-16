@@ -26,7 +26,7 @@
 #endif
 
 
-inline HMODULE get_current_module() noexcept
+[[nodiscard]] inline HMODULE get_current_module() noexcept
 {
     HMODULE module;
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -36,7 +36,7 @@ inline HMODULE get_current_module() noexcept
     return module;
 }
 
-inline std::wstring get_module_path()
+[[nodiscard]] inline std::wstring get_module_path()
 {
     std::wstring path(100, L'?');
     size_t path_size;
@@ -57,7 +57,7 @@ inline std::wstring get_module_path()
     return path;
 }
 
-inline std::wstring guid_to_string(const GUID& guid)
+[[nodiscard]] inline std::wstring guid_to_string(const GUID& guid)
 {
     std::wstring guid_text;
 
@@ -70,7 +70,7 @@ inline std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-inline const char* pixel_format_to_string(const GUID& guid) noexcept
+[[nodiscard]] inline const char* pixel_format_to_string(const GUID& guid) noexcept
 {
     if (guid == GUID_WICPixelFormat2bppGray)
         return "GUID_WICPixelFormat2bppGray";

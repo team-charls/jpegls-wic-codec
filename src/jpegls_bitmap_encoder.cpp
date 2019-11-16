@@ -108,6 +108,9 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             if (!bitmap_frame_encode_)
                 return WINCODEC_ERR_FRAMEMISSING;
 
+            if (committed_)
+                return WINCODEC_ERR_WRONGSTATE;
+
             jpegls_encoder encoder;
             encoder.frame_info(bitmap_frame_encode_->frame_info());
 
@@ -123,9 +126,10 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             check_hresult(destination_->Write(destination.data(), static_cast<ULONG>(bytes_written), nullptr));
             check_hresult(destination_->Commit(STGC_DEFAULT));
 
-            bitmap_frame_encode_.detach();
-            destination_.detach();
+            bitmap_frame_encode_ = nullptr;
+            destination_ = nullptr;
 
+            committed_ = true;
             return S_OK;
         }
         catch (...)
@@ -186,7 +190,7 @@ private:
         return imaging_factory_.get();
     }
 
-    jpegls_encoder jpegls_encoder_;
+    bool committed_{};
     com_ptr<IWICImagingFactory> imaging_factory_;
     com_ptr<IStream> destination_;
     com_ptr<jpegls_bitmap_frame_encode> bitmap_frame_encode_;
