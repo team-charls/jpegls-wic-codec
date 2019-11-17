@@ -209,7 +209,7 @@ private:
     com_ptr<jpegls_bitmap_frame_encode> bitmap_frame_encode_;
 };
 
-HRESULT jpegls_bitmap_encoder_create_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
+HRESULT create_jpegls_bitmap_encoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
 {
     return make<class_factory<jpegls_bitmap_encoder>>()->QueryInterface(interface_id, result);
 }

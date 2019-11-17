@@ -224,7 +224,7 @@ private:
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
 
-HRESULT jpegls_bitmap_decoder_create_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
+HRESULT create_jpegls_bitmap_decoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
 {
     return make<class_factory<jpegls_bitmap_decoder>>()->QueryInterface(interface_id, result);
 }

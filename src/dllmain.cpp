@@ -12,12 +12,16 @@
 #include <OleCtl.h>
 #include <ShlObj.h>
 
+#include <array>
+
+using std::array;
 using std::wstring;
 using namespace std::string_literals;
 
 namespace {
 
-void register_general_decoder_encoder_settings(const GUID& class_id, const GUID& wic_category_id, const wchar_t* friendly_name)
+void register_general_decoder_encoder_settings(const GUID& class_id, const GUID& wic_category_id,
+                                               const wchar_t* friendly_name, const GUID* formats, const size_t format_count)
 {
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
@@ -37,12 +41,10 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"Version", L"1.0.0.0"); // TODO: Read from .rc
 
     const wstring formats_sub_key = sub_key + LR"(\Formats\)";
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat2bppGray), L"", L"");
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat4bppGray), L"", L"");
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat8bppGray), L"", L"");
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat16bppGray), L"", L"");
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat24bppRGB), L"", L"");
-    registry::set_value(formats_sub_key + guid_to_string(GUID_WICPixelFormat48bppRGB), L"", L"");
+    for (size_t i = 0; i < format_count; ++i)
+    {
+        registry::set_value(formats_sub_key + guid_to_string(formats[i]), L"", L"");
+    }
 
     // COM co-create registration.
     const wstring inproc_server_sub_key = sub_key + LR"(\InprocServer32\)";
@@ -57,7 +59,15 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
 
 void register_decoder()
 {
-    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder");
+    const array formats{
+        GUID_WICPixelFormat2bppGray,
+        GUID_WICPixelFormat4bppGray,
+        GUID_WICPixelFormat8bppGray,
+        GUID_WICPixelFormat16bppGray,
+        GUID_WICPixelFormat24bppRGB,
+        GUID_WICPixelFormat48bppRGB};
+
+    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder", formats.data(), formats.size());
 
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder);
 
@@ -86,7 +96,16 @@ void register_decoder()
 
 void register_encoder()
 {
-    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder");
+    const array formats{
+        GUID_WICPixelFormat2bppGray,
+        GUID_WICPixelFormat4bppGray,
+        GUID_WICPixelFormat8bppGray,
+        GUID_WICPixelFormat16bppGray,
+        GUID_WICPixelFormat24bppBGR,
+        GUID_WICPixelFormat24bppRGB,
+        GUID_WICPixelFormat48bppRGB};
+
+    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder", formats.data(), formats.size());
 }
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
@@ -128,7 +147,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
 __control_entrypoint(DllExport)
-HRESULT __stdcall DllCanUnloadNow()
+    HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
     TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
@@ -137,13 +156,13 @@ HRESULT __stdcall DllCanUnloadNow()
 
 // Purpose: Returns a class factory to create an object of the requested type
 _Check_return_
-HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
+    HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
 {
     if (class_id == CLSID_JpegLSDecoder)
-        return jpegls_bitmap_decoder_create_factory(interface_id, result);
+        return create_jpegls_bitmap_decoder_factory(interface_id, result);
 
     if (class_id == CLSID_JpegLSEncoder)
-        return jpegls_bitmap_encoder_create_factory(interface_id, result);
+        return create_jpegls_bitmap_encoder_factory(interface_id, result);
 
     return CLASS_E_CLASSNOTAVAILABLE;
 }
