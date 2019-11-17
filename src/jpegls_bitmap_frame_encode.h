@@ -25,18 +25,18 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
     [[nodiscard]] bool is_dpi_set() const noexcept
     {
         ASSERT(state_ == state::commited);
-        return dpi_set;
+        return dpi_set_;
     }
 
     [[nodiscard]] double dpi_x() const noexcept
     {
-        ASSERT(dpi_set && state_ == state::commited);
+        ASSERT(dpi_set_ && state_ == state::commited);
         return dpi_x_;
     }
 
     [[nodiscard]] double dpi_y() const noexcept
     {
-        ASSERT(dpi_set && state_ == state::commited);
+        ASSERT(dpi_set_ && state_ == state::commited);
         return dpi_y_;
     }
 
@@ -83,7 +83,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
         dpi_x_ = dpi_x;
         dpi_y_ = dpi_y;
-        dpi_set = true;
+        dpi_set_ = true;
 
         return S_OK;
     }
@@ -98,6 +98,18 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
             return WINCODEC_ERR_WRONGSTATE;
 
         swap_pixels_ = false;
+
+        if (*pixel_format == GUID_WICPixelFormat2bppGray)
+        {
+            set_pixel_format(2, 1);
+            return S_OK;
+        }
+
+        if (*pixel_format == GUID_WICPixelFormat4bppGray)
+        {
+            set_pixel_format(4, 1);
+            return S_OK;
+        }
 
         if (*pixel_format == GUID_WICPixelFormat8bppGray)
         {
@@ -121,6 +133,12 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         {
             set_pixel_format(8, 3);
             swap_pixels_ = true;
+            return S_OK;
+        }
+
+        if (*pixel_format == GUID_WICPixelFormat48bppRGB)
+        {
+            set_pixel_format(16, 3);
             return S_OK;
         }
 
@@ -280,7 +298,7 @@ private:
     state state_{};
     bool size_set_{};
     bool pixel_format_set_{};
-    bool dpi_set{};
+    bool dpi_set_{};
     bool swap_pixels_{};
     uint32_t received_line_count_{};
     std::vector<BYTE> source_;

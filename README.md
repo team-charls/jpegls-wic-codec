@@ -1,6 +1,6 @@
 # JPEG-LS Windows Imaging Component Codec
 
-This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can leverage WIC codecs. This makes it possible to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
+This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can leverage WIC codecs. It makes it possible to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
 
 [![Build Status](https://dev.azure.com/team-charls/jpegls-wic-codec/_apis/build/status/team-charls.jpegls-wic-codec?branchName=master)](https://dev.azure.com/team-charls/jpegls-wic-codec/_build/latest?definitionId=1&branchName=master)
 
@@ -13,7 +13,6 @@ The Windows Imaging Component (WIC) is a build-in codec framework of Windows tha
 This project is the development phase:
 
 - Only a x64 version of the codec is provided
-- Only the decoder path is currently functional
 - No installer with pre-build binaries is available, manually building and registering is required.
 
 ### Supported Operation Systems
@@ -29,10 +28,10 @@ The following application have been validated to work with the JPEG-LS WIC codec
 
 - Windows Explorer Thumbnail cache. This functionality allows Windows Explorer to show previews of images.
 - Windows Photo Viewer.  
- Note: On clean installations of Windows 10 this component is installed but not registered. An Registry file called restore-windows-photo-viewer.reg is provided to restore this functionality. The Registry Editor can be used to add import this .reg file. Microsoft provides the Windows 10 Photos app that is intended to be the replacement for the Windows Photo Viewer, however this app cannot use WIC codecs from 3rd party providers.
+ Note: On clean installations of Windows 10 this component is installed but not registered. An Registry file called restore-windows-photo-viewer.reg is provided to restore this functionality. The Registry Editor can be used to add import this .reg file.
 - WIC Explorer (sample application from Microsoft). An updated version of this application can be found at <https://github.com/vbaderks/WICExplorer>
 - ZackViewer <https://github.com/peirick/ZackViewer>. This viewer can also be used to convert from one image encoding format to another.
-- Microsoft Office applications like Word, Excel, Powerpoint. The applications can when the JPEG-LS codec is installed, import these images in their documents.
+- Microsoft Office applications like Word, Excel, Powerpoint. These applications can, when the JPEG-LS codec is installed, import JPEG-LS images in their documents.
 
 #### Windows 10 Microsoft Photos Application not supported
 
@@ -69,11 +68,22 @@ The following table lists the pixel formats that can be decoded:
 |GUID_WICPixelFormat24bppRGB|3|8|
 |GUID_WICPixelFormat48bppRGB|3|16|
 
+The following table lists the pixel formats that can be encoded:
+
+|GUID|Component Count|Bits per Sample
+|---|---|---|
+|GUID_WICPixelFormat2bppGray|1|2|
+|GUID_WICPixelFormat4bppGray|1|4|
+|GUID_WICPixelFormat8bppGray|1|8|
+|GUID_WICPixelFormat16bppGray|1|16|
+|GUID_WICPixelFormat24bppBGR|3|8|
+|GUID_WICPixelFormat24bppRGB|3|8|
+|GUID_WICPixelFormat48bppRGB|3|16|
+
 ## Build Instructions
 
 1. Clone this repro, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-1. Open Visual Studio 2017 or 2019 16.1 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
-Note: Visual Studio 2019 16.0 fails to copy the output of the CharLS project to the final output folder. Workaround to use VS 2019 16.0 is to copy these DLLs manually.
+1. Open Visual Studio 2019 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
 1. Or use a Developer Command Prompt and run use MSbuild in the root of the cloned repository.
 
 ## Installation
