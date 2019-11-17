@@ -88,7 +88,7 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
         const HRESULT result = bitmap_frame_encoder->SetResolution(96., 96.);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        Assert::AreEqual(S_OK, result);
     }
 
     TEST_METHOD(SetResolution_after_commit)

@@ -11,6 +11,8 @@
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;
+using charls::spiff_color_space;
+using charls::spiff_resolution_units;
 using std::vector;
 using winrt::check_hresult;
 using winrt::com_ptr;
@@ -120,6 +122,17 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             if (bitmap_frame_encode_->frame_info().component_count > 1)
             {
                 encoder.interleave_mode(interleave_mode::sample);
+            }
+
+            const auto color_space = bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale : spiff_color_space::rgb;
+            if (bitmap_frame_encode_->is_dpi_set())
+            {
+                encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
+                                                    lround(bitmap_frame_encode_->dpi_y()), lround(bitmap_frame_encode_->dpi_x()));
+            }
+            else
+            {
+                encoder.write_standard_spiff_header(color_space);
             }
 
             const auto bytes_written = encoder.encode(bitmap_frame_encode_->source());

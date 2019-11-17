@@ -22,6 +22,24 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return source_;
     }
 
+    [[nodiscard]] bool is_dpi_set() const noexcept
+    {
+        ASSERT(state_ == state::commited);
+        return dpi_set;
+    }
+
+    [[nodiscard]] double dpi_x() const noexcept
+    {
+        ASSERT(dpi_set && state_ == state::commited);
+        return dpi_x_;
+    }
+
+    [[nodiscard]] double dpi_y() const noexcept
+    {
+        ASSERT(dpi_set && state_ == state::commited);
+        return dpi_y_;
+    }
+
     HRESULT Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::Initialize.1, instance=%p, encoder_options=%p\n", this, encoder_options);
@@ -57,7 +75,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("jpegls_bitmap_frame_encode::SetResolution.1, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
 
-        if (state_ != state::initialized)
+        if (state_ == state::commited)
         {
             TRACE("jpegls_bitmap_frame_encode::SetResolution.2, instance=%p, failed with WINCODEC_ERR_WRONGSTATE\n", this);
             return WINCODEC_ERR_WRONGSTATE;
@@ -65,6 +83,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
         dpi_x_ = dpi_x;
         dpi_y_ = dpi_y;
+        dpi_set = true;
 
         return S_OK;
     }
@@ -142,10 +161,10 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
             }
 
             BYTE* source = pixels;
-            uint8_t* destination = source_.data() + (received_line_count_ * frame_info_.width * frame_info_.component_count);
+            uint8_t* destination = source_.data() + (static_cast<size_t>(received_line_count_) * frame_info_.width * frame_info_.component_count);
             for (uint32_t i = 0; i < line_count; ++i)
             {
-                const size_t bytes_to_copy = frame_info_.width * frame_info_.component_count;
+                const size_t bytes_to_copy = static_cast<size_t>(frame_info_.width) * frame_info_.component_count;
                 memcpy(destination, source, bytes_to_copy);
 
                 source += stride;
@@ -261,11 +280,11 @@ private:
     state state_{};
     bool size_set_{};
     bool pixel_format_set_{};
+    bool dpi_set{};
     bool swap_pixels_{};
     uint32_t received_line_count_{};
     std::vector<BYTE> source_;
     charls::frame_info frame_info_{};
-    charls::jpegls_encoder encoder_;
     double dpi_x_{};
     double dpi_y_{};
 };
