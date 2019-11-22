@@ -14,6 +14,7 @@
 
 #include <memory>
 
+
 struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
     explicit jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
@@ -38,7 +39,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
         const auto& frame_info = decoder.frame_info();
         GUID pixel_format;
-        if (!try_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format))
+        uint32_t sample_shift;
+        if (!try_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format, sample_shift))
             winrt::throw_hresult(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
 
         winrt::com_ptr<IWICBitmap> bitmap;
@@ -63,6 +65,11 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
 
             decoder.decode(data_buffer, data_buffer_size);
+
+            if (sample_shift != 0)
+            {
+                shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+            }
         }
 
         winrt::check_hresult(bitmap->QueryInterface(bitmap_source_.put()));
@@ -146,12 +153,15 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     static bool can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
     {
         GUID pixel_format_dummy;
-        return try_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy);
+        uint32_t dummy_sample_shift;
+        return try_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy, dummy_sample_shift);
     }
 
 private:
-    static bool try_get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, GUID& pixel_format) noexcept
+    static bool try_get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, GUID& pixel_format, uint32_t& sample_shift) noexcept
     {
+        sample_shift = 0;
+
         switch (component_count)
         {
         case 1:
@@ -160,12 +170,21 @@ private:
             case 2:
                 pixel_format = GUID_WICPixelFormat2bppGray;
                 return true;
+
             case 4:
                 pixel_format = GUID_WICPixelFormat4bppGray;
                 return true;
+
             case 8:
                 pixel_format = GUID_WICPixelFormat8bppGray;
                 return true;
+
+            case 10:
+            case 12:
+                sample_shift = 16 - bits_per_sample;
+                pixel_format = GUID_WICPixelFormat16bppGray;
+                return true;
+
             case 16:
                 pixel_format = GUID_WICPixelFormat16bppGray;
                 return true;
@@ -180,9 +199,11 @@ private:
             case 8:
                 pixel_format = GUID_WICPixelFormat24bppRGB;
                 return true;
+
             case 16:
                 pixel_format = GUID_WICPixelFormat48bppRGB;
                 return true;
+
             default:
                 break;
             }
@@ -198,6 +219,13 @@ private:
     static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     {
         return frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count;
+    }
+
+    static void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample_shift)
+    {
+        const auto pixels = static_cast<uint16_t*>(buffer);
+        std::transform(pixels, pixels + pixel_count, pixels,
+                       [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
 
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;

@@ -70,7 +70,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
                 return S_OK;
             }
 
-            if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(decoder.frame_info().bits_per_sample, decoder.frame_info().component_count))
+            const auto& frame_info = decoder.frame_info();
+            if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(frame_info.bits_per_sample, frame_info.component_count))
             {
                 *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
             }
