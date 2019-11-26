@@ -9,6 +9,7 @@
 #include <olectl.h>
 #include <unknwn.h>
 #include <wincodec.h>
+#include <mfapi.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4946) // reinterpret_cast used between related classes

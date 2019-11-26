@@ -84,7 +84,7 @@
       <AdditionalIncludeDirectories>../charls/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>jpegls-wic-codec.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -96,7 +96,7 @@
       <AdditionalIncludeDirectories>../charls/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>jpegls-wic-codec.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -113,7 +113,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>jpegls-wic-codec.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -130,7 +130,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>jpegls-wic-codec.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>

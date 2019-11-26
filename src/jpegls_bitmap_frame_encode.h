@@ -8,6 +8,8 @@
 
 #include <charls/charls.h>
 
+#include <mfapi.h>
+
 struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
     [[nodiscard]] const charls::frame_info& frame_info() const noexcept
@@ -163,7 +165,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t stride, UINT /*cbBufferSize*/, BYTE* pixels) noexcept override
+    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t source_stride, UINT /*cbBufferSize*/, BYTE* pixels) noexcept override
     {
         if (!(state_ == state::initialized || state_ == state::received_pixels) || !size_set_ || !pixel_format_set_)
             return WINCODEC_ERR_WRONGSTATE;
@@ -178,16 +180,10 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
                 source_.resize(static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count);
             }
 
-            BYTE* source = pixels;
-            uint8_t* destination = source_.data() + (static_cast<size_t>(received_line_count_) * frame_info_.width * frame_info_.component_count);
-            for (uint32_t i = 0; i < line_count; ++i)
-            {
-                const size_t bytes_to_copy = static_cast<size_t>(frame_info_.width) * frame_info_.component_count;
-                memcpy(destination, source, bytes_to_copy);
-
-                source += stride;
-                destination += bytes_to_copy;
-            }
+            const size_t destination_stride = stride();
+            uint8_t* destination = source_.data() + (received_line_count_ * destination_stride);
+            winrt::check_hresult(MFCopyImage(destination, static_cast<LONG>(destination_stride), pixels,
+                                             source_stride, static_cast<DWORD>(destination_stride), line_count));
 
             received_line_count_ += line_count;
             state_ = state::received_pixels;
@@ -271,19 +267,14 @@ private:
     [[nodiscard]] uint32_t stride() const noexcept
     {
         ASSERT(size_set_ && pixel_format_set_);
-        return frame_info_.width * frame_info_.component_count;
+        return frame_info_.width * frame_info_.component_count; // TODO: update for 16 bit images.
     }
 
     void convert_bgr_to_rgb() noexcept
     {
         for (size_t i = 0; i < source_.size(); i += 3)
         {
-            const BYTE b = source_[i];
-            const BYTE g = source_[i + 1];
-            const BYTE r = source_[i + 2];
-            source_[i] = r;
-            source_[i + 1] = g;
-            source_[i + 2] = b;
+            std::swap(source_[i], source_[i + 2]);
         }
     }
 
