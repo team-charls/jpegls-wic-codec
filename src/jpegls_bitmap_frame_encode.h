@@ -40,7 +40,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return dpi_y_;
     }
 
-    HRESULT Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept override
+    HRESULT __stdcall Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::Initialize.1, instance=%p, encoder_options=%p\n", this, encoder_options);
 
@@ -54,7 +54,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetSize(const uint32_t width, const uint32_t height) noexcept override
+    HRESULT __stdcall SetSize(const uint32_t width, const uint32_t height) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetSize.1, instance=%p, width=%u, height=%u\n", this, width, height);
 
@@ -71,7 +71,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetResolution(const double dpi_x, const double dpi_y) noexcept override
+    HRESULT __stdcall SetResolution(const double dpi_x, const double dpi_y) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetResolution.1, instance=%p, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
 
@@ -88,7 +88,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetPixelFormat(GUID* pixel_format) noexcept override
+    HRESULT __stdcall SetPixelFormat(GUID* pixel_format) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetPixelFormat, instance=%p, pixel_format=%p\n", this, pixel_format);
         if (!pixel_format)
@@ -146,24 +146,24 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT;
     }
 
-    HRESULT SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
+    HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetColorContexts, instance=%p, count=%d, color_context=%p\n", this, count, color_context);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT GetMetadataQueryWriter(IWICMetadataQueryWriter** /*ppIMetadataQueryWriter*/) noexcept override
+    HRESULT __stdcall GetMetadataQueryWriter(IWICMetadataQueryWriter** /*ppIMetadataQueryWriter*/) noexcept override
     {
         return E_FAIL;
     }
 
-    HRESULT SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
+    HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetThumbnail, instance=%p, thumbnail=%p\n", this, thumbnail);
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
     }
 
-    HRESULT WritePixels(const uint32_t line_count, const uint32_t stride, UINT /*cbBufferSize*/, BYTE* pixels) noexcept override
+    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t stride, UINT /*cbBufferSize*/, BYTE* pixels) noexcept override
     {
         if (!(state_ == state::initialized || state_ == state::received_pixels) || !size_set_ || !pixel_format_set_)
             return WINCODEC_ERR_WRONGSTATE;
@@ -199,7 +199,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         }
     }
 
-    HRESULT WriteSource(_In_ IWICBitmapSource* bitmap_source, [[maybe_unused]] _In_ WICRect* rectangle) noexcept override
+    HRESULT __stdcall WriteSource(_In_ IWICBitmapSource* bitmap_source, [[maybe_unused]] _In_ WICRect* rectangle) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::WriteSource, instance=%p, bitmap_source=%p, rectangle=%p\n", this, bitmap_source, rectangle);
         if (!bitmap_source)
@@ -240,7 +240,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         }
     }
 
-    HRESULT Commit() noexcept override
+    HRESULT __stdcall Commit() noexcept override
     {
         if (state_ != state::received_pixels || !size_set_ || !pixel_format_set_)
             return WINCODEC_ERR_WRONGSTATE;
@@ -254,7 +254,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT SetPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
+    HRESULT __stdcall SetPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
         TRACE("jpegls_bitmap_frame_encode::SetPalette, instance=%p, palette=%p\n", this, palette);
         return WINCODEC_ERR_PALETTEUNAVAILABLE;

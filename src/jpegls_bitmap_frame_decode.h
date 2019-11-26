@@ -76,7 +76,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     }
 
     // IWICBitmapSource
-    HRESULT GetSize(uint32_t* width, uint32_t* height) noexcept override
+    HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetSize.1, instance=%p, width=%p, height=%p\n", this, width, height);
 
@@ -89,7 +89,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return result;
     }
 
-    HRESULT GetPixelFormat(GUID* pixel_format) noexcept override
+    HRESULT __stdcall GetPixelFormat(GUID* pixel_format) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat.1, instance=%p, pixel_format=%p\n", this, pixel_format);
 
@@ -102,7 +102,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return result;
     }
 
-    HRESULT GetResolution(double* dpi_x, double* dpi_y) noexcept override
+    HRESULT __stdcall GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetResolution, instance=%p,  dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
 
@@ -111,7 +111,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         WARNING_UNSUPPRESS()
     }
 
-    HRESULT CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
+    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
 
@@ -120,19 +120,19 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         WARNING_UNSUPPRESS()
     }
 
-    HRESULT CopyPalette(IWICPalette*) noexcept override
+    HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::CopyPalette, instance=%p\n", this);
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
     // IWICBitmapFrameDecode : IWICBitmapSource
-    HRESULT GetThumbnail(IWICBitmapSource**) noexcept override
+    HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override
     {
         return WINCODEC_ERR_CODECNOTHUMBNAIL;
     }
 
-    HRESULT GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
+    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
         TRACE("jpegls_bitmap_frame_decoder::GetColorContexts, instance=%p, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
         if (!actual_count)
@@ -142,7 +142,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return S_OK;
     }
 
-    HRESULT GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
 

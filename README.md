@@ -12,14 +12,13 @@ The Windows Imaging Component (WIC) is a build-in codec framework of Windows tha
 
 This project is the development phase:
 
-- Only a x64 version of the codec is provided
 - No installer with pre-build binaries is available, manually building and registering is required.
 
 ### Supported Operation Systems
 
 The JPEG-LS WIC codec supports the following Windows operating systems:
 
-- Windows 10 x86-64
+- Windows 10
 - Windows Server 2016
 
 ### Applications that can use the JPEG-LS WIC codec
