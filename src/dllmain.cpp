@@ -8,6 +8,7 @@
 #include "jpegls_bitmap_encoder.h"
 #include "trace.h"
 #include "util.h"
+#include "version.h"
 
 #include <OleCtl.h>
 #include <ShlObj.h>
@@ -32,13 +33,13 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"FileExtensions", L".jls");
     registry::set_value(sub_key, L"FriendlyName", friendly_name);
     registry::set_value(sub_key, L"MimeTypes", L"image/jls");
-    registry::set_value(sub_key, L"SpecVersion", L"1.0.0.0"); // TODO: Read from .rc
+    registry::set_value(sub_key, L"SpecVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"SupportAnimation", 0U);
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
     registry::set_value(sub_key, L"SupportLossless", 1U);
     registry::set_value(sub_key, L"SupportMultiframe", 0U);
     registry::set_value(sub_key, L"Vendor", guid_to_string(GUID_VendorTeamCharLS).c_str());
-    registry::set_value(sub_key, L"Version", L"1.0.0.0"); // TODO: Read from .rc
+    registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key = sub_key + LR"(\Formats\)";
     for (size_t i = 0; i < format_count; ++i)

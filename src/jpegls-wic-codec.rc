@@ -1,0 +1,42 @@
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: MIT
+
+#pragma code_page(65001)
+
+#include "version.h"
+
+#include <winres.h>
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, 0
+ PRODUCTVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, 0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "FileDescription", L"JPEG-LS WIC codec"
+            VALUE "FileVersion", VERSION
+            VALUE "InternalName", L"jpegls-wic-codec.dll"
+            VALUE "LegalCopyright", L"Copyright (c) Team CharLS"
+            VALUE "OriginalFilename", L"jpegls-wic-codec.dll"
+            VALUE "ProductName", L"JPEG-LS WIC codec"
+            VALUE "ProductVersion", VERSION
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
