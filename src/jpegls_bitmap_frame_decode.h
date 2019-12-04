@@ -78,33 +78,33 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     // IWICBitmapSource
     HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetSize.1, instance=%p, width=%p, height=%p\n", this, width, height);
+        TRACE("%p jpegls_bitmap_frame_decoder::GetSize.1, width=%p, height=%p\n", this, width, height);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         const auto result = bitmap_source_->GetSize(width, height);
         WARNING_UNSUPPRESS()
 
-        TRACE("jpegls_bitmap_frame_decoder::GetSize.2, instance=%p, width=%u, height=%u\n", this,
+        TRACE("%p jpegls_bitmap_frame_decoder::GetSize.2, *width=%u, *height=%u\n", this,
               width ? *width : 0, height ? *height : 0);
         return result;
     }
 
     HRESULT __stdcall GetPixelFormat(GUID* pixel_format) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat.1, instance=%p, pixel_format=%p\n", this, pixel_format);
+        TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat.1, pixel_format=%p\n", this, pixel_format);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         const auto result = bitmap_source_->GetPixelFormat(pixel_format);
         WARNING_UNSUPPRESS()
 
-        TRACE("jpegls_bitmap_frame_decoder::GetPixelFormat.2, instance=%p, pixel_format=%s\n", this,
+        TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat.2, pixel_format=%s\n", this,
               pixel_format ? pixel_format_to_string(*pixel_format) : "");
         return result;
     }
 
     HRESULT __stdcall GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetResolution, instance=%p,  dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
+        TRACE("%p jpegls_bitmap_frame_decoder::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
@@ -113,7 +113,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::CopyPixels, instance=%p, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
+        TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
 
         WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
@@ -122,7 +122,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::CopyPalette, instance=%p\n", this);
+        TRACE("%p jpegls_bitmap_frame_decoder::CopyPalette\n", this);
         return WINCODEC_ERR_PALETTEUNAVAILABLE;
     }
 
@@ -134,7 +134,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
-        TRACE("jpegls_bitmap_frame_decoder::GetColorContexts, instance=%p, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p jpegls_bitmap_frame_decoder::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
         if (!actual_count)
             return E_POINTER;
 
@@ -144,7 +144,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("jpegls_bitmap_decoder::GetMetadataQueryReader, instance=%p, metadata_query_reader=%p\n", this, metadata_query_reader);
+        TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for metadata.
         return WINCODEC_ERR_UNSUPPORTEDOPERATION;
