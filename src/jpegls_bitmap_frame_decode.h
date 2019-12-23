@@ -54,7 +54,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
             uint32_t stride;
             winrt::check_hresult(bitmap_lock->GetStride(&stride));
-            if (stride != compute_stride(frame_info))
+            if (stride < compute_stride(frame_info))
             {
                 ASSERT(false);
                 winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
@@ -64,7 +64,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             uint32_t data_buffer_size;
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
 
-            decoder.decode(data_buffer, data_buffer_size);
+            decoder.decode(data_buffer, data_buffer_size, stride);
 
             if (sample_shift != 0)
             {
