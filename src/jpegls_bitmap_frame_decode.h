@@ -64,7 +64,15 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             uint32_t data_buffer_size;
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
 
-            decoder.decode(data_buffer, data_buffer_size, stride);
+            if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
+            {
+                auto planar = decoder.decode<std::vector<std::byte>>();
+                convert_planar_to_rgb(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+            }
+            else
+            {
+                decoder.decode(data_buffer, data_buffer_size, stride);
+            }
 
             if (sample_shift != 0)
             {
@@ -228,7 +236,29 @@ private:
                        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
 
-    winrt::com_ptr<IWICBitmapSource> bitmap_source_;
+    static void convert_planar_to_rgb(const size_t width, const size_t height, const std::byte* source, void* destination, const size_t rgb_stride) noexcept
+    {
+        const std::byte* r = source;
+        const std::byte* g = r + (width * height);
+        const std::byte* b = g + (width * height);
+
+        auto rgb = static_cast<std::byte*>(destination);
+
+        for (size_t row = 0; row < height; ++row)
+        {
+            for (size_t col = 0, offset = 0; col < width; ++col, offset += 3)
+            {
+                rgb[offset + 0] = r[col];
+                rgb[offset + 1] = g[col];
+                rgb[offset + 2] = b[col];
+            }
+
+            b += width;
+            g += width;
+            r += width;
+            rgb += rgb_stride;
+        }
+    }
 
     // purpose: replacement container that doesn't initialize its content (provided in C++20)
     struct storage_buffer final
@@ -261,4 +291,6 @@ private:
         size_t size_;
         std::unique_ptr<std::byte[]> buffer_;
     };
+
+    winrt::com_ptr<IWICBitmapSource> bitmap_source_;
 };
