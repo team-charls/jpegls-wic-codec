@@ -88,6 +88,14 @@
 
   </ItemDefinitionGroup>
 
+  <!-- Switch to full debug info when the environment variable VS_DEBUG_FULL_INFO is defined and not empty
+       In debug builds, "fast" info is the default but the VS code coverage tool requires full info. -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <Link Condition="'$(VS_DEBUG_FULL_INFO)'!=''">
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
