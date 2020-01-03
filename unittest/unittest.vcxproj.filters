@@ -40,6 +40,9 @@
     <ClCompile Include="jpegls_bitmap_frame_encode_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dllmain_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\lena8b.jls">
