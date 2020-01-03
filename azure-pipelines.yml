@@ -1,24 +1,40 @@
 # Copyright (c) Team CharLS.
 # SPDX-License-Identifier: MIT
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   solution: '*.sln'
-  buildPlatform: 'x64'
-  buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@0
+jobs:
+- job: 'cppWindows'
+  pool:
+    vmImage: windows-latest
+  displayName: 'Build on Windows'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  strategy:
+    matrix:
+      x86-Debug:
+        buildPlatform: 'Win32'
+        buildConfiguration: 'Debug'
+      x86-Release:
+        buildPlatform: 'Win32'
+        buildConfiguration: 'Release'
+      x64-Debug:
+        buildPlatform: 'x64'
+        buildConfiguration: 'Debug'
+      x64-Release:
+        buildPlatform: 'x64'
+        buildConfiguration: 'Release'  
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  steps:
+  - task: NuGetToolInstaller@0
+
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+
+  - task: VSTest@2
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
