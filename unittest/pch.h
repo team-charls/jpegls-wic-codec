@@ -10,7 +10,11 @@
 #include <wincodec.h>
 
 #include <unknwn.h>
+
+#pragma warning(push)
+#pragma warning(disable : 5204) // class has virtual functions, but its trivial destructor is not virtual
 #include <winrt/base.h>
+#pragma warning(pop)
 
 #pragma warning(push)
 #pragma warning(disable : 26432) // If you define or delete any default operation in the type 'struct Microsoft::VisualStudio::CppUnitTestFramework::TestClassImpl::CrtHandlersSetter', define or delete them all (c.21).

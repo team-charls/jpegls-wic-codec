@@ -63,6 +63,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             BYTE* data_buffer;
             uint32_t data_buffer_size;
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
+            __assume(data_buffer != nullptr);
 
             if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
             {
