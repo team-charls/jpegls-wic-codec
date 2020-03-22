@@ -16,7 +16,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(dllmain_test)
 {
 public :
-    TEST_METHOD(class_factory_jpegls_decoder_lock_server)
+    TEST_METHOD(class_factory_jpegls_decoder_lock_server) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
@@ -27,7 +27,7 @@ public :
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(class_factory_jpegls_encoder_lock_server)
+    TEST_METHOD(class_factory_jpegls_encoder_lock_server) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
@@ -38,7 +38,7 @@ public :
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(class_factory_unknown_id)
+    TEST_METHOD(class_factory_unknown_id) // NOLINT
     {
         winrt::com_ptr<IClassFactory> class_factory;
         const HRESULT result{factory_.get_class_factory(GUID_VendorTeamCharLS, class_factory)};
@@ -46,7 +46,7 @@ public :
         Assert::AreEqual(CLASS_E_CLASSNOTAVAILABLE, result);
     }
 
-    TEST_METHOD(class_factory_jpegls_encoder_create_instance_bad_result)
+    TEST_METHOD(class_factory_jpegls_encoder_create_instance_bad_result) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
@@ -57,18 +57,18 @@ public :
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(class_factory_jpegls_encoder_create_instance_no_aggregation)
+    TEST_METHOD(class_factory_jpegls_encoder_create_instance_no_aggregation) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
-        IUnknown* outer = reinterpret_cast<IUnknown*>(1);
+        auto outer = reinterpret_cast<IUnknown*>(1);
         winrt::com_ptr<IWICBitmapDecoder> decoder;
         const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
         Assert::AreEqual(CLASS_E_NOAGGREGATION, result);
     }
 
-    TEST_METHOD(class_factory_jpegls_decoder_create_instance_bad_result)
+    TEST_METHOD(class_factory_jpegls_decoder_create_instance_bad_result) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
@@ -79,11 +79,11 @@ public :
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(class_factory_jpegls_decoder_create_instance_no_aggregation)
+    TEST_METHOD(class_factory_jpegls_decoder_create_instance_no_aggregation) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
-        IUnknown* outer = reinterpret_cast<IUnknown*>(1);
+        auto outer = reinterpret_cast<IUnknown*>(1);
         winrt::com_ptr<IWICBitmapDecoder> decoder;
         const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 

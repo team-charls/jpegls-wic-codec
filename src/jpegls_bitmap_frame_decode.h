@@ -268,7 +268,7 @@ private:
 
         explicit storage_buffer(const size_t size) :
             size_{size},
-            buffer_{std::make_unique<std::byte[]>(size)}
+            buffer_{std::make_unique<std::byte[]>(size)} // NOLINT(cppcoreguidelines-avoid-c-arrays)
         {
         }
 
@@ -290,7 +290,7 @@ private:
 
     private:
         size_t size_;
-        std::unique_ptr<std::byte[]> buffer_;
+        std::unique_ptr<std::byte[]> buffer_; // NOLINT(cppcoreguidelines-avoid-c-arrays)
     };
 
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;

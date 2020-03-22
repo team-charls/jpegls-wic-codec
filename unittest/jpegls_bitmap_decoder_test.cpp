@@ -16,7 +16,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(jpegls_bitmap_decoder_test)
 {
 public:
-    TEST_METHOD(GetContainerFormat)
+    TEST_METHOD(GetContainerFormat) // NOLINT
     {
         GUID container_format;
         const HRESULT result = factory_.create_decoder()->GetContainerFormat(&container_format);
@@ -25,7 +25,7 @@ public:
         Assert::IsTrue(GUID_ContainerFormatJpegLS == container_format);
     }
 
-    TEST_METHOD(GetContainerFormat_with_nullptr)
+    TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result = factory_.create_decoder()->GetContainerFormat(nullptr);
@@ -34,7 +34,7 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
-    TEST_METHOD(GetDecoderInfo)
+    TEST_METHOD(GetDecoderInfo) // NOLINT
     {
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
 
@@ -52,7 +52,7 @@ public:
         }
     }
 
-    TEST_METHOD(GetDecoderInfo_with_nullptr)
+    TEST_METHOD(GetDecoderInfo_with_nullptr) // NOLINT
     {
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result{factory_.create_decoder()->GetDecoderInfo(nullptr)};
@@ -61,7 +61,7 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
-    TEST_METHOD(CopyPalette)
+    TEST_METHOD(CopyPalette) // NOLINT
     {
         const com_ptr<IWICPalette> palette;
         const HRESULT result = factory_.create_decoder()->CopyPalette(palette.get());
@@ -69,7 +69,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_PALETTEUNAVAILABLE, result);
     }
 
-    TEST_METHOD(GetMetadataQueryReader)
+    TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const HRESULT result = factory_.create_decoder()->GetMetadataQueryReader(metadata_query_reader.put());
@@ -77,7 +77,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(GetPreview)
+    TEST_METHOD(GetPreview) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
         const HRESULT result = factory_.create_decoder()->GetPreview(bitmap_source.put());
@@ -85,7 +85,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(GetColorContexts)
+    TEST_METHOD(GetColorContexts) // NOLINT
     {
         com_ptr<IWICColorContext> color_contexts;
         uint32_t actual_count;
@@ -94,7 +94,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(GetThumbnail)
+    TEST_METHOD(GetThumbnail) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
         const HRESULT result = factory_.create_decoder()->GetThumbnail(bitmap_source.put());
@@ -102,7 +102,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_CODECNOTHUMBNAIL, result);
     }
 
-    TEST_METHOD(GetFrameCount)
+    TEST_METHOD(GetFrameCount) // NOLINT
     {
         uint32_t frame_count;
         const HRESULT result = factory_.create_decoder()->GetFrameCount(&frame_count);
@@ -111,7 +111,7 @@ public:
         Assert::AreEqual(1U, frame_count);
     }
 
-    TEST_METHOD(GetFrameCount_count_parameter_is_null)
+    TEST_METHOD(GetFrameCount_count_parameter_is_null) // NOLINT
     {
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result{factory_.create_decoder()->GetFrameCount(nullptr)};
@@ -120,7 +120,7 @@ public:
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(QueryCapability_cannot_decode_empty)
+    TEST_METHOD(QueryCapability_cannot_decode_empty) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -132,7 +132,7 @@ public:
         Assert::AreEqual(0UL, capability);
     }
 
-    TEST_METHOD(QueryCapability_can_decode_8bit_monochrome)
+    TEST_METHOD(QueryCapability_can_decode_8bit_monochrome) // NOLINT
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
@@ -143,7 +143,7 @@ public:
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
     }
 
-    TEST_METHOD(QueryCapability_stream_argument_null)
+    TEST_METHOD(QueryCapability_stream_argument_null) // NOLINT
     {
         DWORD capability;
         const HRESULT result{factory_.create_decoder()->QueryCapability(nullptr, &capability)};
@@ -151,7 +151,7 @@ public:
         Assert::AreEqual(E_INVALIDARG, result);
     }
 
-    TEST_METHOD(QueryCapability_capability_argument_null)
+    TEST_METHOD(QueryCapability_capability_argument_null) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -163,19 +163,19 @@ public:
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(QueryCapability_read_error_on_stream)
+    TEST_METHOD(QueryCapability_read_error_on_stream) // NOLINT
     {
         // TODO: pass a stream that generates a read error.
         Assert::IsTrue(true);
     }
 
-    TEST_METHOD(QueryCapability_seek_error_on_stream)
+    TEST_METHOD(QueryCapability_seek_error_on_stream) // NOLINT
     {
         // TODO: pass a stream that generates a seek error.
         Assert::IsTrue(true);
     }
 
-    TEST_METHOD(Initialize_cache_on_demand)
+    TEST_METHOD(Initialize_cache_on_demand) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -184,7 +184,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_cache_on_load)
+    TEST_METHOD(Initialize_cache_on_load) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -193,7 +193,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_twice)
+    TEST_METHOD(Initialize_twice) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -206,7 +206,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_bad_cache_option)
+    TEST_METHOD(Initialize_bad_cache_option) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -217,13 +217,13 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_null_stream)
+    TEST_METHOD(Initialize_null_stream) // NOLINT
     {
         HRESULT result{factory_.create_decoder()->Initialize(nullptr, WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(E_INVALIDARG, result);
     }
 
-    TEST_METHOD(GetFrame)
+    TEST_METHOD(GetFrame) // NOLINT
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
@@ -235,7 +235,7 @@ public:
         uint32_t frame_count;
         result = decoder->GetFrameCount(&frame_count);
         Assert::AreEqual(S_OK, result);
-        Assert::AreEqual(1u, frame_count);
+        Assert::AreEqual(1U, frame_count);
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
         result = decoder->GetFrame(0, bitmap_frame_decode.put());
@@ -243,7 +243,7 @@ public:
         Assert::IsTrue(bitmap_frame_decode.get() != nullptr);
     }
 
-    TEST_METHOD(GetFrame_with_frame_argument_null)
+    TEST_METHOD(GetFrame_with_frame_argument_null) // NOLINT
     {
         WARNING_SUPPRESS(6387) // don't pass nullptr
         const HRESULT result{factory_.create_decoder()->GetFrame(0, nullptr)};
@@ -252,7 +252,7 @@ public:
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(GetFrame_with_bad_index)
+    TEST_METHOD(GetFrame_with_bad_index) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
         const HRESULT result{factory_.create_decoder()->GetFrame(1, bitmap_frame_decode.put())};
@@ -260,7 +260,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_FRAMEMISSING, result);
     }
 
-    TEST_METHOD(GetFrame_not_initialized)
+    TEST_METHOD(GetFrame_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
         const HRESULT result{factory_.create_decoder()->GetFrame(0, bitmap_frame_decode.put())};

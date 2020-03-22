@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="class_factory.h" />
+    <ClInclude Include="errors.h" />
     <ClInclude Include="jpegls_bitmap_decoder.h" />
     <ClInclude Include="jpegls_bitmap_encoder.h" />
     <ClInclude Include="jpegls_bitmap_frame_decode.h" />

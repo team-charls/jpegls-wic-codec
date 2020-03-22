@@ -71,7 +71,7 @@ vector<std::byte> read_file(const wchar_t* filename)
 TEST_CLASS(jpegls_bitmap_encoder_test)
 {
 public:
-    TEST_METHOD(GetContainerFormat)
+    TEST_METHOD(GetContainerFormat) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -81,7 +81,7 @@ public:
         Assert::IsTrue(GUID_ContainerFormatJpegLS == container_format);
     }
 
-    TEST_METHOD(GetContainerFormat_with_nullptr)
+    TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -92,7 +92,7 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
-    TEST_METHOD(GetEncoderInfo)
+    TEST_METHOD(GetEncoderInfo) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -110,7 +110,7 @@ public:
         }
     }
 
-    TEST_METHOD(GetEncoderInfo_with_nullptr)
+    TEST_METHOD(GetEncoderInfo_with_nullptr) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -121,7 +121,7 @@ public:
         Assert::IsTrue(FAILED(result));
     }
 
-    TEST_METHOD(SetPreview)
+    TEST_METHOD(SetPreview) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -129,7 +129,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(SetThumbnail)
+    TEST_METHOD(SetThumbnail) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -137,7 +137,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(SetColorContexts)
+    TEST_METHOD(SetColorContexts) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -145,7 +145,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(GetMetadataQueryWriter)
+    TEST_METHOD(GetMetadataQueryWriter) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -155,7 +155,7 @@ public:
         Assert::IsNull(metadata_query_writer.get());
     }
 
-    TEST_METHOD(SetPalette)
+    TEST_METHOD(SetPalette) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -166,7 +166,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(Initialize)
+    TEST_METHOD(Initialize) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -177,7 +177,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_with_nullptr)
+    TEST_METHOD(Initialize_with_nullptr) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -185,7 +185,7 @@ public:
         Assert::AreEqual(E_INVALIDARG, result);
     }
 
-    TEST_METHOD(Initialize_twice)
+    TEST_METHOD(Initialize_twice) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -199,7 +199,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(CreateNewFrame)
+    TEST_METHOD(CreateNewFrame) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -215,7 +215,7 @@ public:
         Assert::IsNotNull(frame_encode.get());
     }
 
-    TEST_METHOD(CreateNewFrame_with_nullptr)
+    TEST_METHOD(CreateNewFrame_with_nullptr) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -231,7 +231,7 @@ public:
         Assert::AreEqual(E_POINTER, result);
     }
 
-    TEST_METHOD(CreateNewFrame_while_not_initialized)
+    TEST_METHOD(CreateNewFrame_while_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -240,7 +240,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
-    TEST_METHOD(Commit_while_not_initialized)
+    TEST_METHOD(Commit_while_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
@@ -248,7 +248,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_NOTINITIALIZED, result);
     }
 
-    TEST_METHOD(Commit_without_a_frame)
+    TEST_METHOD(Commit_without_a_frame) // NOLINT
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
@@ -262,7 +262,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_FRAMEMISSING, result);
     }
 
-    TEST_METHOD(encode_conformance_color_lossless)
+    TEST_METHOD(encode_conformance_color_lossless) // NOLINT
     {
         const wchar_t* filename = L"encode_conformance_color_lossless.jls";
         portable_anymap_file anymap_file{"test8.ppm"};

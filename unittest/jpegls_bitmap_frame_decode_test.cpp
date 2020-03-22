@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -9,8 +9,10 @@
 
 #include <CppUnitTest.h>
 
+#include <array>
 #include <vector>
 
+using std::array;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -18,7 +20,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(jpegls_bitmap_frame_decode_test)
 {
 public:
-    TEST_METHOD(GetSize)
+    TEST_METHOD(GetSize) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -31,7 +33,7 @@ public:
         Assert::AreEqual(512U, height);
     }
 
-    TEST_METHOD(CopyPalette)
+    TEST_METHOD(CopyPalette) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -42,7 +44,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_PALETTEUNAVAILABLE, result);
     }
 
-    TEST_METHOD(GetThumbnail)
+    TEST_METHOD(GetThumbnail) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -51,7 +53,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_CODECNOTHUMBNAIL, result);
     }
 
-    TEST_METHOD(GetPixelFormat)
+    TEST_METHOD(GetPixelFormat) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -61,7 +63,7 @@ public:
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
-    TEST_METHOD(GetColorContexts)
+    TEST_METHOD(GetColorContexts) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -70,13 +72,13 @@ public:
         Assert::AreEqual(S_OK, result);
         Assert::AreEqual(0U, actual_count);
 
-        IWICColorContext* color_contexts[1]{};
-        result = bitmap_frame_decoder->GetColorContexts(1, color_contexts, &actual_count);
+        array<IWICColorContext*, 1> color_contexts{};
+        result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(), &actual_count);
         Assert::AreEqual(S_OK, result);
         Assert::AreEqual(0U, actual_count);
     }
 
-    TEST_METHOD(GetMetadataQueryReader)
+    TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -85,7 +87,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(CopyPixels)
+    TEST_METHOD(CopyPixels) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -102,7 +104,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(IsIWICBitmapSource)
+    TEST_METHOD(IsIWICBitmapSource) // NOLINT
     {
         const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
@@ -129,7 +131,7 @@ private:
     {
         com_ptr<IWICImagingFactory> imaging_factory;
         check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-            nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+                                       nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
 
         return imaging_factory;
     }

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "errors.h"
+
 template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
@@ -12,12 +14,12 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
         void** result) noexcept override
     {
         if (!result)
-            return E_POINTER;
+            return error_pointer;
 
         *result = nullptr;
 
         if (outer)
-            return CLASS_E_NOAGGREGATION;
+            return error_no_aggregation;
 
         try
         {
@@ -31,6 +33,6 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 
     HRESULT __stdcall LockServer(BOOL) noexcept override
     {
-        return S_OK;
+        return error_ok;
     }
 };

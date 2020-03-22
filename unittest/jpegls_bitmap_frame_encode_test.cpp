@@ -20,7 +20,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(jpegls_bitmap_frame_encode_test)
 {
 public:
-    TEST_METHOD(Initialize)
+    TEST_METHOD(Initialize) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
@@ -28,7 +28,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(Initialize_twice)
+    TEST_METHOD(Initialize_twice) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -37,7 +37,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(Initialize_after_commit)
+    TEST_METHOD(Initialize_after_commit) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
@@ -46,7 +46,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(SetSize)
+    TEST_METHOD(SetSize) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -55,7 +55,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(SetSize_not_initialized)
+    TEST_METHOD(SetSize_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
@@ -63,7 +63,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(SetSize_after_commit)
+    TEST_METHOD(SetSize_after_commit) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
@@ -72,7 +72,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(SetResolution)
+    TEST_METHOD(SetResolution) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -83,7 +83,7 @@ public:
         // TODO: extend this test by encode\decode a sample image.
     }
 
-    TEST_METHOD(SetResolution_not_initialized)
+    TEST_METHOD(SetResolution_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
@@ -91,7 +91,7 @@ public:
         Assert::AreEqual(S_OK, result);
     }
 
-    TEST_METHOD(SetResolution_after_commit)
+    TEST_METHOD(SetResolution_after_commit) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
@@ -100,19 +100,19 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(SetColorContexts_is_unsupported)
+    TEST_METHOD(SetColorContexts_is_unsupported) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
         com_ptr<IWICColorContext> color_context;
         check_hresult(imaging_factory()->CreateColorContext(color_context.put()));
-        IWICColorContext* color_contexts[]{color_context.get()};
+        array color_contexts{color_context.get()};
 
-        const HRESULT result = bitmap_frame_encoder->SetColorContexts(1, color_contexts);
+        const HRESULT result = bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data());
         Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
     }
 
-    TEST_METHOD(SetPixelFormat)
+    TEST_METHOD(SetPixelFormat) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -127,7 +127,7 @@ public:
         }
     }
 
-    TEST_METHOD(SetPixelFormat_not_initialized)
+    TEST_METHOD(SetPixelFormat_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
@@ -139,7 +139,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(SetPixelFormat_after_commit)
+    TEST_METHOD(SetPixelFormat_after_commit) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
@@ -152,7 +152,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(Commit_not_initialized)
+    TEST_METHOD(Commit_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
@@ -160,7 +160,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(Commit_no_size)
+    TEST_METHOD(Commit_no_size) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -170,7 +170,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(Commit_no_pixel_format)
+    TEST_METHOD(Commit_no_pixel_format) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
@@ -180,7 +180,7 @@ public:
         Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
     }
 
-    TEST_METHOD(Commit)
+    TEST_METHOD(Commit) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));

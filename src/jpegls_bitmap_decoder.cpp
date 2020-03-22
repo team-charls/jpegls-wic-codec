@@ -14,11 +14,13 @@
 #include <wincodec.h>
 #include <winrt/base.h>
 
+#include <array>
 #include <mutex>
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;
 using charls::jpegls_error;
+using std::array;
 using std::error_code;
 using std::mutex;
 using std::scoped_lock;
@@ -37,10 +39,10 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("%p jpegls_bitmap_decoder::QueryCapability.1, stream=%p, capability=%p\n", this, stream, capability);
 
         if (!stream)
-            return E_INVALIDARG;
+            return error_invalid_argument;
 
         if (!capability)
-            return E_POINTER;
+            return error_pointer;
 
         *capability = 0;
 
@@ -49,17 +51,17 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         // it can provide for the supplied stream, and restore the stream position.
         try
         {
-            std::byte header[4 * 1024];
+            array<std::byte, 4 * 1024> header{};
             unsigned long read_byte_count;
 
-            check_hresult(stream->Read(header, sizeof header, &read_byte_count));
+            check_hresult(stream->Read(header.data(), static_cast<ULONG>(header.size()), &read_byte_count));
 
             LARGE_INTEGER offset;
             offset.QuadPart = -static_cast<int64_t>(read_byte_count);
             check_hresult(stream->Seek(offset, STREAM_SEEK_CUR, nullptr));
 
             jpegls_decoder decoder;
-            decoder.source(header, read_byte_count);
+            decoder.source(header.data(), read_byte_count);
 
             error_code error;
             decoder.read_header(error);
@@ -67,7 +69,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             {
                 TRACE("%p jpegls_bitmap_decoder::QueryCapability.2, capability=0, ec=%d, (reason=%s)\n", this, error.value(),
                       jpegls_category().message(error.value()).c_str());
-                return S_OK;
+                return error_ok;
             }
 
             const auto& frame_info = decoder.frame_info();
@@ -77,7 +79,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             }
 
             TRACE("%p jpegls_bitmap_decoder::QueryCapability.3, stream=%p, *capability=%d\n", this, stream, *capability);
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {
@@ -90,7 +92,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("%p jpegls_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
 
         if (!stream)
-            return E_INVALIDARG;
+            return error_invalid_argument;
 
         WARNING_SUPPRESS(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
@@ -99,7 +101,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         stream_.copy_from(stream);
         bitmap_frame_decode_.attach(nullptr);
 
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
@@ -110,7 +112,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             return E_POINTER;
 
         *container_format = GUID_ContainerFormatJpegLS;
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
@@ -123,7 +125,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
             check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {
@@ -172,7 +174,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             return E_POINTER;
 
         *count = 1; // JPEG-LS format can only store 1 frame.
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
@@ -199,7 +201,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             }
 
             bitmap_frame_decode_.copy_to(bitmap_frame_decode);
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {

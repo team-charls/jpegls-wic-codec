@@ -76,10 +76,10 @@ void register_decoder()
     registry::set_value(patterns_sub_key, L"Length", 3);
     registry::set_value(patterns_sub_key, L"Position", 0U);
 
-    const std::byte mask[]{std::byte{0xFF}, std::byte{0xFF}, std::byte{0xFF}};
-    registry::set_value(patterns_sub_key, L"Mask", mask, sizeof mask);
-    const std::byte pattern[]{std::byte{0xFF}, std::byte{0xD8}, std::byte{0xFF}};
-    registry::set_value(patterns_sub_key, L"Pattern", pattern, sizeof pattern);
+    const array mask{std::byte{0xFF}, std::byte{0xFF}, std::byte{0xFF}};
+    registry::set_value(patterns_sub_key, L"Mask", mask.data(), static_cast<DWORD>(mask.size()));
+    const array pattern{std::byte{0xFF}, std::byte{0xD8}, std::byte{0xFF}};
+    registry::set_value(patterns_sub_key, L"Pattern", pattern.data(), static_cast<DWORD>(pattern.size()));
 
     registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"", L"jlsfile");
     registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"Content Type", L"image/jls");

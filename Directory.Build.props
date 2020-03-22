@@ -65,12 +65,14 @@
 
       <!--
         NOMINMAX = Prevent that the Windows SDK header files define the macros min and max.
+        _SILENCE_CLANG_COROUTINE_MESSAGE = Prevent warning when running clang-tidy
       -->
       <PreprocessorDefinitions>
         WIN32;
         _WINDOWS;
         WIN32_LEAN_AND_MEAN;
         NOMINMAX;
+        _SILENCE_CLANG_COROUTINE_MESSAGE;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 
@@ -98,6 +100,8 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">

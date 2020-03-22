@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "errors.h"
+
 #include <winrt/base.h>
 
 #include <cassert>
@@ -95,10 +97,12 @@
 
 namespace registry {
 
+const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
+
 inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
 {
     const auto length = wcslen(value) + 1;
-    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
+    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
 }
 
 inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)
@@ -108,7 +112,7 @@ inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, cons
 
 inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t value)
 {
-    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_DWORD, &value, sizeof value));
+    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
 
 inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint32_t value)
@@ -118,7 +122,7 @@ inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint
 
 inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
 {
-    winrt::check_win32(RegSetKeyValue(HKEY_LOCAL_MACHINE, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
+    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
 }
 
 inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
@@ -128,13 +132,13 @@ inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, cons
 
 inline HRESULT delete_tree(const PCWSTR sub_key) noexcept
 {
-    const LSTATUS result = RegDeleteTreeW(HKEY_LOCAL_MACHINE, sub_key);
+    const LSTATUS result = RegDeleteTreeW(hkey_local_machine, sub_key);
     if (result != ERROR_SUCCESS)
     {
         return HRESULT_FROM_WIN32(result);
     }
 
-    return S_OK;
+    return error_ok;
 }
 
 } // namespace registry
