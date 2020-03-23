@@ -65,14 +65,14 @@
 
       <!--
         NOMINMAX = Prevent that the Windows SDK header files define the macros min and max.
-        _SILENCE_CLANG_COROUTINE_MESSAGE = Prevent warning when running clang-tidy
+        WINRT_NO_MAKE_DETECTION = Enable making COM class implementation final
       -->
       <PreprocessorDefinitions>
         WIN32;
         _WINDOWS;
         WIN32_LEAN_AND_MEAN;
         NOMINMAX;
-        _SILENCE_CLANG_COROUTINE_MESSAGE;
+        WINRT_NO_MAKE_DETECTION;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 

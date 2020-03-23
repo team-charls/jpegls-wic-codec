@@ -26,6 +26,7 @@
 # -clang-diagnostic-language-extension-token => Rationale: COM programming with MSVC requires usage of some extensions (__uuidof for example)
 # -clang-diagnostic-missing-prototypes => Rationale: false warning, complains about DllMain
 # -clang-analyzer-core.NonNullParamChecker => Rationale: cannot be effective disabled, already checked by other checkers.
+# -clang-analyzer-core.NullDereference => Rationale: false warnings, already checked by other checkers that work better.
 # -misc-non-private-member-variables-in-classes => Rationale: design can be ok, manual review is better
 # -misc-unused-using-decls => Rationale: false warning when using array with CTAD
 # -modernize-use-trailing-return-type => Rationale: A style recommendation, this style is selected for CharLS
@@ -70,6 +71,7 @@ Checks:          '*,
                   -clang-diagnostic-language-extension-token,
                   -clang-diagnostic-missing-prototypes,
                   -clang-analyzer-core.NonNullParamChecker,
+                  -clang-analyzer-core.NullDereference,
                   -misc-non-private-member-variables-in-classes,
                   -misc-unused-using-decls,
                   -modernize-use-trailing-return-type,
