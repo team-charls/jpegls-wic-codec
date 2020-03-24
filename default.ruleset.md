@@ -16,7 +16,7 @@ C26472: Don't use static_cast for arithmetic conversions
 -> Rationale: can only be solved with gsl::narrow_cast
 
 C26474: No implicit cast
--> Rationale: many false warnings
+-> Rationale: false warnings (VS 2019 16.6.0)
 
 C26481: Do not pass an array as a single pointer.
 -> Rationale: gsl::span is not available.
@@ -28,13 +28,13 @@ C26485: Do not pass an array as a single pointer
 -> Rationale: see C26481.
 
 C26486: Lifetime problem.
--> Rationale: many false warnings.
+-> Rationale: many false warnings (VS 2019 16.6.0)
 
 C26487: Don't return a pointer that may be invalid (lifetime.4).
--> Rationale: many false warnings (VS 2019 16.0.0 Preview 1.1)
+-> Rationale: many false warnings (VS 2019 16.6.0)
 
 C26489: Don't dereference a pointer that may be invalid
--> Rationale: many false warnings
+-> Rationale: many false warnings (VS 2019 16.6.0)
 
 C26490: Don't use reinterpret_cast
 -> Rationale: required to work with win32 API

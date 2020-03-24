@@ -4,8 +4,9 @@
 #include "pch.h"
 
 #include "factory.h"
+#include "util.h"
 
-#include "../src/util.h"
+#include "../src/errors.h"
 
 #include <CppUnitTest.h>
 
@@ -20,30 +21,30 @@ public :
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
-        HRESULT result{class_factory->LockServer(true)};
-        Assert::AreEqual(S_OK, result);
+        hresult result{class_factory->LockServer(true)};
+        Assert::AreEqual(error_ok, result);
 
         result = class_factory->LockServer(false);
-        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(class_factory_jpegls_encoder_lock_server) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
-        HRESULT result{class_factory->LockServer(true)};
-        Assert::AreEqual(S_OK, result);
+        hresult result{class_factory->LockServer(true)};
+        Assert::AreEqual(error_ok, result);
 
         result = class_factory->LockServer(false);
-        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(class_factory_unknown_id) // NOLINT
     {
         winrt::com_ptr<IClassFactory> class_factory;
-        const HRESULT result{factory_.get_class_factory(GUID_VendorTeamCharLS, class_factory)};
+        const hresult result{factory_.get_class_factory(GUID_VendorTeamCharLS, class_factory)};
 
-        Assert::AreEqual(CLASS_E_CLASSNOTAVAILABLE, result);
+        Assert::AreEqual(error_class_not_available, result);
     }
 
     TEST_METHOD(class_factory_jpegls_encoder_create_instance_bad_result) // NOLINT
@@ -51,10 +52,10 @@ public :
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
         WARNING_SUPPRESS(6387) // don't pass nullptr
-        const HRESULT result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
+        const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
         WARNING_UNSUPPRESS()
 
-        Assert::AreEqual(E_POINTER, result);
+        Assert::AreEqual(error_pointer, result);
     }
 
     TEST_METHOD(class_factory_jpegls_encoder_create_instance_no_aggregation) // NOLINT
@@ -63,9 +64,9 @@ public :
 
         auto outer = reinterpret_cast<IUnknown*>(1);
         winrt::com_ptr<IWICBitmapDecoder> decoder;
-        const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
+        const hresult result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
-        Assert::AreEqual(CLASS_E_NOAGGREGATION, result);
+        Assert::AreEqual(error_no_aggregation, result);
     }
 
     TEST_METHOD(class_factory_jpegls_decoder_create_instance_bad_result) // NOLINT
@@ -73,10 +74,10 @@ public :
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
         WARNING_SUPPRESS(6387) // don't pass nullptr
-        const HRESULT result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
+        const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
         WARNING_UNSUPPRESS()
 
-        Assert::AreEqual(E_POINTER, result);
+        Assert::AreEqual(error_pointer, result);
     }
 
     TEST_METHOD(class_factory_jpegls_decoder_create_instance_no_aggregation) // NOLINT
@@ -85,9 +86,9 @@ public :
 
         auto outer = reinterpret_cast<IUnknown*>(1);
         winrt::com_ptr<IWICBitmapDecoder> decoder;
-        const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
+        const hresult result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
-        Assert::AreEqual(CLASS_E_NOAGGREGATION, result);
+        Assert::AreEqual(error_no_aggregation, result);
     }
 
 private:

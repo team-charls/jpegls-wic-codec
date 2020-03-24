@@ -117,7 +117,7 @@ HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
     const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(class_id);
     const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
 
-    return FAILED(result1) ? result1 : result2;
+    return failed(result1) ? result1 : result2;
 }
 
 } // namespace
@@ -177,7 +177,7 @@ HRESULT __stdcall DllRegisterServer()
 
         SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
-        return S_OK;
+        return error_ok;
     }
     catch (...)
     {
@@ -192,7 +192,7 @@ HRESULT __stdcall DllUnregisterServer()
 
     // Note: keep the .jls file registration intact.
 
-    return FAILED(result_decoder) ? result_decoder : result_encoder;
+    return failed(result_decoder) ? result_decoder : result_encoder;
 }
 
 // ReSharper restore CppParameterNamesMismatch

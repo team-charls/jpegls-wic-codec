@@ -129,6 +129,7 @@
     <ClInclude Include="factory.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="portable_anymap_file.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain_test.cpp" />

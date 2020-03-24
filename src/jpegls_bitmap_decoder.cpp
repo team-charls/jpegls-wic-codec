@@ -6,6 +6,7 @@
 #include "jpegls_bitmap_decoder.h"
 
 #include "class_factory.h"
+#include "errors.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_decode.h"
 
@@ -109,7 +110,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("%p jpegls_bitmap_decoder::GetContainerFormat, container_format=%p\n", this, container_format);
 
         if (!container_format)
-            return E_POINTER;
+            return error_pointer;
 
         *container_format = GUID_ContainerFormatJpegLS;
         return error_ok;
@@ -138,7 +139,7 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("%p jpegls_bitmap_decoder::CopyPalette, palette=%p\n", this, palette);
 
         // Palettes are for JPEG-LS on frame level.
-        return WINCODEC_ERR_PALETTEUNAVAILABLE;
+        return wincodec::error_palette_unavailable;
     }
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
@@ -146,32 +147,35 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for container-level metadata.
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        const HRESULT result = wincodec::error_unsupported_operation;
+        return result;
     }
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetPreview, bitmap_source=%p\n", this, bitmap_source);
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        const HRESULT result = wincodec::error_unsupported_operation;
+        return result;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetThumbnail, thumbnail=%p\n", this, thumbnail);
-        return WINCODEC_ERR_CODECNOTHUMBNAIL;
+        const HRESULT result = wincodec::error_codec_no_thumbnail;
+        return result;
     }
 
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetFrameCount, count=%p\n", this, count);
         if (!count)
-            return E_POINTER;
+            return error_pointer;
 
         *count = 1; // JPEG-LS format can only store 1 frame.
         return error_ok;
@@ -181,17 +185,26 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
     {
         TRACE("%p jpegls_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
         if (!bitmap_frame_decode)
-            return E_POINTER;
+        {
+            const HRESULT result = error_pointer;
+            return result;
+        }
 
         if (index != 0)
-            return WINCODEC_ERR_FRAMEMISSING;
+        {
+            const HRESULT result = wincodec::error_frame_missing;
+            return result;
+        }
 
         WARNING_SUPPRESS(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
         WARNING_UNSUPPRESS()
 
         if (!stream_)
-            return WINCODEC_ERR_NOTINITIALIZED;
+        {
+            const HRESULT result = wincodec::error_not_initialized;
+            return result;
+        }
 
         try
         {

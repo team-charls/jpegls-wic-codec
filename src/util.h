@@ -17,8 +17,8 @@
 
 #ifdef NDEBUG
 
-#define ASSERT(expression) ((void)0)
-#define VERIFY(expression) (void)(expression)
+#define ASSERT(expression) static_cast<void>(0)
+#define VERIFY(expression) static_cast<void>(expression)
 
 #else
 
@@ -95,9 +95,16 @@
     return "Unknown";
 }
 
+inline constexpr bool failed(winrt::hresult const result) noexcept
+{
+    return result < 0;
+}
+
 namespace registry {
 
+WARNING_SUPPRESS(26493) // Don't use C-style casts
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
+WARNING_UNSUPPRESS()
 
 inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
 {

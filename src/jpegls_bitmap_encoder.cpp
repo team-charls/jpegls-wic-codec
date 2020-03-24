@@ -6,6 +6,7 @@
 #include "jpegls_bitmap_encoder.h"
 
 #include "class_factory.h"
+#include "errors.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_encode.h"
 
@@ -28,14 +29,14 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         TRACE("%p jpegls_bitmap_encoder::Initialize, stream=%p, cache_option=%d\n", this, destination, cache_option);
 
         if (!destination)
-            return E_INVALIDARG;
+            return error_invalid_argument;
 
         if (destination_)
-            return WINCODEC_ERR_WRONGSTATE;
+            return wincodec::error_wrong_state;
 
         destination_.copy_from(destination);
 
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
@@ -43,10 +44,10 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, container_format=%p\n", this, container_format);
 
         if (!container_format)
-            return E_POINTER;
+            return error_pointer;
 
         *container_format = GUID_ContainerFormatJpegLS;
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetEncoderInfo(_Outptr_ IWICBitmapEncoderInfo** encoder_info) noexcept override
@@ -59,7 +60,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSEncoder, component_info.put()));
             check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
 
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {
@@ -72,13 +73,22 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode=%p, encoder_options=%p\n", this, bitmap_frame_encode, encoder_options);
 
         if (!bitmap_frame_encode)
-            return E_POINTER;
+        {
+            const HRESULT result = error_pointer;
+            return result;
+        }
 
         if (!destination_)
-            return WINCODEC_ERR_NOTINITIALIZED;
+        {
+            const HRESULT result = wincodec::error_not_initialized;
+            return result;
+        }
 
         if (bitmap_frame_encode_)
-            return WINCODEC_ERR_WRONGSTATE; // Only 1 frame is supported.
+        {
+            const HRESULT result = wincodec::error_wrong_state; // Only 1 frame is supported.
+            return result;
+        }
 
         try
         {
@@ -92,7 +102,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
                 *encoder_options = nullptr;
             }
 
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {
@@ -107,13 +117,13 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         try
         {
             if (!destination_)
-                return WINCODEC_ERR_NOTINITIALIZED;
+                return wincodec::error_not_initialized;
 
             if (!bitmap_frame_encode_)
-                return WINCODEC_ERR_FRAMEMISSING;
+                return wincodec::error_frame_missing;
 
             if (committed_)
-                return WINCODEC_ERR_WRONGSTATE;
+                return wincodec::error_wrong_state;
 
             jpegls_encoder encoder;
             encoder.frame_info(bitmap_frame_encode_->frame_info());
@@ -145,7 +155,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             destination_ = nullptr;
 
             committed_ = true;
-            return S_OK;
+            return error_ok;
         }
         catch (...)
         {
@@ -157,13 +167,13 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     HRESULT __stdcall SetPreview([[maybe_unused]] _In_ IWICBitmapSource* preview) noexcept override
     {
         TRACE("%p jpegls_bitmap_encoder::SetPreview, preview=%p\n", this, preview);
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
     {
         TRACE("%p jpegls_bitmap_encoder::SetThumbnail, thumbnail=%p\n", this, thumbnail);
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
@@ -172,7 +182,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
         // Note: the current implementation doesn't support color contexts.
         //       Normally ICC color context profiles can be stored in the JPEG APP2 marker section.
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetMetadataQueryWriter([[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
@@ -181,7 +191,8 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
         // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        const HRESULT result = wincodec::error_unsupported_operation;
+        return result;
     }
 
     HRESULT __stdcall SetPalette(_In_ IWICPalette* palette) noexcept override
@@ -190,7 +201,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
         // Note: the current implementation doesn't support storing a palette to the JPEG-LS stream.
         //       The JPEG-LS standard does support it.
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
 private:

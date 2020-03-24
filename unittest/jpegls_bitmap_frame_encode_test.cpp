@@ -4,8 +4,9 @@
 #include "pch.h"
 
 #include "factory.h"
+#include "util.h"
 
-#include "../src/util.h"
+#include "../src/errors.h"
 
 #include <CppUnitTest.h>
 
@@ -24,8 +25,8 @@ public:
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        const HRESULT result = bitmap_frame_encoder->Initialize(nullptr);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_encoder->Initialize(nullptr);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(Initialize_twice) // NOLINT
@@ -33,8 +34,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const HRESULT result = bitmap_frame_encoder->Initialize(nullptr);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->Initialize(nullptr);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(Initialize_after_commit) // NOLINT
@@ -42,8 +43,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
 
-        const HRESULT result = bitmap_frame_encoder->Initialize(nullptr);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->Initialize(nullptr);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(SetSize) // NOLINT
@@ -51,16 +52,16 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const HRESULT result = bitmap_frame_encoder->SetSize(512, 512);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_encoder->SetSize(512, 512);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(SetSize_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        const HRESULT result = bitmap_frame_encoder->SetSize(512, 512);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->SetSize(512, 512);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(SetSize_after_commit) // NOLINT
@@ -68,8 +69,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
 
-        const HRESULT result = bitmap_frame_encoder->SetSize(512, 512);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->SetSize(512, 512);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(SetResolution) // NOLINT
@@ -77,8 +78,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const HRESULT result = bitmap_frame_encoder->SetResolution(96., 96.);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_encoder->SetResolution(96., 96.);
+        Assert::AreEqual(error_ok, result);
 
         // TODO: extend this test by encode\decode a sample image.
     }
@@ -87,8 +88,8 @@ public:
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        const HRESULT result = bitmap_frame_encoder->SetResolution(96., 96.);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_encoder->SetResolution(96., 96.);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(SetResolution_after_commit) // NOLINT
@@ -96,8 +97,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
 
-        const HRESULT result = bitmap_frame_encoder->SetResolution(96., 96.);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->SetResolution(96., 96.);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(SetColorContexts_is_unsupported) // NOLINT
@@ -108,8 +109,8 @@ public:
         check_hresult(imaging_factory()->CreateColorContext(color_context.put()));
         array color_contexts{color_context.get()};
 
-        const HRESULT result = bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data());
-        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+        const hresult result = bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data());
+        Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(SetPixelFormat) // NOLINT
@@ -121,8 +122,8 @@ public:
         for (const auto& format : formats)
         {
             GUID pixel_format = format;
-            const HRESULT result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
-            Assert::AreEqual(S_OK, result);
+            const hresult result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
+            Assert::AreEqual(error_ok, result);
             Assert::IsTrue(pixel_format == format);
         }
     }
@@ -135,8 +136,8 @@ public:
         GUID pixel_format = GUID_WICPixelFormat8bppGray;
         WARNING_UNSUPPRESS()
 
-        const HRESULT result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(SetPixelFormat_after_commit) // NOLINT
@@ -148,16 +149,16 @@ public:
         GUID pixel_format = GUID_WICPixelFormat8bppGray;
         WARNING_UNSUPPRESS()
 
-        const HRESULT result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(Commit_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        const HRESULT result = bitmap_frame_encoder->Commit();
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->Commit();
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(Commit_no_size) // NOLINT
@@ -166,8 +167,8 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         set_pixel_format(bitmap_frame_encoder.get(), GUID_WICPixelFormat8bppGray);
 
-        const HRESULT result = bitmap_frame_encoder->Commit();
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->Commit();
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(Commit_no_pixel_format) // NOLINT
@@ -176,8 +177,8 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         check_hresult(bitmap_frame_encoder->SetSize(512, 512));
 
-        const HRESULT result = bitmap_frame_encoder->Commit();
-        Assert::AreEqual(WINCODEC_ERR_WRONGSTATE, result);
+        const hresult result = bitmap_frame_encoder->Commit();
+        Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
     TEST_METHOD(Commit) // NOLINT
@@ -189,8 +190,8 @@ public:
         vector<uint8_t> source(512 * 512);
         bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data());
 
-        const HRESULT result = bitmap_frame_encoder->Commit();
-        Assert::AreEqual(S_OK, result); // TODO: commit should fail.
+        const hresult result = bitmap_frame_encoder->Commit();
+        Assert::AreEqual(error_ok, result); // TODO: commit should fail.
     }
 
 private:

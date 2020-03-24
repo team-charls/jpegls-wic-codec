@@ -4,8 +4,9 @@
 #include "pch.h"
 
 #include "factory.h"
+#include "util.h"
 
-#include "../src/util.h"
+#include "../src/errors.h"
 
 #include <CppUnitTest.h>
 
@@ -27,8 +28,8 @@ public:
         uint32_t width;
         uint32_t height;
 
-        const HRESULT result = bitmap_frame_decoder->GetSize(&width, &height);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_decoder->GetSize(&width, &height);
+        Assert::AreEqual(error_ok, result);
         Assert::AreEqual(512U, width);
         Assert::AreEqual(512U, height);
     }
@@ -40,8 +41,8 @@ public:
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
 
-        const HRESULT result = bitmap_frame_decoder->CopyPalette(palette.get());
-        Assert::AreEqual(WINCODEC_ERR_PALETTEUNAVAILABLE, result);
+        const hresult result = bitmap_frame_decoder->CopyPalette(palette.get());
+        Assert::AreEqual(wincodec::error_palette_unavailable, result);
     }
 
     TEST_METHOD(GetThumbnail) // NOLINT
@@ -49,8 +50,8 @@ public:
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
         com_ptr<IWICBitmapSource> thumbnail;
-        const HRESULT result = bitmap_frame_decoder->GetThumbnail(thumbnail.put());
-        Assert::AreEqual(WINCODEC_ERR_CODECNOTHUMBNAIL, result);
+        const hresult result = bitmap_frame_decoder->GetThumbnail(thumbnail.put());
+        Assert::AreEqual(wincodec::error_codec_no_thumbnail, result);
     }
 
     TEST_METHOD(GetPixelFormat) // NOLINT
@@ -58,8 +59,8 @@ public:
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
         GUID pixel_format;
-        const HRESULT result = bitmap_frame_decoder->GetPixelFormat(&pixel_format);
-        Assert::AreEqual(S_OK, result);
+        const hresult result = bitmap_frame_decoder->GetPixelFormat(&pixel_format);
+        Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
@@ -68,13 +69,13 @@ public:
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
         uint32_t actual_count;
-        HRESULT result = bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count);
-        Assert::AreEqual(S_OK, result);
+        hresult result = bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count);
+        Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
 
         array<IWICColorContext*, 1> color_contexts{};
         result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(), &actual_count);
-        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
 
@@ -83,8 +84,8 @@ public:
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
-        const HRESULT result = bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put());
-        Assert::AreEqual(WINCODEC_ERR_UNSUPPORTEDOPERATION, result);
+        const hresult result = bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put());
+        Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(CopyPixels) // NOLINT
@@ -97,11 +98,11 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
 
-        HRESULT result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
-        Assert::AreEqual(S_OK, result);
+        hresult result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        Assert::AreEqual(error_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
-        Assert::AreEqual(S_OK, result);
+        Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT

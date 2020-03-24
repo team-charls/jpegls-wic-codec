@@ -132,23 +132,23 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override
     {
         TRACE("%p jpegls_bitmap_frame_decoder::CopyPalette\n", this);
-        return WINCODEC_ERR_PALETTEUNAVAILABLE;
+        return wincodec::error_palette_unavailable;
     }
 
     // IWICBitmapFrameDecode : IWICBitmapSource
     HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override
     {
-        return WINCODEC_ERR_CODECNOTHUMBNAIL;
+        return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
         if (!actual_count)
-            return E_POINTER;
+            return error_pointer;
 
         *actual_count = 0;
-        return S_OK;
+        return error_ok;
     }
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
@@ -156,7 +156,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for metadata.
-        return WINCODEC_ERR_UNSUPPORTEDOPERATION;
+        return wincodec::error_unsupported_operation;
     }
 
     static bool can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
