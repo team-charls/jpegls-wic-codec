@@ -5,6 +5,7 @@
 
 #include "trace.h"
 #include "util.h"
+#include "errors.h"
 
 #include <charls/charls.h>
 
@@ -28,20 +29,16 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         charls::jpegls_decoder decoder;
         decoder.source(buffer);
 
-        try
-        {
-            decoder.read_header();
-        }
-        catch (charls::jpegls_error&)
-        {
-            winrt::throw_hresult(WINCODEC_ERR_BADHEADER);
-        }
+        std::error_code error;
+        decoder.read_header(error);
+        if (error)
+            winrt::throw_hresult(wincodec::error_bad_header);
 
         const auto& frame_info = decoder.frame_info();
         GUID pixel_format;
         uint32_t sample_shift;
         if (!try_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format, sample_shift))
-            winrt::throw_hresult(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
+            winrt::throw_hresult(wincodec::error_unsupported_pixel_format);
 
         winrt::com_ptr<IWICBitmap> bitmap;
         winrt::check_hresult(factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
@@ -57,7 +54,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             if (stride < compute_stride(frame_info))
             {
                 ASSERT(false);
-                winrt::throw_hresult(WINCODEC_ERR_BADIMAGE);
+                winrt::throw_hresult(wincodec::error_bad_image);
             }
 
             BYTE* data_buffer;

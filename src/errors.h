@@ -25,5 +25,7 @@ inline constexpr winrt::hresult error_wrong_state{static_cast<winrt::hresult>(WI
 inline constexpr winrt::hresult error_unsupported_pixel_format{static_cast<winrt::hresult>(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT)};
 inline constexpr winrt::hresult error_codec_too_many_scan_lines{static_cast<winrt::hresult>(WINCODEC_ERR_CODECTOOMANYSCANLINES)};
 inline constexpr winrt::hresult error_component_not_found{static_cast<winrt::hresult>(WINCODEC_ERR_COMPONENTNOTFOUND)};
+inline constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WINCODEC_ERR_BADHEADER)};
+inline constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
 
 } // namespace wincodec
