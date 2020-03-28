@@ -3,9 +3,9 @@
 
 #pragma once
 
+#include "errors.h"
 #include "trace.h"
 #include "util.h"
-#include "errors.h"
 
 #include <charls/charls.h>
 
@@ -35,11 +35,11 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             winrt::throw_hresult(wincodec::error_bad_header);
 
         const auto& frame_info = decoder.frame_info();
-        GUID pixel_format;
-        uint32_t sample_shift;
-        if (!try_get_pixel_format(frame_info.bits_per_sample, frame_info.component_count, pixel_format, sample_shift))
+        auto pixel_format_info = get_pixel_format(frame_info.bits_per_sample, frame_info.component_count);
+        if (!pixel_format_info)
             winrt::throw_hresult(wincodec::error_unsupported_pixel_format);
 
+        const auto [pixel_format, sample_shift] = pixel_format_info.value();
         winrt::com_ptr<IWICBitmap> bitmap;
         winrt::check_hresult(factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
         winrt::check_hresult(bitmap->SetResolution(96, 96));
@@ -158,42 +158,31 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
     static bool can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
     {
-        GUID pixel_format_dummy;
-        uint32_t dummy_sample_shift;
-        return try_get_pixel_format(bits_per_sample, component_count, pixel_format_dummy, dummy_sample_shift);
+        return get_pixel_format(bits_per_sample, component_count).has_value();
     }
 
 private:
-    static bool try_get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, GUID& pixel_format, uint32_t& sample_shift) noexcept
+    static std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
     {
-        sample_shift = 0;
-
         switch (component_count)
         {
         case 1:
             switch (bits_per_sample)
             {
             case 2:
-                pixel_format = GUID_WICPixelFormat2bppGray;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat2bppGray, 0);
 
             case 4:
-                pixel_format = GUID_WICPixelFormat4bppGray;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat4bppGray, 0);
 
             case 8:
-                pixel_format = GUID_WICPixelFormat8bppGray;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat8bppGray, 0);
 
             case 10:
             case 12:
-                sample_shift = 16 - bits_per_sample;
-                pixel_format = GUID_WICPixelFormat16bppGray;
-                return true;
-
             case 16:
-                pixel_format = GUID_WICPixelFormat16bppGray;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
+
             default:
                 break;
             }
@@ -203,12 +192,10 @@ private:
             switch (bits_per_sample)
             {
             case 8:
-                pixel_format = GUID_WICPixelFormat24bppRGB;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat24bppRGB, 0);
 
             case 16:
-                pixel_format = GUID_WICPixelFormat48bppRGB;
-                return true;
+                return std::make_pair(GUID_WICPixelFormat48bppRGB, 0);
 
             default:
                 break;
@@ -219,7 +206,7 @@ private:
             break;
         }
 
-        return false;
+        return {};
     }
 
     static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
