@@ -86,9 +86,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetSize.1, width=%p, height=%p\n", this, width, height);
 
-        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         const auto result = bitmap_source_->GetSize(width, height);
-        WARNING_UNSUPPRESS()
 
         TRACE("%p jpegls_bitmap_frame_decoder::GetSize.2, *width=%u, *height=%u\n", this,
               width ? *width : 0, height ? *height : 0);
@@ -99,9 +98,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat.1, pixel_format=%p\n", this, pixel_format);
 
-        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         const auto result = bitmap_source_->GetPixelFormat(pixel_format);
-        WARNING_UNSUPPRESS()
 
         TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat.2, pixel_format=%s\n", this,
               pixel_format ? pixel_format_to_string(*pixel_format) : "");
@@ -112,18 +110,16 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
 
-        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
-        WARNING_UNSUPPRESS()
     }
 
     HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
         TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
 
-        WARNING_SUPPRESS(26447) // noexcept: COM methods are not defined as noexcept
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
-        WARNING_UNSUPPRESS()
     }
 
     HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override

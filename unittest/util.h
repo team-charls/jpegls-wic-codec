@@ -7,9 +7,8 @@
 
 #include <CppUnitTest.h>
 
-#define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable \
-                                                                     : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
-#define WARNING_UNSUPPRESS() __pragma(warning(pop))                        // NOLINT(cppcoreguidelines-macro-usage)
+#define WARNING_SUPPRESS_NEXT_LINE(x) __pragma(warning(suppress \
+                                                       : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
 
 inline constexpr bool failed(winrt::hresult const result) noexcept

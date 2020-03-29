@@ -88,9 +88,8 @@ public:
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result = encoder->GetContainerFormat(nullptr);
-        WARNING_UNSUPPRESS()
 
         Assert::IsTrue(failed(result));
     }
@@ -117,9 +116,8 @@ public:
     {
         com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result = encoder->GetEncoderInfo(nullptr);
-        WARNING_UNSUPPRESS()
 
         Assert::IsTrue(failed(result));
     }
@@ -228,9 +226,9 @@ public:
         hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
         Assert::AreEqual(error_ok, result);
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         result = encoder->CreateNewFrame(nullptr, nullptr);
-        WARNING_UNSUPPRESS()
+
         Assert::AreEqual(error_pointer, result);
     }
 

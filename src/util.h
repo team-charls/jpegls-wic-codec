@@ -10,9 +10,9 @@
 #include <cassert>
 #include <string>
 
-#define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable \
-                                                                     : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
-#define WARNING_UNSUPPRESS() __pragma(warning(pop))                        // NOLINT(cppcoreguidelines-macro-usage)
+
+#define WARNING_SUPPRESS_NEXT_LINE(x) __pragma(warning(suppress \
+                                                       : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
 
 #ifdef NDEBUG
@@ -102,14 +102,13 @@ inline constexpr bool failed(winrt::hresult const result) noexcept
 
 namespace registry {
 
-WARNING_SUPPRESS(26493) // Don't use C-style casts
+WARNING_SUPPRESS_NEXT_LINE(26493)                  // Don't use C-style casts
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
-WARNING_UNSUPPRESS()
 
 inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
 {
     const auto length = wcslen(value) + 1;
-    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t))));
+    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
 inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)

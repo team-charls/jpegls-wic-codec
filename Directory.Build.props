@@ -66,6 +66,7 @@
       <!--
         NOMINMAX = Prevent that the Windows SDK header files define the macros min and max.
         WINRT_NO_MAKE_DETECTION = Enable making COM class implementation final
+        _SILENCE_CLANG_COROUTINE_MESSAGE = Supress warning that coroutine is not compatible wih clang (clang-tidy fix)
       -->
       <PreprocessorDefinitions>
         WIN32;
@@ -73,6 +74,7 @@
         WIN32_LEAN_AND_MEAN;
         NOMINMAX;
         WINRT_NO_MAKE_DETECTION;
+        _SILENCE_CLANG_COROUTINE_MESSAGE;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 

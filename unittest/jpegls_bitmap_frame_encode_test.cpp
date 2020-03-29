@@ -132,9 +132,8 @@ public:
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
 
-        WARNING_SUPPRESS(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
+        WARNING_SUPPRESS_NEXT_LINE(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
         GUID pixel_format = GUID_WICPixelFormat8bppGray;
-        WARNING_UNSUPPRESS()
 
         const hresult result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
         Assert::AreEqual(wincodec::error_wrong_state, result);
@@ -145,9 +144,8 @@ public:
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
         commit(bitmap_frame_encoder.get());
 
-        WARNING_SUPPRESS(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
+        WARNING_SUPPRESS_NEXT_LINE(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
         GUID pixel_format = GUID_WICPixelFormat8bppGray;
-        WARNING_UNSUPPRESS()
 
         const hresult result = bitmap_frame_encoder->SetPixelFormat(&pixel_format);
         Assert::AreEqual(wincodec::error_wrong_state, result);
@@ -232,9 +230,9 @@ private:
 
     static void set_pixel_format(IWICBitmapFrameEncode * bitmap_frame_encoder, const GUID& format)
     {
-        WARNING_SUPPRESS(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
+        WARNING_SUPPRESS_NEXT_LINE(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
         GUID pixel_format = format;
-        WARNING_UNSUPPRESS()
+
         check_hresult(bitmap_frame_encoder->SetPixelFormat(&pixel_format));
     }
 

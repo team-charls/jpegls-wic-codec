@@ -28,9 +28,8 @@ public:
 
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result = factory_.create_decoder()->GetContainerFormat(nullptr);
-        WARNING_UNSUPPRESS()
 
         Assert::IsTrue(failed(result));
     }
@@ -55,9 +54,8 @@ public:
 
     TEST_METHOD(GetDecoderInfo_with_nullptr) // NOLINT
     {
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{factory_.create_decoder()->GetDecoderInfo(nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::IsTrue(failed(result));
     }
@@ -114,9 +112,8 @@ public:
 
     TEST_METHOD(GetFrameCount_count_parameter_is_null) // NOLINT
     {
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{factory_.create_decoder()->GetFrameCount(nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -157,9 +154,8 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -246,9 +242,8 @@ public:
 
     TEST_METHOD(GetFrame_with_frame_argument_null) // NOLINT
     {
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{factory_.create_decoder()->GetFrame(0, nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::AreEqual(error_pointer, result);
     }

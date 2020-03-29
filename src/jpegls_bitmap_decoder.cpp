@@ -95,9 +95,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
         if (!stream)
             return error_invalid_argument;
 
-        WARNING_SUPPRESS(26447) // noexcept: false warning, caused by scoped_lock
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
-        WARNING_UNSUPPRESS()
 
         stream_.copy_from(stream);
         bitmap_frame_decode_.attach(nullptr);
@@ -196,9 +195,8 @@ struct jpegls_bitmap_decoder final : implements<jpegls_bitmap_decoder, IWICBitma
             return result;
         }
 
-        WARNING_SUPPRESS(26447) // noexcept: false warning, caused by scoped_lock
+        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
-        WARNING_UNSUPPRESS()
 
         if (!stream_)
         {

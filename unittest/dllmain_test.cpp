@@ -51,9 +51,8 @@ public :
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSEncoder);
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -73,9 +72,8 @@ public :
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);
 
-        WARNING_SUPPRESS(6387) // don't pass nullptr
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
-        WARNING_UNSUPPRESS()
 
         Assert::AreEqual(error_pointer, result);
     }
