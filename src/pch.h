@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include <SDKDDKVer.h> // Defines the highest available Windows platform.
+#include <sdkddkver.h> // Defines the highest available Windows platform.
 
-#include <Shlobj.h>
-#include <olectl.h>
-#include <unknwn.h>
+#include <ShlObj.h>
+#include <OleCtl.h>
+#include <Unknwn.h>
 #include <wincodec.h>
 
 #pragma warning(push)

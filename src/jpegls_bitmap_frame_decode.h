@@ -67,6 +67,12 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
                 auto planar = decoder.decode<std::vector<std::byte>>();
                 convert_planar_to_rgb(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
             }
+            else if (frame_info.bits_per_sample < 8)
+            {
+                std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+                decoder.decode(byte_pixels);
+                pack_to_nibbles(byte_pixels, reinterpret_cast<std::byte*>(data_buffer), data_buffer_size);
+            }
             else
             {
                 decoder.decode(data_buffer, data_buffer_size, stride);
@@ -158,6 +164,18 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     }
 
 private:
+    static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t size) noexcept
+    {
+        size_t j = 0;
+        for (size_t i = 0; i < size; ++i)
+        {
+            nibble_pixels[i] = byte_pixels[j] << 4;
+            ++j;
+            nibble_pixels[i] |= byte_pixels[j];
+            ++j;
+        }
+    }
+
     static std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
     {
         switch (component_count)
@@ -207,12 +225,18 @@ private:
 
     static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     {
-        return frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count;
+        uint32_t stride = frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count;
+        if (frame_info.bits_per_sample < 8)
+        {
+            stride /= 2;
+        }
+
+        return stride;
     }
 
     static void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample_shift)
     {
-        const auto pixels = static_cast<uint16_t*>(buffer);
+        auto* const pixels = static_cast<uint16_t*>(buffer);
         std::transform(pixels, pixels + pixel_count, pixels,
                        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
@@ -223,7 +247,7 @@ private:
         const std::byte* g = r + (width * height);
         const std::byte* b = g + (width * height);
 
-        auto rgb = static_cast<std::byte*>(destination);
+        auto* rgb = static_cast<std::byte*>(destination);
 
         for (size_t row = 0; row < height; ++row)
         {

@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <unknwn.h>
 #include <winerror.h>
 #include <winrt/base.h>
 

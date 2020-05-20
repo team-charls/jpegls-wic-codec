@@ -25,6 +25,7 @@
 #pragma warning(disable : 26455) // Default constructor may not throw. Declare it 'noexcept' (f.6). [Problem in VS 2017 15.8.0]
 #pragma warning(disable : 26461) // the pointer argument can be marked as a pointer to const
 #pragma warning(disable : 26477) // Use 'nullptr' rather than 0 or NULL (es.47) [Problem in VS 2017 15.8.0]
+#pragma warning(disable : 26493) // Don't use C-style casts
 #pragma warning(disable : 26495) // Variable is uninitialized. Always initialize a member variable (type.6).
 #pragma warning(disable : 26496) // The variable 'diff' is assigned only once, mark it as const (con.4).
 #include <CppUnitTest.h>

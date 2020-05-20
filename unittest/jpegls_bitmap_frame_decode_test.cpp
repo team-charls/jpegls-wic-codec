@@ -64,6 +64,36 @@ public:
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
+    TEST_METHOD(GetPixelFormat_with_nullptr) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+
+        WARNING_SUPPRESS_NEXT_LINE(6387)
+        const hresult result = bitmap_frame_decoder->GetPixelFormat(nullptr);
+        Assert::AreEqual(error_invalid_argument, result);
+    }
+
+    TEST_METHOD(GetResolution_jpegls_no_spiff_header) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+
+        double dpi_x;
+        double dpi_y;
+        const hresult result = bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y);
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(96., dpi_x);
+        Assert::AreEqual(96., dpi_y);
+    }
+
+    TEST_METHOD(GetResolution_with_nullptr) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+
+        WARNING_SUPPRESS_NEXT_LINE(6387)
+        const hresult result = bitmap_frame_decoder->GetResolution(nullptr, nullptr);
+        Assert::AreEqual(error_invalid_argument, result);
+    }
+
     TEST_METHOD(GetColorContexts) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");

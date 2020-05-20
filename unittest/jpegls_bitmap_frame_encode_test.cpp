@@ -113,6 +113,35 @@ public:
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
+    TEST_METHOD(GetMetadataQueryWriter_is_not_supported) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
+
+        com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
+        const hresult result = bitmap_frame_encoder->GetMetadataQueryWriter(metadata_query_writer.put());
+        Assert::AreEqual(wincodec::error_unsupported_operation, result);
+        Assert::IsNull(metadata_query_writer.get());
+    }
+
+    TEST_METHOD(SetThumbnail_is_not_supported) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
+
+        const hresult result = bitmap_frame_encoder->SetThumbnail(nullptr);
+        Assert::AreEqual(wincodec::error_unsupported_operation, result);
+    }
+
+    TEST_METHOD(SetPalette_is_not_supported) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
+
+        com_ptr<IWICPalette> palette;
+        check_hresult(imaging_factory()->CreatePalette(palette.put()));
+
+        const hresult result = bitmap_frame_encoder->SetPalette(palette.get());
+        Assert::AreEqual(wincodec::error_palette_unavailable, result);
+    }
+
     TEST_METHOD(SetPixelFormat) // NOLINT
     {
         com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
@@ -126,6 +155,16 @@ public:
             Assert::AreEqual(error_ok, result);
             Assert::IsTrue(pixel_format == format);
         }
+    }
+
+    TEST_METHOD(SetPixelFormat_with_nullptr) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameEncode> bitmap_frame_encoder = create_frame_encoder();
+        check_hresult(bitmap_frame_encoder->Initialize(nullptr));
+
+        WARNING_SUPPRESS_NEXT_LINE(6387)
+        const hresult result = bitmap_frame_encoder->SetPixelFormat(nullptr);
+        Assert::AreEqual(error_invalid_argument, result);
     }
 
     TEST_METHOD(SetPixelFormat_not_initialized) // NOLINT

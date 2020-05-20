@@ -19,7 +19,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return frame_info_;
     }
 
-    [[nodiscard]] const std::vector<BYTE>& source() const noexcept
+    [[nodiscard]] const std::vector<std::byte>& source() const noexcept
     {
         ASSERT(state_ == state::commited);
         return source_;
@@ -155,9 +155,9 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetMetadataQueryWriter(IWICMetadataQueryWriter** /*ppIMetadataQueryWriter*/) noexcept override
+    HRESULT __stdcall GetMetadataQueryWriter(IWICMetadataQueryWriter** /* writer */) noexcept override
     {
-        return error_fail;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
@@ -166,7 +166,7 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t source_stride, UINT /*cbBufferSize*/, BYTE* pixels) noexcept override
+    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t source_stride, uint32_t /* buffer_size */, BYTE* pixels) noexcept override
     {
         if (!(state_ == state::initialized || state_ == state::received_pixels) || !size_set_ || !pixel_format_set_)
             return wincodec::error_wrong_state;
@@ -182,8 +182,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
             }
 
             const size_t destination_stride = stride();
-            uint8_t* destination = source_.data() + (received_line_count_ * destination_stride);
-            winrt::check_hresult(MFCopyImage(destination, static_cast<LONG>(destination_stride), pixels,
+            std::byte* destination = source_.data() + (received_line_count_ * destination_stride);
+            winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
                                              source_stride, static_cast<DWORD>(destination_stride), line_count));
 
             received_line_count_ += line_count;
@@ -224,10 +224,23 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
             if (source_.empty())
             {
-                source_.resize(static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count);
+                size_t size = static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count;
+                if (frame_info_.bits_per_sample < 8)
+                {
+                    // In a WIC bitmap pixels are packed, if bits per sample allows it.
+                    size /= 2;
+                }
+
+                source_.resize(size);
             }
 
-            winrt::check_hresult(bitmap_source->CopyPixels(nullptr, stride(), static_cast<uint32_t>(source_.size()), source_.data()));
+            uint32_t s = stride();
+            if (frame_info_.bits_per_sample < 8)
+            {
+                s /= 2;
+            }
+
+            winrt::check_hresult(bitmap_source->CopyPixels(nullptr, s, static_cast<uint32_t>(source_.size()), reinterpret_cast<BYTE*>(source_.data())));
             state_ = state::received_pixels;
             return error_ok;
         }
@@ -245,6 +258,17 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         if (swap_pixels_)
         {
             convert_bgr_to_rgb();
+        }
+        else if (frame_info_.bits_per_sample < 8)
+        {
+            try
+            {
+                unpack_nibbles();
+            }
+            catch (...)
+            {
+                return winrt::to_hresult();
+            }
         }
 
         state_ = state::commited;
@@ -279,6 +303,22 @@ private:
         }
     }
 
+    void unpack_nibbles()
+    {
+        std::vector<std::byte> unpacked(source_.size() * 2);
+
+        size_t j = 0;
+        for (auto nibble_pixel : source_)
+        {
+            unpacked[j] = nibble_pixel >> 4;
+            ++j;
+            unpacked[j] = nibble_pixel | static_cast<std::byte>(0xF);
+            ++j;
+        }
+
+        source_.swap(unpacked);
+    }
+
     enum class state
     {
         created,
@@ -293,7 +333,7 @@ private:
     bool dpi_set_{};
     bool swap_pixels_{};
     uint32_t received_line_count_{};
-    std::vector<BYTE> source_;
+    std::vector<std::byte> source_;
     charls::frame_info frame_info_{};
     double dpi_x_{};
     double dpi_y_{};

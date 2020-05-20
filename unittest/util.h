@@ -11,12 +11,12 @@
                                                        : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
 
-inline constexpr bool failed(winrt::hresult const result) noexcept
+constexpr bool failed(winrt::hresult const result) noexcept
 {
     return result < 0;
 }
 
-inline constexpr bool succeeded(winrt::hresult const result) noexcept
+constexpr bool succeeded(winrt::hresult const result) noexcept
 {
     return result >= 0;
 }

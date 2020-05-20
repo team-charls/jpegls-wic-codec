@@ -5,6 +5,8 @@
 
 #include "errors.h"
 
+#include <wincodec.h>
+
 #include <winrt/base.h>
 
 #include <cassert>
@@ -22,7 +24,11 @@
 
 #else
 
-#define ASSERT(expression) assert(expression)
+#define ASSERT(expression)                 \
+    __pragma(warning(push))                \
+        __pragma(warning(disable : 26493)) \
+            assert(expression)             \
+                __pragma(warning(pop))
 #define VERIFY(expression) assert(expression)
 
 #endif
@@ -95,7 +101,7 @@
     return "Unknown";
 }
 
-inline constexpr bool failed(winrt::hresult const result) noexcept
+constexpr bool failed(winrt::hresult const result) noexcept
 {
     return result < 0;
 }
@@ -121,7 +127,7 @@ inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t va
     winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
 
-inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, uint32_t value)
+inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const uint32_t value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
