@@ -173,6 +173,7 @@
   <ItemGroup>
     <ProjectReference Include="..\charls\src\CharLS.vcxproj">
       <Project>{1e31f9f1-f175-4082-b3e2-b1f0eca3f44c}</Project>
+      <Private>true</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
