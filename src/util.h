@@ -10,8 +10,8 @@
 #include <winrt/base.h>
 
 #include <cassert>
+#include <cstddef>
 #include <string>
-
 
 #define WARNING_SUPPRESS_NEXT_LINE(x) __pragma(warning(suppress \
                                                        : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
@@ -33,6 +33,10 @@
 
 #endif
 
+constexpr std::byte operator"" _byte(const unsigned long long int n)
+{
+    return static_cast<std::byte>(n);
+}
 
 [[nodiscard]] inline HMODULE get_current_module() noexcept
 {
