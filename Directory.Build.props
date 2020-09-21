@@ -35,8 +35,6 @@
       <UseFullPaths>true</UseFullPaths>      
 
       <!--
-        __cplusplus = Use the correct value for the __cplusplus macro
-        throwingNew = Communicate with the compiler that only the throwing variant of operator new is used.
         Disable level All warnings that are not useful:
         C4061 = enumerator 'identifier' in switch of enum 'enumeration' is not explicitly handled by a case label
         C4365 = action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
@@ -60,19 +58,31 @@
       -->
       <DisableSpecificWarnings>4061;4365;4464;4514;4571;4623;4625;4626;4668;4686;4710;4711;4738;4774;4820;5026;5027;5039;5045</DisableSpecificWarnings>
 
+      <!--
+        __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
+        throwingNew = Communicate with the compiler that only the throwing variant of operator new is used.
+      -->
       <AdditionalOptions>
         /Zc:__cplusplus /Zc:throwingNew
       </AdditionalOptions>
 
       <!--
-        NOMINMAX = Prevent that the Windows SDK header files define the macros min and max.
-        WINRT_NO_MAKE_DETECTION = Enable making COM class implementation final
-        _SILENCE_CLANG_COROUTINE_MESSAGE = Supress warning that coroutine is not compatible wih clang (clang-tidy fix)
+        * Windows SDK *
+        WIN32_LEAN_AND_MEAN: Exclude includes from Windows.h that are seldom used.
+        NOSERVICE: Exclude includes from Windows.h for Windows services (not used).
+        NOMCX: Exclude includes for Modem Configuration Extensions from Windows.h (not used).
+        NOIME: Exclude includes for Input Method Manager definitions from Windows.h (not used).
+        NOMINMAX: Prevent that the Windows SDK header files define the macros min and max (conflict with C++ std::min\max).
+
+        * WINRT *
+        WINRT_NO_MAKE_DETECTION: Enable making COM class implementation final
+        _SILENCE_CLANG_COROUTINE_MESSAGE: Supress warning that coroutine is not compatible wih clang (clang-tidy fix)
       -->
       <PreprocessorDefinitions>
-        WIN32;
-        _WINDOWS;
         WIN32_LEAN_AND_MEAN;
+        NOSERVICE;
+        NOMCX;
+        NOIME;
         NOMINMAX;
         WINRT_NO_MAKE_DETECTION;
         _SILENCE_CLANG_COROUTINE_MESSAGE;
