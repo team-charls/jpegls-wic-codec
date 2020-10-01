@@ -6,13 +6,13 @@ This Windows Imaging Component (WIC) codec makes it possible to decode and encod
 
 ## Introduction
 
-The Windows Imaging Component (WIC) is a build-in codec framework of Windows that makes it possible to create independent native image codecs that can be used by a large set of applications. WIC is implemented using COM technology. Image codecs for many popular formats are already pre-installed on Windows.
+The Windows Imaging Component (WIC) is a built-in codec framework of Windows that makes it possible to create independent native image codecs that can be used by a large set of applications. WIC is implemented using COM technology. Image codecs for many popular formats are already pre-installed on Windows.
 
 ### Status
 
 This project is the development phase:
 
-- No installer with pre-build binaries is available, manually building and registering is required.
+- No installer with pre-built binaries is available, manually building and registering is required.
 
 ### Supported Operation Systems
 
