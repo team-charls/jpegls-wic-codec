@@ -26,20 +26,19 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         const storage_buffer buffer{size.LowPart};
         winrt::check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
 
-        charls::jpegls_decoder decoder;
-        decoder.source(buffer);
+        charls::jpegls_decoder decoder{buffer, false};
 
         std::error_code error;
         decoder.read_header(error);
         if (error)
-            winrt::throw_hresult(wincodec::error_bad_header);
+            throw_hresult(wincodec::error_bad_header);
 
         const auto& frame_info = decoder.frame_info();
         auto pixel_format_info = get_pixel_format(frame_info.bits_per_sample, frame_info.component_count);
         if (!pixel_format_info)
-            winrt::throw_hresult(wincodec::error_unsupported_pixel_format);
+            throw_hresult(wincodec::error_unsupported_pixel_format);
 
-        const auto [pixel_format, sample_shift] = pixel_format_info.value();
+        const auto& [pixel_format, sample_shift] = pixel_format_info.value();
         winrt::com_ptr<IWICBitmap> bitmap;
         winrt::check_hresult(factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
         winrt::check_hresult(bitmap->SetResolution(96, 96));
@@ -54,7 +53,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             if (stride < compute_stride(frame_info))
             {
                 ASSERT(false);
-                winrt::throw_hresult(wincodec::error_bad_image);
+                throw_hresult(wincodec::error_bad_image);
             }
 
             BYTE* data_buffer;
