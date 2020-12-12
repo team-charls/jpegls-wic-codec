@@ -28,3 +28,21 @@ inline constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WIN
 inline constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
 
 } // namespace wincodec
+
+template<typename T>
+inline T* check_in_pointer(_In_ T* pointer)
+{
+    if (!pointer)
+        throw_hresult(error_invalid_argument);
+
+    return pointer;
+}
+
+template<typename T>
+inline T* check_out_pointer(T* pointer)
+{
+    if (!pointer)
+        throw_hresult(error_pointer);
+
+    return pointer;
+}

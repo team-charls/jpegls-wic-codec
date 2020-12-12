@@ -90,7 +90,8 @@ public:
         uint32_t actual_count;
         const hresult result = factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count);
 
-        Assert::AreEqual(wincodec::error_unsupported_operation, result);
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(0U, actual_count);
     }
 
     TEST_METHOD(GetThumbnail) // NOLINT
@@ -242,8 +243,15 @@ public:
 
     TEST_METHOD(GetFrame_with_frame_argument_null) // NOLINT
     {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
+        hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_ok, result);
+
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result{factory_.create_decoder()->GetFrame(0, nullptr)};
+        result = decoder->GetFrame(0, nullptr);
 
         Assert::AreEqual(error_pointer, result);
     }
