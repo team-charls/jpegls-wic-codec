@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
-    <OutDir>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(Platform)\</OutDir>
+    <OutDir>$(MSBuildThisFileDirectory)bin\$(Platform)\$(Configuration)\</OutDir>
 
     <!-- C++ temp files can be redirected. -->
     <IntDir>$(MSBuildThisFileDirectory)intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
@@ -16,6 +16,9 @@
 
     <!-- Assist VC package manager which configuration to use (checked is debug+static checking) -->
     <VcpkgConfiguration Condition="'$(Configuration)' == 'Checked'">Debug</VcpkgConfiguration>
+
+    <!-- WinRT is needed for the COM support, disable generation of Windows Metadata (is slow) -->
+    <CppWinRTGenerateWindowsMetadata>false</CppWinRTGenerateWindowsMetadata>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
