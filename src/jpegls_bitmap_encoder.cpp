@@ -70,6 +70,7 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         return to_hresult();
     }
 
+    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall CreateNewFrame(_Outptr_ IWICBitmapFrameEncode** bitmap_frame_encode, IPropertyBag2** encoder_options) noexcept override
     try
     {
@@ -77,20 +78,17 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
 
         if (!bitmap_frame_encode)
         {
-            const HRESULT result = error_pointer;
-            return result;
+            return error_pointer;
         }
 
         if (!destination_)
         {
-            const HRESULT result = wincodec::error_not_initialized;
-            return result;
+            return wincodec::error_not_initialized;
         }
 
         if (bitmap_frame_encode_)
         {
-            const HRESULT result = wincodec::error_wrong_state; // Only 1 frame is supported.
-            return result;
+            return wincodec::error_wrong_state; // Only 1 frame is supported.
         }
 
         bitmap_frame_encode_ = winrt::make_self<jpegls_bitmap_frame_encode>();

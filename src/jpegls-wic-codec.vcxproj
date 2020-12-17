@@ -127,6 +127,7 @@
     <ClInclude Include="trace.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="version.h" />
+    <ClInclude Include="wic_bitmap_source.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

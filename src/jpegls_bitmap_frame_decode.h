@@ -6,6 +6,7 @@
 #include "errors.h"
 #include "trace.h"
 #include "util.h"
+#include "wic_bitmap_source.h"
 
 #include <charls/charls.h>
 
@@ -56,9 +57,9 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
                 throw_hresult(wincodec::error_bad_image);
             }
 
-            BYTE* data_buffer;
+            std::byte* data_buffer;
             uint32_t data_buffer_size;
-            winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
+            winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
             __assume(data_buffer != nullptr);
 
             if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
@@ -70,7 +71,7 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
             {
                 std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
                 decoder.decode(byte_pixels);
-                pack_to_nibbles(byte_pixels, reinterpret_cast<std::byte*>(data_buffer), data_buffer_size);
+                pack_to_nibbles(byte_pixels, data_buffer, data_buffer_size);
             }
             else
             {
@@ -91,7 +92,6 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetSize, width=%p, height=%p\n", this, width, height);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetSize(width, height);
     }
 
@@ -99,7 +99,6 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat, pixel_format=%p\n", this, pixel_format);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetPixelFormat(pixel_format);
     }
 
@@ -107,7 +106,6 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
@@ -115,7 +113,6 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     {
         TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
 

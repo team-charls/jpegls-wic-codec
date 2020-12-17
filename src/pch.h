@@ -8,6 +8,8 @@
 #include <ShlObj.h>
 #include <OleCtl.h>
 #include <Unknwn.h>
+
+#include "wic_bitmap_source.h"
 #include <wincodec.h>
 
 #pragma warning(push)

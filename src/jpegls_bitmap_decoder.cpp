@@ -84,7 +84,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
     {
         TRACE("%p jpegls_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
+        SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
         stream_.copy_from(check_in_pointer(stream));
@@ -134,21 +134,21 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         return wincodec::error_palette_unavailable;
     }
 
+    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for container-level metadata.
-        const HRESULT result = wincodec::error_unsupported_operation;
-        return result;
+        return wincodec::error_unsupported_operation;
     }
 
+    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetPreview, bitmap_source=%p\n", this, bitmap_source);
 
-        const HRESULT result = wincodec::error_unsupported_operation; // copy to temp HRESULT to prevent C6101 (out param not set).
-        return result;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
@@ -164,12 +164,12 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         return to_hresult();
     }
 
+    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetThumbnail, thumbnail=%p\n", this, thumbnail);
 
-        const HRESULT result = wincodec::error_codec_no_thumbnail; // copy to temp HRESULT to prevent C6101 (out param not set).
-        return result;
+        return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
@@ -185,6 +185,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         return to_hresult();
     }
 
+    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {
@@ -192,17 +193,15 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
 
         if (index != 0)
         {
-            const HRESULT result = wincodec::error_frame_missing;
-            return result;
+            return wincodec::error_frame_missing;
         }
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
+        SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
         if (!stream_)
         {
-            const HRESULT result = wincodec::error_not_initialized;
-            return result;
+            return wincodec::error_not_initialized;
         }
 
         if (!bitmap_frame_decode_)

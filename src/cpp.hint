@@ -2,5 +2,6 @@
 // such as names of functions and macros.
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
 
-#define WARNING_SUPPRESS(x) __pragma(warning(push)) __pragma(warning(disable : x))
-#define WARNING_SUPPRESS_NEXT_LINE(x)
+#define SUPPRESS_WARNING_NEXT_LINE(x)
+#define SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
+#define SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE

@@ -40,5 +40,5 @@ gsl::span and pass as a span iterator (stl.1)
 **Rationale**: required to work with win32 API, manual verification required.
 
 - C26494: Variable 'x' is uninitialized. Always initialize an object  
-**Rationale**: many false warnings due to output parameters. Other analyzers are better 
+**Rationale**: many false warnings due to output parameters. Other analyzers are better
 as they check if the variable is used before initialized.

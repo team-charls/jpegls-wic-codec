@@ -13,9 +13,21 @@
 #include <cstddef>
 #include <string>
 
-#define WARNING_SUPPRESS_NEXT_LINE(x) __pragma(warning(suppress \
+#define SUPPRESS_WARNING_NEXT_LINE(x) __pragma(warning(suppress \
                                                        : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
+// The 2 macros below can be used to disable false positives. These warnings are too useful to disable them globally.
+
+// A false warning is generated when a type is returned that can converted to a HRESULT but is not a HRESULT.
+// The HRESULT is tagged with a SAL annotation that indicates when the function returns an error or not.
+// Reported to Microsoft:
+// https://developercommunity.visualstudio.com/content/problem/804429/static-analysis-emits-a-false-positive-c6101-error.html
+#define SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(6101)
+
+// A false warning is generated that a noexcept methods calls function not marked noexcept.
+// Reported to Microsoft:
+// https://developercommunity.visualstudio.com/content/problem/804372/c26447-false-positive-when-using-stdscoped-lock-ev.html
+#define SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(26447)
 
 #ifdef NDEBUG
 
@@ -41,8 +53,8 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
 [[nodiscard]] inline HMODULE get_current_module() noexcept
 {
     HMODULE module;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                      reinterpret_cast<PCTSTR>(get_current_module),
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                      reinterpret_cast<PCWSTR>(get_current_module),
                       &module);
 
     return module;
@@ -57,7 +69,7 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
     do
     {
         path_size = path.size();
-        actual_size = ::GetModuleFileName(get_current_module(), path.data(), static_cast<DWORD>(path_size));
+        actual_size = GetModuleFileNameW(get_current_module(), path.data(), static_cast<DWORD>(path_size));
 
         if (actual_size + 1 > path_size)
         {
@@ -112,41 +124,41 @@ constexpr bool failed(winrt::hresult const result) noexcept
 
 namespace registry {
 
-WARNING_SUPPRESS_NEXT_LINE(26493)                  // Don't use C-style casts
+SUPPRESS_WARNING_NEXT_LINE(26493)                  // Don't use C-style casts (used by HKEY_LOCAL_MACHINE macro)
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
-inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const PCWSTR value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
 {
     const auto length = wcslen(value) + 1;
     winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const PCWSTR value)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, uint32_t value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
 {
-    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
+    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
 
-inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const uint32_t value)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(const PCWSTR sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, const void* value, const DWORD value_size_in_bytes)
 {
-    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
+    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
 }
 
-inline void set_value(const std::wstring& sub_key, const PCWSTR value_name, const void* value, const DWORD value_size_in_bytes)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value, const DWORD value_size_in_bytes)
 {
     set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
 }
 
-inline HRESULT delete_tree(const PCWSTR sub_key) noexcept
+inline HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
 {
     const LSTATUS result = RegDeleteTreeW(hkey_local_machine, sub_key);
     if (result != ERROR_SUCCESS)
