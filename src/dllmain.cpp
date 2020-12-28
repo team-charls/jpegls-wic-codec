@@ -144,7 +144,7 @@ BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* 
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
-__control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
+_Use_decl_annotations_ HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
     TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
@@ -152,8 +152,8 @@ __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 }
 
 // Purpose: Returns a class factory to create an object of the requested type
-_Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id,
-                                                   _Outptr_ void** result)
+_Use_decl_annotations_ HRESULT __stdcall DllGetClassObject(GUID const& class_id, GUID const& interface_id, void** result)
+try
 {
     if (class_id == CLSID_JpegLSDecoder)
         return create_jpegls_bitmap_decoder_factory(interface_id, result);
@@ -163,25 +163,28 @@ _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _I
 
     return CLASS_E_CLASSNOTAVAILABLE;
 }
+catch (...)
+{
+    return winrt::to_hresult();
+}
 
 HRESULT __stdcall DllRegisterServer()
+try
 {
-    try
-    {
-        register_decoder();
-        register_encoder();
+    register_decoder();
+    register_encoder();
 
-        SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
-        return error_ok;
-    }
-    catch (...)
-    {
-        return SELFREG_E_CLASS;
-    }
+    return error_ok;
+}
+catch (...)
+{
+    return SELFREG_E_CLASS;
 }
 
 HRESULT __stdcall DllUnregisterServer()
+try
 {
     const HRESULT result_decoder = unregister(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders);
     const HRESULT result_encoder = unregister(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders);
@@ -189,6 +192,10 @@ HRESULT __stdcall DllUnregisterServer()
     // Note: keep the .jls file registration intact.
 
     return failed(result_decoder) ? result_decoder : result_encoder;
+}
+catch (...)
+{
+    return winrt::to_hresult();
 }
 
 // ReSharper restore CppParameterNamesMismatch

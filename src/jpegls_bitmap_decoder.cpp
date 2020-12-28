@@ -30,8 +30,9 @@ using winrt::make;
 using winrt::to_hresult;
 
 
-struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
+class jpegls_bitmap_decoder final : public winrt::implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
+public:
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try
@@ -89,7 +90,7 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
-        stream_.copy_from(check_in_pointer(stream));
+        source_stream_.copy_from(check_in_pointer(stream));
         bitmap_frame_decode_.attach(nullptr);
 
         return error_ok;
@@ -197,22 +198,16 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
     {
         TRACE("%p jpegls_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
 
-        if (index != 0)
-        {
-            return wincodec::error_frame_missing;
-        }
+        check_condition(index == 0, wincodec::error_frame_missing);
 
         SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
-        if (!stream_)
-        {
-            return wincodec::error_not_initialized;
-        }
+        check_condition(static_cast<bool>(source_stream_), wincodec::error_not_initialized);
 
         if (!bitmap_frame_decode_)
         {
-            bitmap_frame_decode_ = make<jpegls_bitmap_frame_decode>(stream_.get(), imaging_factory());
+            bitmap_frame_decode_ = make<jpegls_bitmap_frame_decode>(source_stream_.get(), imaging_factory());
         }
 
         bitmap_frame_decode_.copy_to(check_out_pointer(bitmap_frame_decode));
@@ -237,7 +232,7 @@ private:
 
     std::mutex mutex_;
     com_ptr<IWICImagingFactory> imaging_factory_;
-    com_ptr<IStream> stream_;
+    com_ptr<IStream> source_stream_;
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
 

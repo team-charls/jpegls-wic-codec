@@ -32,7 +32,7 @@ inline constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINC
 } // namespace wincodec
 
 template<typename T>
-inline T* check_in_pointer(_In_ T* pointer)
+T* check_in_pointer(_In_ T* pointer)
 {
     if (!pointer)
         throw_hresult(error_invalid_argument);
@@ -41,10 +41,16 @@ inline T* check_in_pointer(_In_ T* pointer)
 }
 
 template<typename T>
-inline T* check_out_pointer(T* pointer)
+T* check_out_pointer(T* pointer)
 {
     if (!pointer)
         throw_hresult(error_pointer);
 
     return pointer;
+}
+
+inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
+{
+    if (!condition)
+        throw_hresult(result_to_throw);
 }

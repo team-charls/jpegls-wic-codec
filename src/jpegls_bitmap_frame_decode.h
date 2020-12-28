@@ -17,10 +17,11 @@
 #include <memory>
 
 
-struct jpegls_bitmap_frame_decode final
-    : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
+class jpegls_bitmap_frame_decode final
+    : public winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
-    explicit jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
+public:
+    jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
     {
         ULARGE_INTEGER size;
         winrt::check_hresult(IStream_Size(stream, &size));

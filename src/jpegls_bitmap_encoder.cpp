@@ -21,8 +21,9 @@ using winrt::implements;
 using winrt::make;
 using winrt::to_hresult;
 
-struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
+class jpegls_bitmap_encoder final : public implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
+public:
     // IWICBitmapEncoder
     HRESULT __stdcall Initialize(_In_ IStream* destination,
                                  [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
@@ -30,11 +31,8 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     {
         TRACE("%p jpegls_bitmap_encoder::Initialize, stream=%p, cache_option=%d\n", this, destination, cache_option);
 
-        if (destination_)
-            return wincodec::error_wrong_state;
-
+        check_condition(!static_cast<bool>(destination_), wincodec::error_wrong_state);
         destination_.copy_from(check_in_pointer(destination));
-
         return error_ok;
     }
     catch (...)
@@ -79,24 +77,12 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode=%p, encoder_options=%p\n", this,
               bitmap_frame_encode, encoder_options);
 
-        if (!bitmap_frame_encode)
-        {
-            return error_pointer;
-        }
-
-        if (!destination_)
-        {
-            return wincodec::error_not_initialized;
-        }
-
-        if (bitmap_frame_encode_)
-        {
-            return wincodec::error_wrong_state; // Only 1 frame is supported.
-        }
+        check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
+        check_condition(!static_cast<bool>(bitmap_frame_encode_), wincodec::error_wrong_state); // Only 1 frame is supported.
 
         bitmap_frame_encode_ = winrt::make_self<jpegls_bitmap_frame_encode>();
 
-        *bitmap_frame_encode = bitmap_frame_encode_.get();
+        *check_out_pointer(bitmap_frame_encode) = bitmap_frame_encode_.get();
         (*bitmap_frame_encode)->AddRef();
 
         if (encoder_options)
@@ -116,14 +102,9 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     {
         TRACE("%p jpegls_bitmap_encoder::Commit\n", this);
 
-        if (!destination_)
-            return wincodec::error_not_initialized;
-
-        if (!bitmap_frame_encode_)
-            return wincodec::error_frame_missing;
-
-        if (committed_)
-            return wincodec::error_wrong_state;
+        check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
+        check_condition(static_cast<bool>(bitmap_frame_encode_), wincodec::error_frame_missing);
+        check_condition(!committed_, wincodec::error_wrong_state);
 
         jpegls_encoder encoder;
         encoder.frame_info(bitmap_frame_encode_->frame_info());
