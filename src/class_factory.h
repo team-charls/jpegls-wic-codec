@@ -8,10 +8,7 @@
 template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
-    HRESULT __stdcall CreateInstance(
-        IUnknown* outer,
-        GUID const& interface_id,
-        void** result) noexcept override
+    HRESULT __stdcall CreateInstance(IUnknown* outer, GUID const& interface_id, void** result) noexcept override
     {
         if (!result)
             return error_pointer;

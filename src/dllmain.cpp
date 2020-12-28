@@ -53,22 +53,19 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(inproc_server_sub_key, L"ThreadingModel", L"Both");
 
     // WIC category registration.
-    const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(CLSID_JpegLSDecoder);
+    const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" +
+                                    guid_to_string(CLSID_JpegLSDecoder);
     registry::set_value(category_id_key, L"FriendlyName", friendly_name);
     registry::set_value(category_id_key, L"CLSID", guid_to_string(class_id).c_str());
 }
 
 void register_decoder()
 {
-    const array formats{
-        GUID_WICPixelFormat2bppGray,
-        GUID_WICPixelFormat4bppGray,
-        GUID_WICPixelFormat8bppGray,
-        GUID_WICPixelFormat16bppGray,
-        GUID_WICPixelFormat24bppRGB,
-        GUID_WICPixelFormat48bppRGB};
+    const array formats{GUID_WICPixelFormat2bppGray,  GUID_WICPixelFormat4bppGray, GUID_WICPixelFormat8bppGray,
+                        GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppRGB, GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder", formats.data(), formats.size());
+    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder",
+                                              formats.data(), formats.size());
 
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder);
 
@@ -88,25 +85,24 @@ void register_decoder()
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", L".jls", L"picture");
 
     // Register with the Windows Thumbnail Cache
-    registry::set_value(LR"(SOFTWARE\Classes\jlsfile\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
-    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+    registry::set_value(LR"(SOFTWARE\Classes\jlsfile\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"",
+                        L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})",
+                        L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
 
     // Register with the legacy Windows Photo Viewer (still installed on Windows 10), just forward to the TIFF registration.
-    registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".jls", L"PhotoViewer.FileAssoc.Tiff");
+    registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".jls",
+                        L"PhotoViewer.FileAssoc.Tiff");
 }
 
 void register_encoder()
 {
-    const array formats{
-        GUID_WICPixelFormat2bppGray,
-        GUID_WICPixelFormat4bppGray,
-        GUID_WICPixelFormat8bppGray,
-        GUID_WICPixelFormat16bppGray,
-        GUID_WICPixelFormat24bppBGR,
-        GUID_WICPixelFormat24bppRGB,
-        GUID_WICPixelFormat48bppRGB};
+    const array formats{GUID_WICPixelFormat2bppGray,  GUID_WICPixelFormat4bppGray, GUID_WICPixelFormat8bppGray,
+                        GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppBGR, GUID_WICPixelFormat24bppRGB,
+                        GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder", formats.data(), formats.size());
+    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder",
+                                              formats.data(), formats.size());
 }
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
@@ -114,7 +110,8 @@ HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
     const HRESULT result1 = registry::delete_tree(sub_key.c_str());
 
-    const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(class_id);
+    const wstring category_id_key =
+        LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(class_id);
     const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
 
     return failed(result1) ? result1 : result2;
@@ -147,8 +144,7 @@ BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* 
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
-__control_entrypoint(DllExport)
-    HRESULT __stdcall DllCanUnloadNow()
+__control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
     TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
@@ -156,8 +152,8 @@ __control_entrypoint(DllExport)
 }
 
 // Purpose: Returns a class factory to create an object of the requested type
-_Check_return_
-    HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id, _Outptr_ void** result)
+_Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id,
+                                                   _Outptr_ void** result)
 {
     if (class_id == CLSID_JpegLSDecoder)
         return create_jpegls_bitmap_decoder_factory(interface_id, result);

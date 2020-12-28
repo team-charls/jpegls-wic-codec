@@ -24,7 +24,8 @@ using winrt::to_hresult;
 struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
     // IWICBitmapEncoder
-    HRESULT __stdcall Initialize(_In_ IStream* destination, [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
+    HRESULT __stdcall Initialize(_In_ IStream* destination,
+                                 [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
     try
     {
         TRACE("%p jpegls_bitmap_encoder::Initialize, stream=%p, cache_option=%d\n", this, destination, cache_option);
@@ -71,10 +72,12 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall CreateNewFrame(_Outptr_ IWICBitmapFrameEncode** bitmap_frame_encode, IPropertyBag2** encoder_options) noexcept override
+    HRESULT __stdcall CreateNewFrame(_Outptr_ IWICBitmapFrameEncode** bitmap_frame_encode,
+                                     IPropertyBag2** encoder_options) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode=%p, encoder_options=%p\n", this, bitmap_frame_encode, encoder_options);
+        TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode=%p, encoder_options=%p\n", this,
+              bitmap_frame_encode, encoder_options);
 
         if (!bitmap_frame_encode)
         {
@@ -133,11 +136,13 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
             encoder.interleave_mode(interleave_mode::sample);
         }
 
-        const auto color_space = bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale : spiff_color_space::rgb;
+        const auto color_space =
+            bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale : spiff_color_space::rgb;
         if (bitmap_frame_encode_->is_dpi_set())
         {
             encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
-                                                lround(bitmap_frame_encode_->dpi_y()), lround(bitmap_frame_encode_->dpi_x()));
+                                                lround(bitmap_frame_encode_->dpi_y()),
+                                                lround(bitmap_frame_encode_->dpi_x()));
         }
         else
         {
@@ -172,7 +177,8 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
+    HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
+                                       [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
         TRACE("%p jpegls_bitmap_encoder::SetColorContexts, count=%u, color_context=%p\n", this, count, color_context);
 
@@ -181,7 +187,8 @@ struct jpegls_bitmap_encoder final : implements<jpegls_bitmap_encoder, IWICBitma
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetMetadataQueryWriter([[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
+    HRESULT __stdcall GetMetadataQueryWriter(
+        [[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
     {
         TRACE("%p jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer=%p\n", this, metadata_query_writer);
 
@@ -205,8 +212,8 @@ private:
     {
         if (!imaging_factory_)
         {
-            check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                           nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+            check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+                                           IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();

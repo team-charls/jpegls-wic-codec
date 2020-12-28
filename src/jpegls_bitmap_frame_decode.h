@@ -17,7 +17,8 @@
 #include <memory>
 
 
-struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
+struct jpegls_bitmap_frame_decode final
+    : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
     explicit jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
     {
@@ -41,7 +42,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
 
         const auto& [pixel_format, sample_shift] = pixel_format_info.value();
         winrt::com_ptr<IWICBitmap> bitmap;
-        winrt::check_hresult(factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
+        winrt::check_hresult(
+            factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
         winrt::check_hresult(bitmap->SetResolution(96, 96));
 
         {
@@ -109,9 +111,11 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
-    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
+    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
+                                 BYTE* buffer) noexcept override
     {
-        TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
+        TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle,
+              buffer_size, buffer);
 
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
@@ -128,10 +132,12 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return wincodec::error_codec_no_thumbnail;
     }
 
-    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
+    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
+                                       uint32_t* actual_count) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_decoder::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p jpegls_bitmap_frame_decoder::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this,
+              count, color_contexts, actual_count);
 
         *check_out_pointer(actual_count) = 0;
         return error_ok;
@@ -141,7 +147,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
         return winrt::to_hresult();
     }
 
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader(
+        [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
@@ -155,7 +162,8 @@ struct jpegls_bitmap_frame_decode final : winrt::implements<jpegls_bitmap_frame_
     }
 
 private:
-    static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t size) noexcept
+    static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels,
+                                const size_t size) noexcept
     {
         size_t j = 0;
         for (size_t i = 0; i < size; ++i)
@@ -167,7 +175,8 @@ private:
         }
     }
 
-    static std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
+    static std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample,
+                                                                     const int32_t component_count) noexcept
     {
         switch (component_count)
         {
@@ -232,7 +241,8 @@ private:
                        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
 
-    static void convert_planar_to_rgb(const size_t width, const size_t height, const std::byte* source, void* destination, const size_t rgb_stride) noexcept
+    static void convert_planar_to_rgb(const size_t width, const size_t height, const std::byte* source, void* destination,
+                                      const size_t rgb_stride) noexcept
     {
         const std::byte* r = source;
         const std::byte* g = r + (width * height);
@@ -262,8 +272,7 @@ private:
         using value_type = std::byte;
 
         explicit storage_buffer(const size_t size) :
-            size_{size},
-            buffer_{std::make_unique<std::byte[]>(size)} // NOLINT(cppcoreguidelines-avoid-c-arrays)
+            size_{size}, buffer_{std::make_unique<std::byte[]>(size)} // NOLINT(cppcoreguidelines-avoid-c-arrays)
         {
         }
 

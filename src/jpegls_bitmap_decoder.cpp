@@ -66,7 +66,8 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         }
 
         const auto& frame_info = decoder.frame_info();
-        if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(frame_info.bits_per_sample, frame_info.component_count))
+        if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(frame_info.bits_per_sample,
+                                                                       frame_info.component_count))
         {
             *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
         }
@@ -79,7 +80,8 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         return to_hresult();
     }
 
-    HRESULT __stdcall Initialize(_In_ IStream* stream, [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
+    HRESULT __stdcall Initialize(_In_ IStream* stream,
+                                 [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
     try
     {
         TRACE("%p jpegls_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
@@ -135,7 +137,8 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader(
+        [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
 
@@ -151,10 +154,13 @@ struct jpegls_bitmap_decoder final : winrt::implements<jpegls_bitmap_decoder, IW
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
+    HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
+                                       [[maybe_unused]] IWICColorContext** color_contexts,
+                                       [[maybe_unused]] uint32_t* actual_count) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p jpegls_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count,
+              color_contexts, actual_count);
 
         *check_out_pointer(actual_count) = 0;
         return error_ok;
@@ -222,8 +228,8 @@ private:
     {
         if (!imaging_factory_)
         {
-            check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                           nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+            check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+                                           IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();

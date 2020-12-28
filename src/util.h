@@ -13,18 +13,19 @@
 #include <cstddef>
 #include <string>
 
-#define SUPPRESS_WARNING_NEXT_LINE(x) __pragma(warning(suppress \
-                                                       : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
+#define SUPPRESS_WARNING_NEXT_LINE(x) \
+    __pragma(warning(suppress \
+                     : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
-// The 2 macros below can be used to disable false positives. These warnings are too useful to disable them globally.
+// The 2 macros below are used to disable false positives. These warnings are too useful to disable them globally.
 
 // A false warning is generated when a type is returned that can converted to a HRESULT but is not a HRESULT.
-// The HRESULT is tagged with a SAL annotation that indicates when the function returns an error or not.
+// The HRESULT type is tagged with a SAL annotation that indicates when the function returns an error or not.
 // Reported to Microsoft:
 // https://developercommunity.visualstudio.com/content/problem/804429/static-analysis-emits-a-false-positive-c6101-error.html
 #define SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(6101)
 
-// A false warning is generated that a noexcept methods calls function not marked noexcept.
+// A false warning is generated when a noexcept methods calls a function that is not marked noexcept.
 // Reported to Microsoft:
 // https://developercommunity.visualstudio.com/content/problem/804372/c26447-false-positive-when-using-stdscoped-lock-ev.html
 #define SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(26447)
@@ -36,11 +37,8 @@
 
 #else
 
-#define ASSERT(expression)                 \
-    __pragma(warning(push))                \
-        __pragma(warning(disable : 26493)) \
-            assert(expression)             \
-                __pragma(warning(pop))
+#define ASSERT(expression) \
+    __pragma(warning(push)) __pragma(warning(disable : 26493)) assert(expression) __pragma(warning(pop))
 #define VERIFY(expression) assert(expression)
 
 #endif
@@ -54,8 +52,7 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
 {
     HMODULE module;
     GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                      reinterpret_cast<PCWSTR>(get_current_module),
-                      &module);
+                       reinterpret_cast<PCWSTR>(get_current_module), &module);
 
     return module;
 }
@@ -127,18 +124,23 @@ namespace registry {
 SUPPRESS_WARNING_NEXT_LINE(26493)                  // Don't use C-style casts (used by HKEY_LOCAL_MACHINE macro)
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     const auto length = wcslen(value) + 1;
-    winrt::check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
+    winrt::check_win32(
+        RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
+                       static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      const uint32_t value)
 {
     winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
@@ -148,12 +150,14 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, const void* value, const DWORD value_size_in_bytes)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      const void* value, const DWORD value_size_in_bytes)
 {
     winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value, const DWORD value_size_in_bytes)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value,
+                      const DWORD value_size_in_bytes)
 {
     set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
 }

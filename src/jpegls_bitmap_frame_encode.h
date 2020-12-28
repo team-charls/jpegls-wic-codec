@@ -149,7 +149,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return wincodec::error_unsupported_pixel_format;
     }
 
-    HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_context) noexcept override
+    HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
+                                       [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
         TRACE("%p jpegls_bitmap_frame_encode::SetColorContexts, count=%d, color_context=%p\n", this, count, color_context);
         return wincodec::error_unsupported_operation;
@@ -166,7 +167,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t source_stride, uint32_t /* buffer_size */, BYTE* pixels) noexcept override
+    HRESULT __stdcall WritePixels(const uint32_t line_count, const uint32_t source_stride, uint32_t /* buffer_size */,
+                                  BYTE* pixels) noexcept override
     {
         if (!(state_ == state::initialized || state_ == state::received_pixels) || !size_set_ || !pixel_format_set_)
             return wincodec::error_wrong_state;
@@ -183,8 +185,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
 
             const size_t destination_stride = stride();
             std::byte* destination = source_.data() + (received_line_count_ * destination_stride);
-            winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
-                                             source_stride, static_cast<DWORD>(destination_stride), line_count));
+            winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride),
+                                             pixels, source_stride, static_cast<DWORD>(destination_stride), line_count));
 
             received_line_count_ += line_count;
             state_ = state::received_pixels;
@@ -196,9 +198,11 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
         }
     }
 
-    HRESULT __stdcall WriteSource(_In_ IWICBitmapSource* bitmap_source, [[maybe_unused]] _In_ WICRect* rectangle) noexcept override
+    HRESULT __stdcall WriteSource(_In_ IWICBitmapSource* bitmap_source,
+                                  [[maybe_unused]] _In_ WICRect* rectangle) noexcept override
     {
-        TRACE("%p jpegls_bitmap_frame_encode::WriteSource, bitmap_source=%p, rectangle=%p\n", this, bitmap_source, rectangle);
+        TRACE("%p jpegls_bitmap_frame_encode::WriteSource, bitmap_source=%p, rectangle=%p\n", this, bitmap_source,
+              rectangle);
         if (!bitmap_source)
             return error_invalid_argument;
 
@@ -240,7 +244,8 @@ struct jpegls_bitmap_frame_encode final : winrt::implements<jpegls_bitmap_frame_
                 s /= 2;
             }
 
-            winrt::check_hresult(bitmap_source->CopyPixels(nullptr, s, static_cast<uint32_t>(source_.size()), reinterpret_cast<BYTE*>(source_.data())));
+            winrt::check_hresult(bitmap_source->CopyPixels(nullptr, s, static_cast<uint32_t>(source_.size()),
+                                                           reinterpret_cast<BYTE*>(source_.data())));
             state_ = state::received_pixels;
             return error_ok;
         }
