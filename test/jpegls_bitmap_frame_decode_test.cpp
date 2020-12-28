@@ -104,7 +104,8 @@ public:
         Assert::AreEqual(0U, actual_count);
 
         array<IWICColorContext*, 1> color_contexts{};
-        result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(), &actual_count);
+        result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(),
+                                                        &actual_count);
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
@@ -128,7 +129,8 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
 
-        hresult result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        hresult result =
+            bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
         Assert::AreEqual(error_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
@@ -161,8 +163,8 @@ private:
     [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;
-        check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                       nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+        check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory,
+                                       imaging_factory.put_void()));
 
         return imaging_factory;
     }

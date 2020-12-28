@@ -272,7 +272,8 @@ public:
 
         {
             com_ptr<IStream> stream;
-            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
 
             com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
@@ -280,9 +281,10 @@ public:
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
 
             com_ptr<IWICBitmap> bitmap;
-            check_hresult(imaging_factory()->CreateBitmapFromMemory(anymap_file.width(), anymap_file.height(),
-                                                                    pixel_format, anymap_file.width() * anymap_file.component_count(),
-                                                                    static_cast<uint32_t>(anymap_file.image_data().size()), reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
+                static_cast<uint32_t>(anymap_file.image_data().size()),
+                reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
             hresult result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
@@ -327,7 +329,8 @@ public:
 
     ////    {
     ////        com_ptr<IStream> stream;
-    ////        check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+    ////        check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0,
+    ///false, nullptr, stream.put()));
 
     ////        com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
     ////        check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
@@ -337,8 +340,9 @@ public:
     ////        com_ptr<IWICBitmap> bitmap;
     ////        auto nibble_pixels = pack_to_nibbles(anymap_file.image_data());
     ////        check_hresult(imaging_factory()->CreateBitmapFromMemory(anymap_file.width(), anymap_file.height(),
-    ////                                                                pixel_format, anymap_file.width() * anymap_file.component_count() / 2,
-    ////                                                                static_cast<uint32_t>(nibble_pixels.size()), reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
+    ////                                                                pixel_format, anymap_file.width() *
+    ///anymap_file.component_count() / 2, / static_cast<uint32_t>(nibble_pixels.size()),
+    ///reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
 
     ////        com_ptr<IWICBitmapFrameEncode> frame_encode;
     ////        hresult result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
@@ -365,8 +369,8 @@ private:
     [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;
-        check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                       nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+        check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory,
+                                       imaging_factory.put_void()));
 
         return imaging_factory;
     }

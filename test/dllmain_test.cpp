@@ -16,7 +16,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 TEST_CLASS(dllmain_test)
 {
-public :
+public:
     TEST_METHOD(class_factory_jpegls_decoder_lock_server) // NOLINT
     {
         auto class_factory = factory_.get_class_factory(CLSID_JpegLSDecoder);

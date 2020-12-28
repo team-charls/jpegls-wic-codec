@@ -12,8 +12,8 @@
 
 #include <array>
 
-using std::vector;
 using std::array;
+using std::vector;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -109,7 +109,8 @@ public:
         check_hresult(imaging_factory()->CreateColorContext(color_context.put()));
         array color_contexts{color_context.get()};
 
-        const hresult result = bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data());
+        const hresult result =
+            bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data());
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -238,7 +239,8 @@ private:
 
         if (filename)
         {
-            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
         }
         else
         {
@@ -279,8 +281,8 @@ private:
     {
         if (!imaging_factory_)
         {
-            check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                           nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(imaging_factory_.put())));
+            check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+                                           IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();
