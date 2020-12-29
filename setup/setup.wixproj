@@ -2,8 +2,8 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="..\packages\WiX.3.11.2\build\wix.props" Condition="Exists('..\packages\WiX.3.11.2\build\wix.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProductVersion>3.11</ProductVersion>
     <ProjectGuid>7755bd56-4032-4bb6-96b4-85329e44616f</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -11,8 +11,10 @@
     <OutputType>Package</OutputType>
     <OutputPath>$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+    <!-- ICE03 needs to be suppressed the Visual C++ merge module is used. -->
     <!-- ICE80 needs to be suppressed because both 32 and 64-bit components need to be installed. -->
-    <SuppressIces>ICE80</SuppressIces>
+    <SuppressIces>ICE03;ICE80</SuppressIces>
+    <DefineConstants>VCMergeModuleDir=$(VCINSTALLDIR)Redist\MSVC\v142\MergeModules\</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
@@ -25,16 +27,6 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="wic_registration.wxi" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\jpegls-wic-codec.vcxproj">
-      <Name>jpegls-wic-codec</Name>
-      <Project>{e3900ae2-ae06-4e77-9055-bc4d23ae4f36}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
