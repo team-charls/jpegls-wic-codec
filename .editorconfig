@@ -15,3 +15,14 @@ indent_size = 4
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
+
+[*.{wxs,wxi}]
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{vcxproj,wixproj}]
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+

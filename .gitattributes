@@ -11,7 +11,9 @@
 *.sln text
 *.props text
 *.vcxproj text
+*.wixproj text
 *.filters text
+*.wxs text
 
 # Explicit define binary file types.
 *.jls binary

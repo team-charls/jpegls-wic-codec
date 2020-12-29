@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
     <OutDir>$(MSBuildThisFileDirectory)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)bin\x86\$(Configuration)\</OutDir>
 
     <!-- C++ temp files can be redirected. -->
     <IntDir>$(MSBuildThisFileDirectory)intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>

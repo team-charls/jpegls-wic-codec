@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="CharLS JPEG-LS WIC Codec" Language="1033" Version="0.1.0.0" Manufacturer="Team CharLS" UpgradeCode="c713c1c4-ab72-4546-b96c-68c89236291b">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="setup" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="CharLS WIC Codec" />
+      </Directory>
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER64" Name="CharLS WIC Codec" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+
+      <Component Id="C_charls_2_x64.dll" Directory="INSTALLFOLDER64">
+        <File Id="F_charls_2_x64.dll" Source="$(var.SolutionDir)\bin\x64\$(var.jpegls-wic-codec.Configuration)\charls-2-x64.dll" KeyPath="yes" />
+      </Component>
+
+      <Component Id="C_charls_2_x86.dll" Directory="INSTALLFOLDER">
+        <File Id="F_charls_2_x86.dll" Source="$(var.SolutionDir)\bin\x86\$(var.jpegls-wic-codec.Configuration)\charls-2-x86.dll" KeyPath="yes" />
+      </Component>
+
+      <?define GUID_WICPixelFormat2bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc906}" ?>
+      <?define GUID_WICPixelFormat4bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc907}" ?>
+      <?define GUID_WICPixelFormat8bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc908}" ?>
+      <?define GUID_WICPixelFormat16bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc90b}" ?>
+      <?define GUID_WICPixelFormat24bppBGR = "{6fddc324-4e03-4bfe-b185-3d77768dc90c}" ?>
+      <?define GUID_WICPixelFormat24bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc90d}" ?>
+      <?define GUID_WICPixelFormat48bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc915}" ?>
+
+      <?define CATID_WICBitmapEncoders = "{ac757296-3522-4e11-9862-c17be5a1767e}" ?>
+      <?define CATID_WICBitmapDecoders = "{7ed96837-96f0-4812-b211-f13c24117ed3}" ?>
+
+      <?define CLSID_ThumbnailProvider = "{e357fccd-a995-4576-b01f-234630154e96}" ?>
+      <?define CLSID_PhotoThumbnailProvider = "{c7657c4a-9f68-40fa-a4df-96bc08eb3551}" ?>
+
+      <?define GUID_ContainerFormatJpegLS = "{52c25458-282d-4ef4-a69f-021bb2984543}" ?>
+      <?define CLSID_JpegLSDecoder = "{e57dc18b-019c-47f2-8ed0-bf587be4ff1b}" ?>
+      <?define CLSID_JpegLSEncoder = "{70A823EA-009F-402F-9BDA-E9B8F6332D61}" ?>
+      <?define GUID_VendorTeamCharLS = "{8adbe21c-a720-424e-b238-45ad1052b98c}" ?>
+
+      <?define EncoderFriendlyName = "JPEG-LS Encoder" ?>
+      <?define DecoderFriendlyName = "JPEG-LS Decoder" ?>
+      <?define FileExtension = ".jls" ?>
+
+      <Component Id="C_jpegls_wic_codec_64.dll" Win64="yes" Directory="INSTALLFOLDER64">
+        <File Id="F_jpegls_wic_codec_64.dll" Source="$(var.SolutionDir)\bin\x64\$(var.jpegls-wic-codec.Configuration)\jpegls-wic-codec.dll" KeyPath="yes" />
+
+        <?define var.ComServerFileId = "F_jpegls_wic_codec_64.dll" ?>
+        <?include wic_registration.wxi ?>
+        <?undef var.ComServerFileId?>
+
+      </Component>
+
+      <Component Id="C_jpegls_wic_codec_86.dll" Win64="no" Directory="INSTALLFOLDER">
+        <File Id="F_jpegls_wic_codec_86.dll" Source="$(var.SolutionDir)\bin\x86\$(var.jpegls-wic-codec.Configuration)\jpegls-wic-codec.dll" KeyPath="yes" />
+
+        <?define var.ComServerFileId = "F_jpegls_wic_codec_86.dll" ?>
+        <?include wic_registration.wxi ?>
+        <?undef var.ComServerFileId?>
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+</Wix>
