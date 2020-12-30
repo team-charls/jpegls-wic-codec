@@ -26,6 +26,7 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
+            VALUE "CompanyName", "Team CharLS"
             VALUE "FileDescription", L"JPEG-LS WIC codec"
             VALUE "FileVersion", VERSION
             VALUE "InternalName", L"jpegls-wic-codec.dll"
