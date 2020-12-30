@@ -11,16 +11,25 @@
     <OutputType>Package</OutputType>
     <OutputPath>$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+
     <!-- ICE03 needs to be suppressed the Visual C++ merge module is used. -->
     <!-- ICE80 needs to be suppressed because both 32 and 64-bit components need to be installed. -->
     <SuppressIces>ICE03;ICE80</SuppressIces>
-    <DefineConstants>VCMergeModuleDir=$(VCINSTALLDIR)Redist\MSVC\v142\MergeModules\</DefineConstants>
+
+    <CertificateThumbprint Condition="'$(CertificateThumbprint)' == ''">6e78b103da0729369e44004121fb6bf685fec5d8</CertificateThumbprint>
+    <TimestampUrl Condition="'$(TimestampUrl)' == ''">http://time.certum.pl/</TimestampUrl>
+    <CodecX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\jpegls-wic-codec.dll</CodecX64>
+    <CodecX86>$(MSBuildThisFileDirectory)..\bin\x86\Release\jpegls-wic-codec.dll</CodecX86>
+    <CharLSX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\charls-2-x64.dll</CharLSX64>
+    <CharLSX86>$(MSBuildThisFileDirectory)..\bin\x86\Release\charls-2-x86.dll</CharLSX86>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>
@@ -35,12 +44,18 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\WiX.3.11.2\build\wix.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WiX.3.11.2\build\wix.props'))" />
   </Target>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
+
+  <Target Name="BeforeBuild" Condition="$(PerformSigning) != ''">
+    <Message Text="Signing the binaries" Importance="High" />
+    <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CodecX64)%22" />
+    <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CodecX86)%22" />
+    <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CharLSX64)%22" />
+    <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CharLSX86)%22" />
+  </Target>
+
+  <Target Name="AfterBuild" Condition="$(PerformSigning) != ''">
+    <Message Text="Signing the installer" Importance="High" />
+    <Exec Command="signtool.exe sign /v /d %22CharLS JPEG-LS WIC Codec Setup%22 /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(TargetPath)%22" />
+  </Target>
+
 </Project>

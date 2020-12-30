@@ -5,4 +5,4 @@ copy "%VCINSTALLDIR%Redist\MSVC\v142\MergeModules\Microsoft_VC142_CRT_x64.msm" b
 
 msbuild jpegls-wic-codec.sln -p:Configuration=Release -p:Platform=Win32
 msbuild jpegls-wic-codec.sln -p:Configuration=Release -p:Platform=x64
-msbuild setup\setup.sln
+msbuild setup\setup.sln -p:PerformSigning=true
