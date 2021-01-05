@@ -68,7 +68,14 @@ public:
             if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
             {
                 auto planar = decoder.decode<std::vector<std::byte>>();
-                convert_planar_to_rgb(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+                if (frame_info.bits_per_sample > 8)
+                {
+                    convert_16_bit_planar_to_rgb(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+                }
+                else
+                {
+                    convert_8_bit_planar_to_rgb(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+                }
             }
             else if (frame_info.bits_per_sample < 8)
             {
@@ -242,18 +249,18 @@ private:
                        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
 
-    static void convert_planar_to_rgb(const size_t width, const size_t height, const std::byte* source, void* destination,
-                                      const size_t rgb_stride) noexcept
+    static void convert_8_bit_planar_to_rgb(const size_t width, const size_t height, const std::byte* source,
+                                            void* destination, const size_t destination_stride) noexcept
     {
-        const std::byte* r = source;
-        const std::byte* g = r + (width * height);
-        const std::byte* b = g + (width * height);
+        const std::byte* r{source};
+        const std::byte* g{r + (width * height)};
+        const std::byte* b{g + (width * height)};
 
-        auto* rgb = static_cast<std::byte*>(destination);
+        auto* rgb{static_cast<std::byte*>(destination)};
 
-        for (size_t row = 0; row < height; ++row)
+        for (size_t row{}; row < height; ++row)
         {
-            for (size_t col = 0, offset = 0; col < width; ++col, offset += 3)
+            for (size_t col{}, offset = 0; col < width; ++col, offset += 3)
             {
                 rgb[offset + 0] = r[col];
                 rgb[offset + 1] = g[col];
@@ -263,7 +270,32 @@ private:
             b += width;
             g += width;
             r += width;
-            rgb += rgb_stride;
+            rgb += destination_stride;
+        }
+    }
+
+    static void convert_16_bit_planar_to_rgb(const size_t width, const size_t height, const std::byte* source,
+                                             void* destination, const size_t destination_stride) noexcept
+    {
+        const auto* r{reinterpret_cast<const std::uint16_t*>(source)};
+        const auto* g{reinterpret_cast<const std::uint16_t*>(source + (width * sizeof(uint16_t) * height))};
+        const auto* b{reinterpret_cast<const std::uint16_t*>(source + (width * sizeof(uint16_t) * height * 2))};
+
+        auto* rgb{static_cast<std::uint16_t*>(destination)};
+
+        for (size_t row{}; row < height; ++row)
+        {
+            for (size_t col{}, offset = 0; col < width; ++col, offset += 3)
+            {
+                rgb[offset + 0] = r[col];
+                rgb[offset + 1] = g[col];
+                rgb[offset + 2] = b[col];
+            }
+
+            b += width;
+            g += width;
+            r += width;
+            rgb += destination_stride / sizeof(uint16_t);
         }
     }
 

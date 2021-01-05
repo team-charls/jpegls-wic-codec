@@ -24,7 +24,7 @@ namespace {
 void register_general_decoder_encoder_settings(const GUID& class_id, const GUID& wic_category_id,
                                                const wchar_t* friendly_name, const GUID* formats, const size_t format_count)
 {
-    const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
     registry::set_value(sub_key, L"Author", L"Team CharLS");
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
@@ -41,20 +41,20 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"Vendor", guid_to_string(GUID_VendorTeamCharLS).c_str());
     registry::set_value(sub_key, L"Version", VERSION);
 
-    const wstring formats_sub_key = sub_key + LR"(\Formats\)";
-    for (size_t i = 0; i < format_count; ++i)
+    const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
+    for (size_t i{}; i < format_count; ++i)
     {
         registry::set_value(formats_sub_key + guid_to_string(formats[i]), L"", L"");
     }
 
     // COM co-create registration.
-    const wstring inproc_server_sub_key = sub_key + LR"(\InprocServer32\)";
+    const wstring inproc_server_sub_key{sub_key + LR"(\InprocServer32\)"};
     registry::set_value(inproc_server_sub_key, L"", get_module_path().c_str());
     registry::set_value(inproc_server_sub_key, L"ThreadingModel", L"Both");
 
     // WIC category registration.
-    const wstring category_id_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" +
-                                    guid_to_string(CLSID_JpegLSDecoder);
+    const wstring category_id_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" +
+                                  guid_to_string(class_id)};
     registry::set_value(category_id_key, L"FriendlyName", friendly_name);
     registry::set_value(category_id_key, L"CLSID", guid_to_string(class_id).c_str());
 }
@@ -85,10 +85,12 @@ void register_decoder()
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", L".jls", L"picture");
 
     // Register with the Windows Thumbnail Cache
-    registry::set_value(LR"(SOFTWARE\Classes\jlsfile\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"",
-                        L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
-    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})",
-                        L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+    const wstring IID_IThumbnailProvider{L"{e357fccd-a995-4576-b01f-234630154e96}"};
+    constexpr wchar_t CLSID_PhotoThumbnailProvider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
+
+    registry::set_value(LR"(SOFTWARE\Classes\.jls\ShellEx\)" + IID_IThumbnailProvider, L"", CLSID_PhotoThumbnailProvider);
+    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\)" + IID_IThumbnailProvider,
+                        L"", CLSID_PhotoThumbnailProvider);
 
     // Register with the legacy Windows Photo Viewer (still installed on Windows 10), just forward to the TIFF registration.
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".jls",

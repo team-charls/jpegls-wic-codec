@@ -88,7 +88,7 @@
 
     <!-- Register with the Windows Thumbnail Cache
              Use the Microsoft Windows provided PhotoThumbnailProvider module to generate the thumbnail -->
-    <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\jlsfile\ShellEx\$(var.CLSID_ThumbnailProvider)">
+    <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\$(var.FileExtension)\ShellEx\$(var.CLSID_ThumbnailProvider)">
         <RegistryValue Type="string" Value="$(var.CLSID_PhotoThumbnailProvider)" />
     </RegistryKey>
     <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\$(var.FileExtension)\ShellEx\$(var.CLSID_ThumbnailProvider)">
