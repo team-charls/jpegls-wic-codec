@@ -12,6 +12,7 @@
 #include <unknwn.h>
 
 #pragma warning(push)
+#pragma warning(disable : 4946) // reinterpret_cast used between related classes
 #pragma warning(disable : 5204) // class has virtual functions, but its trivial destructor is not virtual
 #include <winrt/base.h>
 #pragma warning(pop)
@@ -23,8 +24,7 @@
 #pragma warning(disable : 26433) // Function should be marked with 'override'
 #pragma warning(disable : 26440) // Function can be declared 'noexcept' (f.6).
 #pragma warning(disable : 26443) // Overriding destructor should not use explicit 'override' or 'virtual' specifiers (c.128).
-#pragma warning( \
-    disable : 26455) // Default constructor may not throw. Declare it 'noexcept' (f.6). [Problem in VS 2017 15.8.0]
+#pragma warning(disable : 26455) // Default constructor may not throw. [Problem in VS 2017 15.8.0]
 #pragma warning(disable : 26461) // the pointer argument can be marked as a pointer to const
 #pragma warning(disable : 26477) // Use 'nullptr' rather than 0 or NULL (es.47) [Problem in VS 2017 15.8.0]
 #pragma warning(disable : 26493) // Don't use C-style casts

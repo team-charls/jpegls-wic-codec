@@ -5,8 +5,7 @@
 
 #include "factory.h"
 #include "util.h"
-
-#include "../src/errors.h"
+#include "test_stream.h"
 
 #include <CppUnitTest.h>
 
@@ -164,14 +163,32 @@ public:
 
     TEST_METHOD(QueryCapability_read_error_on_stream) // NOLINT
     {
-        // TODO: pass a stream that generates a read error.
-        Assert::IsTrue(true);
+        com_ptr<IStream> stream{make<test_stream>(true, 2)};
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
     }
 
     TEST_METHOD(QueryCapability_seek_error_on_stream) // NOLINT
     {
-        // TODO: pass a stream that generates a seek error.
-        Assert::IsTrue(true);
+        com_ptr<IStream> stream{winrt::make<test_stream>(false, 1)};
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
+    }
+
+    TEST_METHOD(QueryCapability_seek_error_on_stream_reset) // NOLINT
+    {
+        com_ptr<IStream> stream{winrt::make<test_stream>(false, 1)};
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
     }
 
     TEST_METHOD(Initialize_cache_on_demand) // NOLINT
