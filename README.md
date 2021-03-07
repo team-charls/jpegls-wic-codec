@@ -21,6 +21,8 @@ The JPEG-LS WIC codec supports the following Windows operating systems:
 - Windows 10
 - Windows Server 2016
 
+Note: on Windows 10 "N" the Media Feature Pack needs to be installed.
+
 ### Applications that can use the JPEG-LS WIC codec
 
 The following application have been validated to work with the JPEG-LS WIC codec:
