@@ -98,6 +98,8 @@
       <!-- Use by default precompiled headers with the modern name pch.h -->
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
+
+      <UseStandardPreprocessor >true</UseStandardPreprocessor>
     </ClCompile>
 
     <Link>

@@ -5,9 +5,12 @@
 
 #include <SDKDDKVer.h> // Defines the highest available Windows platform.
 
+#pragma warning(push)
+#pragma warning(disable : 5105) // macro expansion producing 'defined' has undefined behavior
 #include <Shlwapi.h>
 #include <Windows.h>
 #include <wincodec.h>
+#pragma warning(pop)
 
 #include <unknwn.h>
 

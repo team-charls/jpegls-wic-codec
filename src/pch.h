@@ -3,11 +3,15 @@
 
 #pragma once
 
+
 #include <sdkddkver.h> // Defines the highest available Windows platform.
 
+#pragma warning(push)
+#pragma warning(disable : 5105) // macro expansion producing 'defined' has undefined behavior
 #include <OleCtl.h>
 #include <ShlObj.h>
 #include <Unknwn.h>
+#pragma warning(pop)
 
 #include "wic_bitmap_source.h"
 #include <wincodec.h>

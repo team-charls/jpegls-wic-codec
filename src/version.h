@@ -9,7 +9,7 @@
 
 // Turn A into a string literal without expanding macro definitions
 // (however, if invoked from a macro, macro arguments are expanded).
-#define TO_STRING_NX(A) L#A
+#define TO_STRING_NX(A) L## #A
 
 // Turn A into a string literal after macro-expanding it.
 #define TO_STRING(A) TO_STRING_NX(A)
