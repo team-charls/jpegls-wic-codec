@@ -38,6 +38,9 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
 
+      <!-- Explicit set the 'external' warning level to W3 (Supported since Visual Studio 2019 16.10) -->
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+
       <!--
         Disable level All warnings that are not useful:
         C4061 = enumerator 'identifier' in switch of enum 'enumeration' is not explicitly handled by a case label
@@ -65,8 +68,9 @@
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
         throwingNew = Communicate with the compiler that only the throwing variant of operator new is used.
         utf-8 = interpret all source files as UTF-8.
+        ZH:SHA_256 = Use an SHA-256 hash for the checksum.in debug info
       -->
-      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /utf-8  /ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
 
       <!--
         * Windows SDK *
@@ -125,5 +129,13 @@
       <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
       <EnablePREfast>true</EnablePREfast>
     </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkIncremental>false</LinkIncremental>
+
+      <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds. -->
+      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
 </Project>
