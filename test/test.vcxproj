@@ -136,9 +136,10 @@
     <CopyFileToFolders Include="data-files\test8.ppm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
     <CopyFileToFolders Include="data-files\4bit-monochrome.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\4bit-monochrome.jls">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>

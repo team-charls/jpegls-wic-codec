@@ -4,6 +4,7 @@
 #include "pch.h"
 
 #include "factory.h"
+#include "portable_anymap_file.h"
 #include "util.h"
 
 #include "../src/errors.h"
@@ -14,6 +15,7 @@
 #include <vector>
 
 using std::array;
+using std::byte;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -112,41 +114,97 @@ public:
 
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
-        const hresult result = bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put());
+        const hresult result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(CopyPixels) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
 
         uint32_t width;
         uint32_t height;
-
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
+        std::vector<byte> buffer(static_cast<size_t>(width) * height);
 
-        hresult result =
-            bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        hresult result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
+                                                        reinterpret_cast<BYTE*>(buffer.data()))};
         Assert::AreEqual(error_ok, result);
 
-        result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
+                                                  reinterpret_cast<BYTE*>(buffer.data()));
         Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT
     {
-        const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.jls");
+        const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
 
         const com_ptr<IWICBitmapSource> bitmap_source(bitmap_frame_decoder);
         Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
+    TEST_METHOD(decode_monochrome_4_bit) // NOLINT
+    {
+        const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.jls")};
+
+        GUID pixel_format;
+        hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat4bppGray == pixel_format);
+
+        uint32_t width;
+        uint32_t height;
+        result = bitmap_frame_decoder->GetSize(&width, &height);
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(360U, width);
+        Assert::AreEqual(360U, height);
+        const uint32_t stride{width / 2};
+
+        std::vector<byte> buffer(static_cast<size_t>(stride) * height);
+        result = bitmap_frame_decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()),
+                                                  reinterpret_cast<BYTE*>(buffer.data()));
+        Assert::AreEqual(error_ok, result);
+
+        std::vector<byte> decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        portable_anymap_file anymap_file{"4bit-monochrome.pgm"};
+
+        for (size_t i{}; i < decoded_buffer.size(); ++i)
+        {
+            if (anymap_file.image_data()[i] != decoded_buffer[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
+    }
+
 private:
-    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(const PCWSTR filename) const
+    [[nodiscard]] static std::vector<byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width,
+                                                          const size_t height, const size_t stride)
+    {
+        std::vector<byte> destination(static_cast<size_t>(width) * height);
+
+        for (size_t j{}, row{}; row < height; ++row)
+        {
+            const std::byte* nibble_row{nibble_pixels + (row * stride)};
+            for (size_t i{}; i < width / 2; ++i)
+            {
+                destination[j] = nibble_row[i] >> 4;
+                ++j;
+                constexpr byte mask{0x0F};
+                destination[j] = (nibble_row[i] & mask);
+                ++j;
+            }
+        }
+
+        return destination;
+    }
+
+    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));

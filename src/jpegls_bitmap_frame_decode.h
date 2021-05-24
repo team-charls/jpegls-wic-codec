@@ -81,7 +81,7 @@ public:
             {
                 std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
                 decoder.decode(byte_pixels);
-                pack_to_nibbles(byte_pixels, data_buffer, data_buffer_size);
+                pack_to_nibbles(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
             }
             else
             {
@@ -170,16 +170,19 @@ public:
     }
 
 private:
-    static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels,
-                                const size_t size) noexcept
+    static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
+                                const size_t height, const size_t stride) noexcept
     {
-        size_t j = 0;
-        for (size_t i = 0; i < size; ++i)
+        for (size_t j{}, row{}; row < height; ++row)
         {
-            nibble_pixels[i] = byte_pixels[j] << 4;
-            ++j;
-            nibble_pixels[i] |= byte_pixels[j];
-            ++j;
+            std::byte* nibble_row{nibble_pixels + (row * stride)};
+            for (size_t i{}; i < width / 2; ++i)
+            {
+                nibble_row[i] = byte_pixels[j] << 4;
+                ++j;
+                nibble_row[i] |= byte_pixels[j];
+                ++j;
+            }
         }
     }
 
