@@ -10,10 +10,10 @@
 #error Include this header file before wincodec.h
 #endif
 
-#define __IWICBitmapSource_INTERFACE_DEFINED__
+#define __IWICBitmapSource_INTERFACE_DEFINED__  // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
 
-typedef /* [public] */ GUID WICPixelFormatGUID;
-typedef interface IWICPalette IWICPalette;
+using WICPixelFormatGUID = GUID;
+struct IWICPalette;
 struct WICRect;
 
 MIDL_INTERFACE("00000120-a8f2-4877-ba0a-fd2b6645fb94")

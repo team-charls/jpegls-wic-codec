@@ -45,6 +45,8 @@
 # -cppcoreguidelines-non-private-member-variables-in-classes => Warning is too strict, manual review code review is preferred
 # -cppcoreguidelines-pro-bounds-constant-array-index => gsl:at is not used by design
 # -cppcoreguidelines-pro-type-vararg => too many false warnings
+# -cppcoreguidelines-init-variables => too many false warnings for variables initialized with out (other checkers are better).
+# -cppcoreguidelines-avoid-c-arrays => too many false warnings, C arrays are usefull for small unitialized buffers.
 # -cert-msc32-c => Rationale: predictable seed is by design (random used for testing, not crypto)
 # -cert-msc51-cpp => Rationale: alias for cert-msc32-c
 # -cert-err58-cpp => Rationale: Only exception that could be thrown is out of memory
@@ -91,6 +93,8 @@ Checks:          '*,
                   -cppcoreguidelines-non-private-member-variables-in-classes,
                   -cppcoreguidelines-pro-bounds-constant-array-index,
                   -cppcoreguidelines-pro-type-vararg,
+                  -cppcoreguidelines-init-variables,
+                  -cppcoreguidelines-avoid-c-arrays,
                   -cert-msc32-c,
                   -cert-msc51-cpp,
                   -cert-err58-cpp'

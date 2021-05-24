@@ -128,14 +128,14 @@ public:
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
 
-    HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override
+    HRESULT __stdcall CopyPalette(IWICPalette* /*palette*/) noexcept override
     {
         TRACE("%p jpegls_bitmap_frame_decoder::CopyPalette\n", this);
         return wincodec::error_palette_unavailable;
     }
 
     // IWICBitmapFrameDecode : IWICBitmapSource
-    HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override
+    HRESULT __stdcall GetThumbnail(IWICBitmapSource** /*source*/) noexcept override
     {
         return wincodec::error_codec_no_thumbnail;
     }

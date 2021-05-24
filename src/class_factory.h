@@ -28,7 +28,7 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
         }
     }
 
-    HRESULT __stdcall LockServer(BOOL) noexcept override
+    HRESULT __stdcall LockServer(BOOL /*lock*/) noexcept override
     {
         return error_ok;
     }
