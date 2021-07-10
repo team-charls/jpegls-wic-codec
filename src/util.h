@@ -127,7 +127,7 @@ const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
                       _Null_terminated_ const wchar_t* value)
 {
-    const auto length = wcslen(value) + 1;
+    const auto length{wcslen(value) + 1};
     winrt::check_win32(
         RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
                        static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
@@ -164,8 +164,7 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
 
 inline HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
 {
-    const LSTATUS result = RegDeleteTreeW(hkey_local_machine, sub_key);
-    if (result != ERROR_SUCCESS)
+    if (const LSTATUS result{RegDeleteTreeW(hkey_local_machine, sub_key)}; result != ERROR_SUCCESS)
     {
         return HRESULT_FROM_WIN32(result);
     }

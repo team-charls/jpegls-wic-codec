@@ -117,9 +117,9 @@ public:
             encoder.interleave_mode(interleave_mode::sample);
         }
 
-        const auto color_space =
-            bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale : spiff_color_space::rgb;
-        if (bitmap_frame_encode_->is_dpi_set())
+        if (const auto color_space{bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale
+                                                                                           : spiff_color_space::rgb};
+            bitmap_frame_encode_->is_dpi_set())
         {
             encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
                                                 lround(bitmap_frame_encode_->dpi_y()),

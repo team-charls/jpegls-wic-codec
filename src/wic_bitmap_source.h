@@ -17,9 +17,8 @@ struct IWICPalette;
 struct WICRect;
 
 MIDL_INTERFACE("00000120-a8f2-4877-ba0a-fd2b6645fb94")
-IWICBitmapSource : public IUnknown
+IWICBitmapSource : IUnknown
 {
-public:
     virtual HRESULT STDMETHODCALLTYPE GetSize(
         /* [out] */ __RPC__out UINT * puiWidth,
         /* [out] */ __RPC__out UINT * puiHeight) noexcept = 0;

@@ -377,7 +377,7 @@ private:
 
     static void compare(const wchar_t* filename, const vector<std::byte>& decoded_source)
     {
-        const auto encoded_source = read_file(filename);
+        const auto encoded_source{read_file(filename)};
 
         jpegls_decoder decoder;
         decoder.source(encoded_source);
@@ -386,7 +386,7 @@ private:
         vector<std::byte> destination{decoder.destination_size()};
         decoder.decode(destination);
 
-        for (size_t i = 0; i < destination.size(); ++i)
+        for (size_t i{}; i != destination.size(); ++i)
         {
             if (decoded_source[i] != destination[i])
             {

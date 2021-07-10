@@ -172,7 +172,7 @@ public:
         std::vector<byte> decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
         portable_anymap_file anymap_file{"4bit-monochrome.pgm"};
 
-        for (size_t i{}; i < decoded_buffer.size(); ++i)
+        for (size_t i{}; i != decoded_buffer.size(); ++i)
         {
             if (anymap_file.image_data()[i] != decoded_buffer[i])
             {
@@ -188,10 +188,10 @@ private:
     {
         std::vector<byte> destination(static_cast<size_t>(width) * height);
 
-        for (size_t j{}, row{}; row < height; ++row)
+        for (size_t j{}, row{}; row != height; ++row)
         {
             const std::byte* nibble_row{nibble_pixels + (row * stride)};
-            for (size_t i{}; i < width / 2; ++i)
+            for (size_t i{}; i != width / 2; ++i)
             {
                 destination[j] = nibble_row[i] >> 4;
                 ++j;

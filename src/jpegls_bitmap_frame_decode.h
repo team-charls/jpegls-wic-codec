@@ -173,10 +173,10 @@ private:
     static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
                                 const size_t height, const size_t stride) noexcept
     {
-        for (size_t j{}, row{}; row < height; ++row)
+        for (size_t j{}, row{}; row != height; ++row)
         {
             std::byte* nibble_row{nibble_pixels + (row * stride)};
-            for (size_t i{}; i < width / 2; ++i)
+            for (size_t i{}; i != width / 2; ++i)
             {
                 nibble_row[i] = byte_pixels[j] << 4;
                 ++j;
@@ -262,9 +262,9 @@ private:
 
         auto* rgb{static_cast<SizeType*>(destination)};
 
-        for (size_t row{}; row < height; ++row)
+        for (size_t row{}; row != height; ++row)
         {
-            for (size_t col{}, offset = 0; col < width; ++col, offset += 3)
+            for (size_t col{}, offset = 0; col != width; ++col, offset += 3)
             {
                 rgb[offset + 0] = r[col];
                 rgb[offset + 1] = g[col];

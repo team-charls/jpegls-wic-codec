@@ -66,9 +66,8 @@ public:
             return error_ok;
         }
 
-        const auto& frame_info = decoder.frame_info();
-        if (jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(frame_info.bits_per_sample,
-                                                                       frame_info.component_count))
+        if (const auto& [width, height, bits_per_sample, component_count]{decoder.frame_info()};
+            jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(bits_per_sample, component_count))
         {
             *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
         }

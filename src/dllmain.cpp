@@ -42,7 +42,7 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
-    for (size_t i{}; i < format_count; ++i)
+    for (size_t i{}; i != format_count; ++i)
     {
         registry::set_value(formats_sub_key + guid_to_string(formats[i]), L"", L"");
     }
