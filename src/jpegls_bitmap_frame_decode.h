@@ -35,8 +35,8 @@ public:
         if (error)
             throw_hresult(wincodec::error_bad_header);
 
-        const auto& frame_info = decoder.frame_info();
-        auto pixel_format_info = get_pixel_format(frame_info.bits_per_sample, frame_info.component_count);
+        const auto& frame_info{decoder.frame_info()};
+        auto pixel_format_info{get_pixel_format(frame_info.bits_per_sample, frame_info.component_count)};
         if (!pixel_format_info)
             throw_hresult(wincodec::error_unsupported_pixel_format);
 
@@ -48,7 +48,7 @@ public:
 
         {
             winrt::com_ptr<IWICBitmapLock> bitmap_lock;
-            WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
+            const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
             winrt::check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
             uint32_t stride;
@@ -66,7 +66,7 @@ public:
 
             if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
             {
-                auto planar = decoder.decode<std::vector<std::byte>>();
+                const auto planar{decoder.decode<std::vector<std::byte>>()};
                 if (frame_info.bits_per_sample > 8)
                 {
                     convert_planar_to_rgb<uint16_t>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
@@ -236,7 +236,7 @@ private:
 
     static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     {
-        uint32_t stride = frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count;
+        uint32_t stride{frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count};
         if (frame_info.bits_per_sample < 8)
         {
             stride /= 2;
@@ -247,7 +247,7 @@ private:
 
     static void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample_shift)
     {
-        auto* const pixels = static_cast<uint16_t*>(buffer);
+        auto* const pixels{static_cast<uint16_t*>(buffer)};
         std::transform(pixels, pixels + pixel_count, pixels,
                        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
     }
@@ -287,12 +287,6 @@ private:
             size_{size}, buffer_{std::make_unique<std::byte[]>(size)} // NOLINT(cppcoreguidelines-avoid-c-arrays)
         {
         }
-
-        ~storage_buffer() = default;
-        storage_buffer(const storage_buffer&) = delete;
-        storage_buffer(storage_buffer&&) = delete;
-        storage_buffer& operator=(const storage_buffer&) = delete;
-        storage_buffer& operator=(storage_buffer&&) = delete;
 
         [[nodiscard]] size_t size() const noexcept
         {

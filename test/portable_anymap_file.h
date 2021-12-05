@@ -10,9 +10,9 @@
 #include <string>
 #include <vector>
 
-constexpr int32_t log_2(int32_t n) noexcept
+constexpr int32_t log_2(const int32_t n) noexcept
 {
-    int32_t x = 0;
+    int32_t x{};
     while (n > (1 << x))
     {
         ++x;
@@ -35,7 +35,7 @@ public:
         pnm_file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
         pnm_file.open(filename, std::ios_base::in | std::ios_base::binary);
 
-        std::vector<int> header_info = read_header(pnm_file);
+        const std::vector header_info{read_header(pnm_file)};
         if (header_info.size() != 4)
             throw std::ios_base::failure("Incorrect PNM header");
 
@@ -44,7 +44,7 @@ public:
         height_ = header_info[2];
         bits_per_sample_ = log_2(header_info[3] + 1);
 
-        const int bytes_per_sample = (bits_per_sample_ + 7) / 8;
+        const int bytes_per_sample{(bits_per_sample_ + 7) / 8};
         input_buffer_.resize(static_cast<size_t>(width_) * height_ * bytes_per_sample * component_count_);
         pnm_file.read(reinterpret_cast<char*>(input_buffer_.data()), input_buffer_.size());
     }
@@ -77,14 +77,11 @@ public:
 private:
     [[nodiscard]] static std::vector<int> read_header(std::istream& pnm_file)
     {
-        std::vector<int> result;
-
-        const auto first = static_cast<char>(pnm_file.get());
-
         // All portable anymap format (PNM) start with the character P.
-        if (first != 'P')
+        if (const auto first{static_cast<char>(pnm_file.get())}; first != 'P')
             throw std::istream::failure("Missing P");
 
+        std::vector<int> result;
         while (result.size() < 4)
         {
             std::string bytes;
@@ -93,7 +90,7 @@ private:
 
             while (result.size() < 4)
             {
-                int value = -1;
+                int value{-1};
                 line >> value;
                 if (value <= 0)
                     break;

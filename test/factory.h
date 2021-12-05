@@ -54,8 +54,8 @@ public:
 
     [[nodiscard]] HRESULT get_class_factory(GUID const& class_id, winrt::com_ptr<IClassFactory>& class_factory) const
     {
-        const auto get_class_object =
-            static_cast<dll_get_class_object_ptr>(static_cast<void*>(GetProcAddress(library_, "DllGetClassObject")));
+        const auto get_class_object{
+            static_cast<dll_get_class_object_ptr>(static_cast<void*>(GetProcAddress(library_, "DllGetClassObject")))};
         if (!get_class_object)
             winrt::throw_last_error();
 

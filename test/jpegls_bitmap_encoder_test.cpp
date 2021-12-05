@@ -61,7 +61,7 @@ vector<std::byte> read_file(const wchar_t* filename)
     input.open(filename, ifstream::in | ifstream::binary);
 
     input.seekg(0, ifstream::end);
-    const auto byte_count_file = static_cast<int>(input.tellg());
+    const auto byte_count_file{static_cast<int>(input.tellg())};
     input.seekg(0, ifstream::beg);
 
     vector<std::byte> buffer(byte_count_file);
@@ -78,30 +78,30 @@ TEST_CLASS(jpegls_bitmap_encoder_test)
 public:
     TEST_METHOD(GetContainerFormat) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         GUID container_format;
-        const hresult result = encoder->GetContainerFormat(&container_format);
+        const hresult result{encoder->GetContainerFormat(&container_format)};
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_ContainerFormatJpegLS == container_format);
     }
 
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result = encoder->GetContainerFormat(nullptr);
+        const hresult result{encoder->GetContainerFormat(nullptr)};
 
         Assert::IsTrue(failed(result));
     }
 
     TEST_METHOD(GetEncoderInfo) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICBitmapEncoderInfo> encoder_info;
-        const hresult result = encoder->GetEncoderInfo(encoder_info.put());
+        const hresult result{encoder->GetEncoderInfo(encoder_info.put())};
         Assert::IsTrue(result == error_ok || result == wincodec::error_component_not_found);
 
         if (succeeded(result))
@@ -116,56 +116,56 @@ public:
 
     TEST_METHOD(GetEncoderInfo_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result = encoder->GetEncoderInfo(nullptr);
+        const hresult result{encoder->GetEncoderInfo(nullptr)};
 
         Assert::IsTrue(failed(result));
     }
 
     TEST_METHOD(SetPreview) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->SetPreview(nullptr);
+        const hresult result{encoder->SetPreview(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(SetThumbnail) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->SetThumbnail(nullptr);
+        const hresult result{encoder->SetThumbnail(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(SetColorContexts) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->SetColorContexts(0, nullptr);
+        const hresult result{encoder->SetColorContexts(0, nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(GetMetadataQueryWriter_is_not_supported) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
-        const hresult result = encoder->GetMetadataQueryWriter(metadata_query_writer.put());
+        const hresult result{encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
         Assert::IsNull(metadata_query_writer.get());
     }
 
     TEST_METHOD(SetPalette) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
 
-        const hresult result = encoder->SetPalette(palette.get());
+        const hresult result{encoder->SetPalette(palette.get())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -174,17 +174,17 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        const hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
     }
 
     TEST_METHOD(Initialize_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory);
+        const hresult result{encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -193,9 +193,9 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
@@ -207,9 +207,9 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
-        hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
@@ -223,9 +223,9 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
@@ -236,18 +236,18 @@ public:
 
     TEST_METHOD(CreateNewFrame_while_not_initialized) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
-        const hresult result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+        const hresult result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
     TEST_METHOD(Commit_while_not_initialized) // NOLINT
     {
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result = encoder->Commit();
+        const hresult result{encoder->Commit()};
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
@@ -256,9 +256,9 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
+        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         result = encoder->Commit();
@@ -267,7 +267,7 @@ public:
 
     TEST_METHOD(encode_conformance_color_lossless) // NOLINT
     {
-        const wchar_t* filename = L"encode_conformance_color_lossless.jls";
+        const wchar_t* filename{L"encode_conformance_color_lossless.jls"};
         portable_anymap_file anymap_file{"test8.ppm"};
 
         {
@@ -275,7 +275,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                                  nullptr, stream.put()));
 
-            com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
+            const com_ptr encoder{factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -287,7 +287,7 @@ public:
                 reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
-            hresult result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+            hresult result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
             Assert::AreEqual(error_ok, result);
 
             result = frame_encode->Initialize(nullptr);
@@ -310,7 +310,7 @@ public:
     {
         vector<std::byte> nibble_pixels(byte_pixels.size() / 2);
 
-        size_t j = 0;
+        size_t j{};
         for (auto& nibble_pixel : nibble_pixels)
         {
             nibble_pixel = byte_pixels[j] << 4;

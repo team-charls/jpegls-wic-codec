@@ -175,7 +175,7 @@ public:
 
         // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
-        const HRESULT result = wincodec::error_unsupported_operation;
+        constexpr HRESULT result = wincodec::error_unsupported_operation;
         return result;
     }
 

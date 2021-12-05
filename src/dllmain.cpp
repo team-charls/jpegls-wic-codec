@@ -67,9 +67,9 @@ void register_decoder()
     register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder",
                                               formats.data(), formats.size());
 
-    const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder);
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder)};
 
-    const wstring patterns_sub_key = sub_key + LR"(\Patterns\0)";
+    const wstring patterns_sub_key{sub_key + LR"(\Patterns\0)"};
     registry::set_value(patterns_sub_key, L"Length", 3);
     registry::set_value(patterns_sub_key, L"Position", 0U);
 
@@ -109,12 +109,12 @@ void register_encoder()
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 {
-    const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
-    const HRESULT result1 = registry::delete_tree(sub_key.c_str());
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
+    const HRESULT result1{registry::delete_tree(sub_key.c_str())};
 
-    const wstring category_id_key =
-        LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" + guid_to_string(class_id);
-    const HRESULT result2 = registry::delete_tree(category_id_key.c_str());
+    const wstring category_id_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" +
+                                  guid_to_string(class_id)};
+    const HRESULT result2{registry::delete_tree(category_id_key.c_str())};
 
     return failed(result1) ? result1 : result2;
 }
@@ -188,8 +188,8 @@ catch (...)
 HRESULT __stdcall DllUnregisterServer()
 try
 {
-    const HRESULT result_decoder = unregister(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders);
-    const HRESULT result_encoder = unregister(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders);
+    const HRESULT result_decoder{unregister(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders)};
+    const HRESULT result_encoder{unregister(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders)};
 
     // Note: keep the .jls file registration intact.
 

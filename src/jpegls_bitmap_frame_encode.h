@@ -184,8 +184,8 @@ public:
             source_.resize(static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count);
         }
 
-        const size_t destination_stride = stride();
-        std::byte* destination = source_.data() + (received_line_count_ * destination_stride);
+        const size_t destination_stride{stride()};
+        std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
         winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride),
                                          pixels, source_stride, static_cast<DWORD>(destination_stride), line_count));
 
@@ -225,7 +225,7 @@ public:
 
         if (source_.empty())
         {
-            size_t size = static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count;
+            size_t size{static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count};
             if (frame_info_.bits_per_sample < 8)
             {
                 // In a WIC bitmap pixels are packed, if bits per sample allows it.
@@ -235,7 +235,7 @@ public:
             source_.resize(size);
         }
 
-        uint32_t s = stride();
+        uint32_t s{stride()};
         if (frame_info_.bits_per_sample < 8)
         {
             s /= 2;
@@ -295,7 +295,7 @@ private:
 
     void convert_bgr_to_rgb() noexcept
     {
-        for (size_t i = 0; i < source_.size(); i += 3)
+        for (size_t i{}; i < source_.size(); i += 3)
         {
             std::swap(source_[i], source_[i + 2]);
         }
@@ -305,8 +305,8 @@ private:
     {
         std::vector<std::byte> unpacked(source_.size() * 2);
 
-        size_t j = 0;
-        for (auto nibble_pixel : source_)
+        size_t j{};
+        for (const auto nibble_pixel : source_)
         {
             unpacked[j] = nibble_pixel >> 4;
             ++j;
