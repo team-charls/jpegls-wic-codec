@@ -99,7 +99,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
 
-      <UseStandardPreprocessor >true</UseStandardPreprocessor>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
 
     <Link>
@@ -108,18 +108,38 @@
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <MinimumRequiredVersion>10</MinimumRequiredVersion>
     </Link>
-
   </ItemDefinitionGroup>
 
-  <!-- Switch to full debug info when the environment variable VS_DEBUG_FULL_INFO is defined and not empty
-       In debug builds, "fast" info is the default but the VS code coverage tool requires full info. -->
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+
+    <!-- Switch to full debug info when the environment variable VS_DEBUG_FULL_INFO is defined and not empty
+        In debug builds, "fast" info is the default but the VS code coverage tool requires full info. -->
     <Link Condition="'$(VS_DEBUG_FULL_INFO)'!=''">
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
+
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+
   </ItemDefinitionGroup>
 
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <LinkIncremental>false</LinkIncremental>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
@@ -128,8 +148,9 @@
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
-      <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
-      <EnablePREfast>true</EnablePREfast>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>true</EnablePREfast> <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
