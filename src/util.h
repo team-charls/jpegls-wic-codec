@@ -13,6 +13,8 @@
 #include <cstddef>
 #include <string>
 
+extern "C" IMAGE_DOS_HEADER __ImageBase;
+
 #define SUPPRESS_WARNING_NEXT_LINE(x) \
     __pragma(warning(suppress \
                      : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
@@ -50,11 +52,7 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
 
 [[nodiscard]] inline HMODULE get_current_module() noexcept
 {
-    HMODULE module;
-    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       reinterpret_cast<PCWSTR>(get_current_module), &module);
-
-    return module;
+    return reinterpret_cast<HINSTANCE>(&__ImageBase);
 }
 
 [[nodiscard]] inline std::wstring get_module_path()
@@ -63,6 +61,7 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
     size_t path_size;
     size_t actual_size;
 
+    // GetModuleFileNameW truncates if the buffer is too small. There is no option to get the required size.
     do
     {
         path_size = path.size();
