@@ -45,7 +45,7 @@ public:
         // Custom decoder implementations should save the current position of the specified IStream,
         // read whatever information is necessary in order to determine which capabilities
         // it can provide for the supplied stream, and restore the stream position.
-        array<std::byte, 4 * 1024> header{};
+        array<std::byte, static_cast<size_t>(4) * 1024> header{};
         unsigned long read_byte_count;
 
         check_hresult(stream->Read(header.data(), static_cast<ULONG>(header.size()), &read_byte_count));

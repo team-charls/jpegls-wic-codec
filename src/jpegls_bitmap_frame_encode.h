@@ -187,7 +187,7 @@ public:
         const size_t destination_stride{stride()};
         std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
         winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride),
-                                         pixels, source_stride, static_cast<DWORD>(destination_stride), line_count));
+                                         pixels, static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride), line_count));
 
         received_line_count_ += line_count;
         state_ = state::received_pixels;

@@ -8,7 +8,7 @@
 
 #pragma warning(push)
 #pragma warning(disable : 5105) // macro expansion producing 'defined' has undefined behavior
-#include <OleCtl.h>
+#include <olectl.h>
 #include <ShlObj.h>
 #include <Unknwn.h>
 #pragma warning(pop)

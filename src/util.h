@@ -13,7 +13,7 @@
 #include <cstddef>
 #include <string>
 
-extern "C" IMAGE_DOS_HEADER __ImageBase;
+extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
 #define SUPPRESS_WARNING_NEXT_LINE(x) \
     __pragma(warning(suppress \
@@ -32,17 +32,13 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 // https://developercommunity.visualstudio.com/content/problem/804372/c26447-false-positive-when-using-stdscoped-lock-ev.html
 #define SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(26447)
 
-#ifdef NDEBUG
-
-#define ASSERT(expression) static_cast<void>(0)
-#define VERIFY(expression) static_cast<void>(expression)
-
-#else
-
 #define ASSERT(expression) \
     __pragma(warning(push)) __pragma(warning(disable : 26493)) assert(expression) __pragma(warning(pop))
-#define VERIFY(expression) assert(expression)
 
+#ifdef NDEBUG
+#define VERIFY(expression) static_cast<void>(expression)
+#else
+#define VERIFY(expression) assert(expression)
 #endif
 
 constexpr std::byte operator"" _byte(const unsigned long long int n)
