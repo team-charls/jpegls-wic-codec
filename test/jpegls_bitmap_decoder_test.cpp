@@ -134,7 +134,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
         DWORD capability;
         const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
@@ -243,7 +243,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         const com_ptr decoder{factory_.create_decoder()};
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
@@ -264,7 +264,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         const com_ptr decoder{factory_.create_decoder()};
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};

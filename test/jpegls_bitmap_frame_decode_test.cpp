@@ -26,7 +26,7 @@ TEST_CLASS(jpegls_bitmap_frame_decode_test)
 public:
     TEST_METHOD(GetSize) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         uint32_t width;
         uint32_t height;
@@ -39,7 +39,7 @@ public:
 
     TEST_METHOD(CopyPalette) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
@@ -50,7 +50,7 @@ public:
 
     TEST_METHOD(GetThumbnail) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         com_ptr<IWICBitmapSource> thumbnail;
         const hresult result{bitmap_frame_decoder->GetThumbnail(thumbnail.put())};
@@ -59,7 +59,7 @@ public:
 
     TEST_METHOD(GetPixelFormat) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         GUID pixel_format;
         const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
@@ -69,7 +69,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_with_nullptr) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
         const hresult result{bitmap_frame_decoder->GetPixelFormat(nullptr)};
@@ -78,7 +78,7 @@ public:
 
     TEST_METHOD(GetResolution_jpegls_no_spiff_header) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         double dpi_x;
         double dpi_y;
@@ -90,7 +90,7 @@ public:
 
     TEST_METHOD(GetResolution_with_nullptr) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
         const hresult result{bitmap_frame_decoder->GetResolution(nullptr, nullptr)};
@@ -99,7 +99,7 @@ public:
 
     TEST_METHOD(GetColorContexts) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         uint32_t actual_count;
         hresult result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
@@ -115,7 +115,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const hresult result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
@@ -124,7 +124,7 @@ public:
 
     TEST_METHOD(CopyPixels) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         uint32_t width;
         uint32_t height;
@@ -142,7 +142,7 @@ public:
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"lena8b.jls")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         const com_ptr<IWICBitmapSource> bitmap_source(bitmap_frame_decoder);
         Assert::IsTrue(bitmap_source.get() != nullptr);

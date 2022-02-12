@@ -51,7 +51,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="data-files\lena8b.jls">
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.jls">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\test8.ppm">
