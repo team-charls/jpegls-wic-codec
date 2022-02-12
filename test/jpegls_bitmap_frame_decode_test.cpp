@@ -148,6 +148,42 @@ public:
         Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
+    TEST_METHOD(decode_monochrome_2_bit) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"2bit-parrot-150x200.jls")};
+
+        GUID pixel_format;
+        hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat2bppGray == pixel_format);
+
+        uint32_t width;
+        uint32_t height;
+        result = bitmap_frame_decoder->GetSize(&width, &height);
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(150U, width);
+        Assert::AreEqual(200U, height);
+
+        constexpr uint32_t stride{40};
+
+        std::vector<byte> buffer(static_cast<size_t>(stride) * height);
+        result = bitmap_frame_decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()),
+                                                  reinterpret_cast<BYTE*>(buffer.data()));
+        Assert::AreEqual(error_ok, result);
+
+        //std::vector<byte> decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        //portable_anymap_file anymap_file{"4bit-monochrome.pgm"};
+
+        //for (size_t i{}; i != decoded_buffer.size(); ++i)
+        //{
+        //    if (anymap_file.image_data()[i] != decoded_buffer[i])
+        //    {
+        //        Assert::IsTrue(false);
+        //        break;
+        //    }
+        //}
+    }
+
     TEST_METHOD(decode_monochrome_4_bit) // NOLINT
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.jls")};

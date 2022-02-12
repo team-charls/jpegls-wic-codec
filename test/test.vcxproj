@@ -106,6 +106,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="data-files\2bit-parrot-150x200.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.jls">
       <FileType>Document</FileType>
     </CopyFileToFolders>

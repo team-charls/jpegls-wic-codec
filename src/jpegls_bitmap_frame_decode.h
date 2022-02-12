@@ -48,7 +48,8 @@ public:
 
         {
             winrt::com_ptr<IWICBitmapLock> bitmap_lock;
-            const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
+            const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width),
+                                         static_cast<int32_t>(frame_info.height)};
             winrt::check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
             uint32_t stride;
@@ -77,7 +78,13 @@ public:
                                                      stride);
                 }
             }
-            else if (frame_info.bits_per_sample < 8)
+            else if (frame_info.bits_per_sample == 2)
+            {
+                std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+                decoder.decode(byte_pixels);
+                pack_to_pairs(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
+            }
+            else if (frame_info.bits_per_sample == 4)
             {
                 std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
                 decoder.decode(byte_pixels);
@@ -86,11 +93,11 @@ public:
             else
             {
                 decoder.decode(data_buffer, data_buffer_size, stride);
-            }
 
-            if (sample_shift != 0)
-            {
-                shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+                if (sample_shift != 0)
+                {
+                    shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+                }
             }
         }
 
@@ -170,6 +177,29 @@ public:
     }
 
 private:
+    static void pack_to_pairs(const std::vector<std::byte>& byte_pixels, std::byte* pair_pixels, const size_t width,
+                              const size_t height, const size_t stride) noexcept
+    {
+        size_t i{};
+        for (size_t row{}; row != height; ++row)
+        {
+            std::byte* nibble_row{pair_pixels + (row * stride)};
+            size_t j{};
+            int32_t shift{6};
+            for (size_t width_index{}; width_index != width; ++width_index)
+            {
+                nibble_row[j] |= byte_pixels[i] << shift;
+                ++i;
+                shift -= 2;
+                if (shift < 0)
+                {
+                    shift = 6;
+                    ++j;
+                }
+            }
+        }
+    }
+
     static void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
                                 const size_t height, const size_t stride) noexcept
     {
@@ -236,6 +266,12 @@ private:
 
     static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     {
+        if (frame_info.bits_per_sample == 2)
+        {
+            uint32_t stride{(frame_info.width + 3) / 4 * frame_info.component_count};
+            return ((stride + 3) / 4) * 4;
+        }
+
         uint32_t stride{frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count};
         if (frame_info.bits_per_sample < 8)
         {
