@@ -268,7 +268,7 @@ private:
     {
         if (frame_info.bits_per_sample == 2)
         {
-            uint32_t stride{(frame_info.width + 3) / 4 * frame_info.component_count};
+            const uint32_t stride{(frame_info.width + 3) / 4 * frame_info.component_count};
             return ((stride + 3) / 4) * 4;
         }
 

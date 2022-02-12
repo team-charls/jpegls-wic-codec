@@ -105,13 +105,13 @@ public:
         if (*pixel_format == GUID_WICPixelFormat2bppGray)
         {
             set_pixel_format(2, 1);
-            return error_ok;
+            return wincodec::error_unsupported_pixel_format;
         }
 
         if (*pixel_format == GUID_WICPixelFormat4bppGray)
         {
             set_pixel_format(4, 1);
-            return error_ok;
+            return wincodec::error_unsupported_pixel_format;
         }
 
         if (*pixel_format == GUID_WICPixelFormat8bppGray)
@@ -142,7 +142,7 @@ public:
         if (*pixel_format == GUID_WICPixelFormat48bppRGB)
         {
             set_pixel_format(16, 3);
-            return error_ok;
+            return wincodec::error_unsupported_pixel_format;
         }
 
         *pixel_format = GUID_WICPixelFormatUndefined;
