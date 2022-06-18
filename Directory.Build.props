@@ -68,10 +68,10 @@
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
         throwingNew = Communicate with the compiler that only the throwing variant of operator new is used.
+        preprocessor = Enable preprocessor conformance mode.
         utf-8 = interpret all source files as UTF-8.
-        ZH:SHA_256 = Use an SHA-256 hash for the checksum.in debug info
       -->
-      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /utf-8  /ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /Zc:preprocessor /utf-8 %(AdditionalOptions)</AdditionalOptions>
 
       <!--
         * Windows SDK *
