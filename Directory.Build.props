@@ -35,8 +35,9 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
 
-      <!-- Explicit set the 'external' warning level to W3 (Supported since Visual Studio 2019 16.10) -->
-      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <!-- Explicit set the 'external' warning level to off (Supported since Visual Studio 2019 16.10) -->
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
 
       <!-- For development purposes, All warnings can be used to discover useful compiler warnings.
            This requires also that some warnings need to be disabled from this all warning list. -->
@@ -62,8 +63,9 @@
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
+        C5264 = 'const' variable is not used [Too many warnings from STL headers, Visual Studio 2022 17.5 Preview 2.0]
       -->
-      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045;5264</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
