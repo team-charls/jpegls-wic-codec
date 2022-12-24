@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Class Id="$(var.CLSID_JpegLSEncoder)" Context="InprocServer32" Server="$(var.ComServerFileId)" ThreadingModel="both" />
 
     <RegistryKey Root="HKCR" Key="CLSID\$(var.CLSID_JpegLSEncoder)">
