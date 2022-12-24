@@ -1,36 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="CharLS JPEG-LS WIC Codec" Language="1033" Version="0.1.0.0" Manufacturer="Team CharLS" UpgradeCode="c713c1c4-ab72-4546-b96c-68c89236291b">
-    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="CharLS JPEG-LS WIC Codec" Language="1033" Version="0.1.0.0" Manufacturer="Team CharLS" UpgradeCode="c713c1c4-ab72-4546-b96c-68c89236291b">
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <Feature Id="ProductFeature" Title="setup" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
-      <MergeRef Id="VCRedist_x86"/>
-      <MergeRef Id="VCRedist_x64"/>
+      <MergeRef Id="VCRedist_x86" />
+      <MergeRef Id="VCRedist_x64" />
     </Feature>
 
     <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
     <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
-  </Product>
+  </Package>
 
   <Fragment>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="CharLS WIC Codec" />
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="CharLS WIC Codec">
+        <Merge Id="VCRedist_x86" SourceFile="C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Redist\MSVC\14.34.31931\MergeModules\Microsoft_VC143_CRT_x86.msm" DiskId="1" Language="0" />
       </Directory>
-      <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLFOLDER64" Name="CharLS WIC Codec" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER64" Name="CharLS WIC Codec">
+        <Merge Id="VCRedist_x64" SourceFile="C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Redist\MSVC\14.34.31931\MergeModules\Microsoft_VC143_CRT_x64.msm" DiskId="1" Language="0" />
       </Directory>
-    </Directory>
-
-    <DirectoryRef Id="TARGETDIR">
-      <Merge Id="VCRedist_x86" SourceFile="$(var.SolutionDir)..\bin\x64\Release\Microsoft_VC142_CRT_x86.msm" DiskId="1" Language="0" />
-      <Merge Id="VCRedist_x64" SourceFile="$(var.SolutionDir)..\bin\x64\Release\Microsoft_VC142_CRT_x64.msm" DiskId="1" Language="0" />
-    </DirectoryRef>
-
+    </StandardDirectory>
   </Fragment>
 
   <Fragment>
@@ -67,7 +61,7 @@
       <?define DecoderFriendlyName = "JPEG-LS Decoder" ?>
       <?define FileExtension = ".jls" ?>
 
-      <Component Id="C_jpegls_wic_codec_64.dll" Win64="yes" Directory="INSTALLFOLDER64">
+      <Component Id="C_jpegls_wic_codec_64.dll" Directory="INSTALLFOLDER64" Bitness="always64">
         <File Id="F_jpegls_wic_codec_64.dll" Source="$(var.SolutionDir)..\bin\x64\Release\jpegls-wic-codec.dll" KeyPath="yes" />
 
         <?define var.ComServerFileId = "F_jpegls_wic_codec_64.dll" ?>
@@ -76,7 +70,7 @@
 
       </Component>
 
-      <Component Id="C_jpegls_wic_codec_86.dll" Win64="no" Directory="INSTALLFOLDER">
+      <Component Id="C_jpegls_wic_codec_86.dll" Directory="INSTALLFOLDER" Bitness="always32">
         <File Id="F_jpegls_wic_codec_86.dll" Source="$(var.SolutionDir)..\bin\x86\Release\jpegls-wic-codec.dll" KeyPath="yes" />
 
         <?define var.ComServerFileId = "F_jpegls_wic_codec_86.dll" ?>

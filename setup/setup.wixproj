@@ -1,21 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <Import Project="..\packages\WiX.3.11.2\build\wix.props" Condition="Exists('..\packages\WiX.3.11.2\build\wix.props')" />
+<Project Sdk="WixToolset.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProductVersion>3.11</ProductVersion>
-    <ProjectGuid>7755bd56-4032-4bb6-96b4-85329e44616f</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>setup</OutputName>
-    <OutputType>Package</OutputType>
     <OutputPath>$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntermediateOutputPath>
-
     <!-- ICE03 needs to be suppressed the Visual C++ merge module is used. -->
     <!-- ICE80 needs to be suppressed because both 32 and 64-bit components need to be installed. -->
     <SuppressIces>ICE03;ICE80</SuppressIces>
-
     <CertificateThumbprint Condition="'$(CertificateThumbprint)' == ''">6e78b103da0729369e44004121fb6bf685fec5d8</CertificateThumbprint>
     <TimestampUrl Condition="'$(TimestampUrl)' == ''">http://time.certum.pl/</TimestampUrl>
     <CodecX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\jpegls-wic-codec.dll</CodecX64>
@@ -23,28 +14,12 @@
     <CharLSX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\charls-2-x64.dll</CharLSX64>
     <CharLSX86>$(MSBuildThisFileDirectory)..\bin\x86\Release\charls-2-x86.dll</CharLSX86>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-  </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
     <Content Include="wic_registration.wxi" />
   </ItemGroup>
-  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\WiX.3.11.2\build\wix.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WiX.3.11.2\build\wix.props'))" />
-  </Target>
-
   <Target Name="BeforeBuild" Condition="$(PerformSigning) != ''">
     <Message Text="Signing the binaries" Importance="High" />
     <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CodecX64)%22" />
@@ -52,10 +27,8 @@
     <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CharLSX64)%22" />
     <Exec Command="signtool.exe sign /v /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(CharLSX86)%22" />
   </Target>
-
   <Target Name="AfterBuild" Condition="$(PerformSigning) != ''">
     <Message Text="Signing the installer" Importance="High" />
     <Exec Command="signtool.exe sign /v /d %22CharLS JPEG-LS WIC Codec Setup%22 /fd sha256 /sm /sha1 $(CertificateThumbprint) /tr %22$(TimestampUrl)%22 /td sha256 %22%$(TargetPath)%22" />
   </Target>
-
 </Project>
