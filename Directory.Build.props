@@ -2,11 +2,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
-    <OutDir>$(MSBuildThisFileDirectory)bin\$(Platform)\$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)bin\x86\$(Configuration)\</OutDir>
+    <OutDir>$(MSBuildThisFileDirectory)build\bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\bin\x86\$(Configuration)\</OutDir>
 
     <!-- C++ temp files can be redirected. -->
-    <IntDir>$(MSBuildThisFileDirectory)intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(MSBuildThisFileDirectory)build\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\intermediate\$(MSBuildProjectName)\x86\$(Configuration)\</IntDir>
 
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
 
@@ -29,6 +30,7 @@
 
       <!-- Explicit define that all projects are compiled according the C++20 standard -->
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor> <!-- Needed as stdcpp20 doesn't enable it by default. -->
 
       <!-- To ensure high quality C++ code use Warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
       <WarningLevel>Level4</WarningLevel>
@@ -70,10 +72,9 @@
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
         throwingNew = Communicate with the compiler that only the throwing variant of operator new is used.
-        preprocessor = Enable preprocessor conformance mode.
         utf-8 = interpret all source files as UTF-8.
       -->
-      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /Zc:preprocessor /utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /Zc:throwingNew /utf-8 %(AdditionalOptions)</AdditionalOptions>
 
       <!--
         * Windows SDK *
@@ -101,8 +102,6 @@
       <!-- Use by default precompiled headers with the modern name pch.h -->
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-
-      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
 
     <Link>

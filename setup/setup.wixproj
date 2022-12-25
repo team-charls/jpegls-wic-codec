@@ -2,17 +2,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <OutputPath>$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)..\build\bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\build\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <!-- ICE03 needs to be suppressed the Visual C++ merge module is used. -->
     <!-- ICE80 needs to be suppressed because both 32 and 64-bit components need to be installed. -->
     <SuppressIces>ICE03;ICE80</SuppressIces>
     <CertificateThumbprint Condition="'$(CertificateThumbprint)' == ''">6e78b103da0729369e44004121fb6bf685fec5d8</CertificateThumbprint>
     <TimestampUrl Condition="'$(TimestampUrl)' == ''">http://time.certum.pl/</TimestampUrl>
-    <CodecX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\jpegls-wic-codec.dll</CodecX64>
-    <CodecX86>$(MSBuildThisFileDirectory)..\bin\x86\Release\jpegls-wic-codec.dll</CodecX86>
-    <CharLSX64>$(MSBuildThisFileDirectory)..\bin\x64\Release\charls-2-x64.dll</CharLSX64>
-    <CharLSX86>$(MSBuildThisFileDirectory)..\bin\x86\Release\charls-2-x86.dll</CharLSX86>
+    <CodecX64>$(MSBuildThisFileDirectory)..\build\bin\x64\Release\jpegls-wic-codec.dll</CodecX64>
+    <CodecX86>$(MSBuildThisFileDirectory)..\build\bin\x86\Release\jpegls-wic-codec.dll</CodecX86>
+    <CharLSX64>$(MSBuildThisFileDirectory)..\build\bin\x64\Release\charls-2-x64.dll</CharLSX64>
+    <CharLSX86>$(MSBuildThisFileDirectory)..\build\bin\x86\Release\charls-2-x86.dll</CharLSX86>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
