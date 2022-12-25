@@ -31,11 +31,11 @@
     <ComponentGroup Id="ProductComponents">
 
       <Component Id="C_charls_2_x64.dll" Directory="INSTALLFOLDER64">
-        <File Id="F_charls_2_x64.dll" Source="$(var.SolutionDir)..\bin\x64\Release\charls-2-x64.dll" KeyPath="yes" />
+        <File Id="F_charls_2_x64.dll" Source="$(var.SolutionDir)..\build\bin\x64\Release\charls-2-x64.dll" KeyPath="yes" />
       </Component>
 
       <Component Id="C_charls_2_x86.dll" Directory="INSTALLFOLDER">
-        <File Id="F_charls_2_x86.dll" Source="$(var.SolutionDir)..\bin\x86\Release\charls-2-x86.dll" KeyPath="yes" />
+        <File Id="F_charls_2_x86.dll" Source="$(var.SolutionDir)..\build\bin\x86\Release\charls-2-x86.dll" KeyPath="yes" />
       </Component>
 
       <?define GUID_WICPixelFormat2bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc906}" ?>
@@ -62,7 +62,7 @@
       <?define FileExtension = ".jls" ?>
 
       <Component Id="C_jpegls_wic_codec_64.dll" Directory="INSTALLFOLDER64" Bitness="always64">
-        <File Id="F_jpegls_wic_codec_64.dll" Source="$(var.SolutionDir)..\bin\x64\Release\jpegls-wic-codec.dll" KeyPath="yes" />
+        <File Id="F_jpegls_wic_codec_64.dll" Source="$(var.SolutionDir)..\build\bin\x64\Release\jpegls-wic-codec.dll" KeyPath="yes" />
 
         <?define var.ComServerFileId = "F_jpegls_wic_codec_64.dll" ?>
         <?include wic_registration.wxi ?>
@@ -71,7 +71,7 @@
       </Component>
 
       <Component Id="C_jpegls_wic_codec_86.dll" Directory="INSTALLFOLDER" Bitness="always32">
-        <File Id="F_jpegls_wic_codec_86.dll" Source="$(var.SolutionDir)..\bin\x86\Release\jpegls-wic-codec.dll" KeyPath="yes" />
+        <File Id="F_jpegls_wic_codec_86.dll" Source="$(var.SolutionDir)..\build\bin\x86\Release\jpegls-wic-codec.dll" KeyPath="yes" />
 
         <?define var.ComServerFileId = "F_jpegls_wic_codec_86.dll" ?>
         <?include wic_registration.wxi ?>
