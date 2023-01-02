@@ -77,14 +77,15 @@
     <ClInclude Include="guids.h" />
     <ClInclude Include="jpegls_bitmap_frame_encode.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="storage_buffer.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="version.h" />
-    <ClInclude Include="wic_bitmap_source.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="jpegls_bitmap_encoder.cpp" />
+    <ClCompile Include="jpegls_bitmap_frame_decode.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -13,7 +13,6 @@
 #include <Unknwn.h>
 #pragma warning(pop)
 
-#include "wic_bitmap_source.h"
 #include <wincodec.h>
 
 #pragma warning(push)

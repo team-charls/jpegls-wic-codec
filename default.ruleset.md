@@ -25,7 +25,7 @@ gsl::span and pass as a span iterator (stl.1)
 **Rationale**: can only be solved with gsl::narrow_cast
 
 - C26474: No implicit cast  
-**Rationale**: false warnings (VS 2019 16.8.0 Preview 3)
+**Rationale**: false warnings (VS 2022 17.4.3)
 
 - C26481: Do not pass an array as a single pointer.  
 **Rationale**: gsl::span is not available.
@@ -42,3 +42,6 @@ gsl::span and pass as a span iterator (stl.1)
 - C26494: Variable 'x' is uninitialized. Always initialize an object  
 **Rationale**: many false warnings due to output parameters. Other analyzers are better
 as they check if the variable is used before initialized.
+
+- C26821:  Consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view).  
+**Rationale**: see C26481.
