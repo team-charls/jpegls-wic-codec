@@ -178,6 +178,15 @@
     <CopyFileToFolders Include="data-files\2bit-parrot-150x200.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

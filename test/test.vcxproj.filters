@@ -75,6 +75,9 @@
     <CopyFileToFolders Include="data-files\2bit_7x1.jls" />
     <CopyFileToFolders Include="data-files\2bit_7x1.pgm" />
     <CopyFileToFolders Include="data-files\2bit-parrot-150x200.pgm" />
+    <CopyFileToFolders Include="data-files\8bit_2x2.jls" />
+    <CopyFileToFolders Include="data-files\8bit_2x2.pgm" />
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
