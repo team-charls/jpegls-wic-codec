@@ -66,6 +66,15 @@
     <CopyFileToFolders Include="data-files\2bit-parrot-150x200.jls">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_4x1.jls" />
+    <CopyFileToFolders Include="data-files\2bit_4x1.pgm" />
+    <CopyFileToFolders Include="data-files\2bit_5x1.jls" />
+    <CopyFileToFolders Include="data-files\2bit_5x1.pgm" />
+    <CopyFileToFolders Include="data-files\2bit_6x1.jls" />
+    <CopyFileToFolders Include="data-files\2bit_6x1.pgm" />
+    <CopyFileToFolders Include="data-files\2bit_7x1.jls" />
+    <CopyFileToFolders Include="data-files\2bit_7x1.pgm" />
+    <CopyFileToFolders Include="data-files\2bit-parrot-150x200.pgm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
