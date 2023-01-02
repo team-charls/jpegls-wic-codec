@@ -214,6 +214,38 @@ public:
         }
     }
 
+    TEST_METHOD(decode_8bit_monochrome) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        compare("tulips-gray-8bit-512-512.pgm", buffer);
+    }
+
+    TEST_METHOD(decode_8bit_monochrome_stride_mismatch) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"8bit_2x2.jls")};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        compare("8bit_2x2.pgm", buffer);
+    }
+
 private:
     void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
     {
@@ -326,7 +358,7 @@ private:
         return {width, height};
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const std::span<std::byte> buffer)
+    [[nodiscard]] static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const std::span<std::byte> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()), static_cast<BYTE*>(data));
