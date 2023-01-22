@@ -21,7 +21,7 @@ public:
     {
         const auto class_factory{factory_.get_class_factory(CLSID_JpegLSDecoder)};
 
-        hresult result{class_factory->LockServer(true)};
+        HRESULT result{class_factory->LockServer(true)};
         Assert::AreEqual(error_ok, result);
 
         result = class_factory->LockServer(false);
@@ -32,7 +32,7 @@ public:
     {
         const auto class_factory{factory_.get_class_factory(CLSID_JpegLSEncoder)};
 
-        hresult result{class_factory->LockServer(true)};
+        HRESULT result{class_factory->LockServer(true)};
         Assert::AreEqual(error_ok, result);
 
         result = class_factory->LockServer(false);
@@ -42,7 +42,7 @@ public:
     TEST_METHOD(class_factory_unknown_id) // NOLINT
     {
         com_ptr<IClassFactory> class_factory;
-        const hresult result{factory_.get_class_factory(GUID_VendorTeamCharLS, class_factory)};
+        const HRESULT result{factory_.get_class_factory(GUID_VendorTeamCharLS, class_factory)};
 
         Assert::AreEqual(error_class_not_available, result);
     }
@@ -52,7 +52,7 @@ public:
         const auto class_factory{factory_.get_class_factory(CLSID_JpegLSEncoder)};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
+        const HRESULT result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -63,7 +63,7 @@ public:
 
         auto* outer{reinterpret_cast<IUnknown*>(1)};
         com_ptr<IWICBitmapDecoder> decoder;
-        const hresult result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
+        const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
         Assert::AreEqual(error_no_aggregation, result);
     }
@@ -73,7 +73,7 @@ public:
         const auto class_factory{factory_.get_class_factory(CLSID_JpegLSDecoder)};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
+        const HRESULT result{class_factory->CreateInstance(nullptr, GUID_VendorTeamCharLS, nullptr)};
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -84,7 +84,7 @@ public:
 
         auto* outer{reinterpret_cast<IUnknown*>(1)};
         com_ptr<IWICBitmapDecoder> decoder;
-        const hresult result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
+        const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
         Assert::AreEqual(error_no_aggregation, result);
     }

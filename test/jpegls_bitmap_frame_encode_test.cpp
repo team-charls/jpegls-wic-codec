@@ -25,7 +25,7 @@ public:
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
-        const hresult result{bitmap_frame_encoder->Initialize(nullptr)};
+        const HRESULT result{bitmap_frame_encoder->Initialize(nullptr)};
         Assert::AreEqual(error_ok, result);
     }
 
@@ -34,7 +34,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const hresult result{bitmap_frame_encoder->Initialize(nullptr)};
+        const HRESULT result{bitmap_frame_encoder->Initialize(nullptr)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -43,7 +43,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         commit(bitmap_frame_encoder.get());
 
-        const hresult result{bitmap_frame_encoder->Initialize(nullptr)};
+        const HRESULT result{bitmap_frame_encoder->Initialize(nullptr)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -52,7 +52,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const hresult result{bitmap_frame_encoder->SetSize(512, 512)};
+        const HRESULT result{bitmap_frame_encoder->SetSize(512, 512)};
         Assert::AreEqual(error_ok, result);
     }
 
@@ -60,7 +60,7 @@ public:
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
-        const hresult result{bitmap_frame_encoder->SetSize(512, 512)};
+        const HRESULT result{bitmap_frame_encoder->SetSize(512, 512)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -69,7 +69,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         commit(bitmap_frame_encoder.get());
 
-        const hresult result{bitmap_frame_encoder->SetSize(512, 512)};
+        const HRESULT result{bitmap_frame_encoder->SetSize(512, 512)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -78,7 +78,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const hresult result{bitmap_frame_encoder->SetResolution(96., 96.)};
+        const HRESULT result{bitmap_frame_encoder->SetResolution(96., 96.)};
         Assert::AreEqual(error_ok, result);
 
         // TODO: extend this test by encode\decode a sample image.
@@ -88,7 +88,7 @@ public:
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
-        const hresult result{bitmap_frame_encoder->SetResolution(96., 96.)};
+        const HRESULT result{bitmap_frame_encoder->SetResolution(96., 96.)};
         Assert::AreEqual(error_ok, result);
     }
 
@@ -97,7 +97,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         commit(bitmap_frame_encoder.get());
 
-        const hresult result{bitmap_frame_encoder->SetResolution(96., 96.)};
+        const HRESULT result{bitmap_frame_encoder->SetResolution(96., 96.)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -109,7 +109,7 @@ public:
         check_hresult(imaging_factory()->CreateColorContext(color_context.put()));
         array color_contexts{color_context.get()};
 
-        const hresult result{
+        const HRESULT result{
             bitmap_frame_encoder->SetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -119,7 +119,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
         com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
-        const hresult result{bitmap_frame_encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
+        const HRESULT result{bitmap_frame_encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
         Assert::IsNull(metadata_query_writer.get());
     }
@@ -128,7 +128,7 @@ public:
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
-        const hresult result{bitmap_frame_encoder->SetThumbnail(nullptr)};
+        const HRESULT result{bitmap_frame_encoder->SetThumbnail(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -139,7 +139,7 @@ public:
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
 
-        const hresult result{bitmap_frame_encoder->SetPalette(palette.get())};
+        const HRESULT result{bitmap_frame_encoder->SetPalette(palette.get())};
         Assert::AreEqual(wincodec::error_palette_unavailable, result);
     }
 
@@ -152,7 +152,7 @@ public:
         for (const auto& format : formats)
         {
             GUID pixel_format{format};
-            const hresult result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
+            const HRESULT result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
             Assert::AreEqual(error_ok, result);
             Assert::IsTrue(pixel_format == format);
         }
@@ -164,7 +164,7 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
-        const hresult result{bitmap_frame_encoder->SetPixelFormat(nullptr)};
+        const HRESULT result{bitmap_frame_encoder->SetPixelFormat(nullptr)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -175,7 +175,7 @@ public:
         WARNING_SUPPRESS_NEXT_LINE(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
         GUID pixel_format{GUID_WICPixelFormat8bppGray};
 
-        const hresult result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
+        const HRESULT result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -187,7 +187,7 @@ public:
         WARNING_SUPPRESS_NEXT_LINE(26496) // The variable 'pixel_format' is assigned only once, mark it as const (con.4).
         GUID pixel_format{GUID_WICPixelFormat8bppGray};
 
-        const hresult result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
+        const HRESULT result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -195,7 +195,7 @@ public:
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
-        const hresult result{bitmap_frame_encoder->Commit()};
+        const HRESULT result{bitmap_frame_encoder->Commit()};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -205,7 +205,7 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         set_pixel_format(bitmap_frame_encoder.get(), GUID_WICPixelFormat8bppGray);
 
-        const hresult result{bitmap_frame_encoder->Commit()};
+        const HRESULT result{bitmap_frame_encoder->Commit()};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -215,7 +215,7 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
         check_hresult(bitmap_frame_encoder->SetSize(512, 512));
 
-        const hresult result{bitmap_frame_encoder->Commit()};
+        const HRESULT result{bitmap_frame_encoder->Commit()};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
@@ -228,7 +228,7 @@ public:
         vector<uint8_t> source(512 * 512);
         bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data());
 
-        const hresult result{bitmap_frame_encoder->Commit()};
+        const HRESULT result{bitmap_frame_encoder->Commit()};
         Assert::AreEqual(error_ok, result); // TODO: commit should fail.
     }
 

@@ -185,12 +185,12 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
     std::error_code error;
     decoder.read_header(error);
     if (error)
-        throw_hresult(wincodec::error_bad_header);
+        winrt::throw_hresult(wincodec::error_bad_header);
 
     const auto& frame_info{decoder.frame_info()};
     auto pixel_format_info{get_pixel_format(frame_info.bits_per_sample, frame_info.component_count)};
     if (!pixel_format_info)
-        throw_hresult(wincodec::error_unsupported_pixel_format);
+        winrt::throw_hresult(wincodec::error_unsupported_pixel_format);
 
     const auto& [pixel_format, sample_shift] = pixel_format_info.value();
     winrt::com_ptr<IWICBitmap> bitmap;
@@ -209,7 +209,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
         if (stride < compute_stride(frame_info))
         {
             ASSERT(false);
-            throw_hresult(wincodec::error_bad_image);
+            winrt::throw_hresult(wincodec::error_bad_image);
         }
 
         std::byte* data_buffer;

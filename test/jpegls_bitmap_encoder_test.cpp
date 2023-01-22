@@ -81,7 +81,7 @@ public:
         const com_ptr encoder{factory_.create_encoder()};
 
         GUID container_format;
-        const hresult result{encoder->GetContainerFormat(&container_format)};
+        const HRESULT result{encoder->GetContainerFormat(&container_format)};
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_ContainerFormatJpegLS == container_format);
     }
@@ -101,7 +101,7 @@ public:
         const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICBitmapEncoderInfo> encoder_info;
-        const hresult result{encoder->GetEncoderInfo(encoder_info.put())};
+        const HRESULT result{encoder->GetEncoderInfo(encoder_info.put())};
         Assert::IsTrue(result == error_ok || result == wincodec::error_component_not_found);
 
         if (succeeded(result))
@@ -128,7 +128,7 @@ public:
     {
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->SetPreview(nullptr)};
+        const HRESULT result{encoder->SetPreview(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -136,7 +136,7 @@ public:
     {
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->SetThumbnail(nullptr)};
+        const HRESULT result{encoder->SetThumbnail(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -144,7 +144,7 @@ public:
     {
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->SetColorContexts(0, nullptr)};
+        const HRESULT result{encoder->SetColorContexts(0, nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -153,7 +153,7 @@ public:
         const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
-        const hresult result{encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
+        const HRESULT result{encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
         Assert::IsNull(metadata_query_writer.get());
     }
@@ -165,7 +165,7 @@ public:
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
 
-        const hresult result{encoder->SetPalette(palette.get())};
+        const HRESULT result{encoder->SetPalette(palette.get())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -176,7 +176,7 @@ public:
 
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        const HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
     }
 
@@ -184,7 +184,7 @@ public:
     {
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory)};
+        const HRESULT result{encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -195,7 +195,7 @@ public:
 
         const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         result = encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory);
@@ -209,7 +209,7 @@ public:
 
         const com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
 
-        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
@@ -225,7 +225,7 @@ public:
 
         const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
@@ -239,7 +239,7 @@ public:
         const com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
-        const hresult result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+        const HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
@@ -247,7 +247,7 @@ public:
     {
         const com_ptr encoder{factory_.create_encoder()};
 
-        const hresult result{encoder->Commit()};
+        const HRESULT result{encoder->Commit()};
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
@@ -258,7 +258,7 @@ public:
 
         const com_ptr encoder{factory_.create_encoder()};
 
-        hresult result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_ok, result);
 
         result = encoder->Commit();
@@ -287,7 +287,7 @@ public:
                 reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
-            hresult result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
             Assert::AreEqual(error_ok, result);
 
             result = frame_encode->Initialize(nullptr);
@@ -345,7 +345,7 @@ public:
     ///reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
 
     ////        com_ptr<IWICBitmapFrameEncode> frame_encode;
-    ////        hresult result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+    ////        HRESULT result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
     ////        Assert::AreEqual(error_ok, result);
 
     ////        result = frame_encode->Initialize(nullptr);

@@ -14,25 +14,31 @@ public:
     {
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall Read(_Out_writes_bytes_to_(cb, *pcbRead) void* /*pv*/, _In_ [[maybe_unused]] ULONG cb,
                            _Out_opt_ [[maybe_unused]] ULONG* pcbRead) noexcept override
     {
+        if (pcbRead)
+        {
+            *pcbRead = 0;
+        }
+
         return fail_on_read_ ? error_fail : error_ok;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, _In_ [[maybe_unused]] ULONG cb,
                             _Out_opt_ ULONG* /*pcbWritten*/) noexcept override
     {
         return error_fail;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall Seek(LARGE_INTEGER /*dlibMove*/, DWORD /*dwOrigin*/,
-                           _Out_opt_ ULARGE_INTEGER* /*plibNewPosition*/) noexcept override
+    HRESULT __stdcall Seek(LARGE_INTEGER, DWORD /*dwOrigin*/, _Out_opt_ ULARGE_INTEGER* new_position) noexcept override
     {
         --fail_on_seek_counter_;
+
+        if (new_position)
+        {
+            new_position->QuadPart = 0;
+        }
 
         return fail_on_seek_counter_ <= 0 ? error_fail : error_ok;
     }
@@ -42,8 +48,7 @@ public:
         return error_fail;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall CopyTo(_In_ IStream* /*pstm*/, ULARGE_INTEGER /*cb*/, _Out_opt_ ULARGE_INTEGER* /*pcbRead*/,
+    HRESULT __stdcall CopyTo(_In_ IStream*, ULARGE_INTEGER /*cb*/, _Out_opt_ ULARGE_INTEGER* /*pcbRead*/,
                              _Out_opt_ ULARGE_INTEGER* /*pcbWritten*/) noexcept override
     {
         return error_fail;
@@ -70,14 +75,13 @@ public:
         return error_fail;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall Stat(__RPC__out STATSTG* /*pstatstg*/, DWORD /*grfStatFlag*/) noexcept override
+    HRESULT __stdcall Stat(__RPC__out STATSTG*, DWORD /*grfStatFlag*/) noexcept override
     {
         return error_fail;
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-    HRESULT __stdcall Clone(__RPC__deref_out_opt IStream** /*ppstm*/) noexcept override
+    HRESULT __stdcall Clone(__RPC__deref_out_opt IStream**) noexcept override
     {
         return error_fail;
     }
