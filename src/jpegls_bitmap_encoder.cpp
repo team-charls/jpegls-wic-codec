@@ -29,7 +29,8 @@ public:
                                  [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::Initialize, stream=%p, cache_option=%d\n", this, destination, cache_option);
+        TRACE("{} jpegls_bitmap_encoder::Initialize, stream={}, cache_option={}\n", fmt::ptr(this), fmt::ptr(destination),
+            fmt::underlying(cache_option));
 
         check_condition(!static_cast<bool>(destination_), wincodec::error_wrong_state);
         destination_.copy_from(check_in_pointer(destination));
@@ -43,7 +44,7 @@ public:
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, container_format=%p\n", this, container_format);
+        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, container_format={}\n", fmt::ptr(this), fmt::ptr(container_format));
 
         *check_out_pointer(container_format) = GUID_ContainerFormatJpegLS;
         return error_ok;
@@ -56,7 +57,7 @@ public:
     HRESULT __stdcall GetEncoderInfo(_Outptr_ IWICBitmapEncoderInfo** encoder_info) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, encoder_info=%p\n", this, encoder_info);
+        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, encoder_info={}\n", fmt::ptr(this), fmt::ptr(encoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSEncoder, component_info.put()));
@@ -74,8 +75,8 @@ public:
                                      IPropertyBag2** encoder_options) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode=%p, encoder_options=%p\n", this,
-              bitmap_frame_encode, encoder_options);
+        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode={}, encoder_options={}\n", fmt::ptr(this),
+              fmt::ptr(bitmap_frame_encode), fmt::ptr(encoder_options));
 
         check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
         check_condition(!static_cast<bool>(bitmap_frame_encode_), wincodec::error_wrong_state); // Only 1 frame is supported.
@@ -100,7 +101,7 @@ public:
     HRESULT __stdcall Commit() noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_encoder::Commit\n", this);
+        TRACE("{} jpegls_bitmap_encoder::Commit\n", fmt::ptr(this));
 
         check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
         check_condition(static_cast<bool>(bitmap_frame_encode_), wincodec::error_frame_missing);
@@ -148,20 +149,20 @@ public:
     // Optional methods
     HRESULT __stdcall SetPreview([[maybe_unused]] _In_ IWICBitmapSource* preview) noexcept override
     {
-        TRACE("%p jpegls_bitmap_encoder::SetPreview, preview=%p\n", this, preview);
+        TRACE("{} jpegls_bitmap_encoder::SetPreview, preview={}\n", fmt::ptr(this), fmt::ptr(preview));
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
     {
-        TRACE("%p jpegls_bitmap_encoder::SetThumbnail, thumbnail=%p\n", this, thumbnail);
+        TRACE("{} jpegls_bitmap_encoder::SetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
-        TRACE("%p jpegls_bitmap_encoder::SetColorContexts, count=%u, color_context=%p\n", this, count, color_context);
+        TRACE("{} jpegls_bitmap_encoder::SetColorContexts, count={}, color_context={}\n", fmt::ptr(this), count, fmt::ptr(color_context));
 
         // Note: the current implementation doesn't support color contexts.
         //       Normally ICC color context profiles can be stored in the JPEG APP2 marker section.
@@ -171,7 +172,7 @@ public:
     HRESULT __stdcall GetMetadataQueryWriter(
         [[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
     {
-        TRACE("%p jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer=%p\n", this, metadata_query_writer);
+        TRACE("{} jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer={}\n", fmt::ptr(this), fmt::ptr(metadata_query_writer));
 
         // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
@@ -181,7 +182,7 @@ public:
 
     HRESULT __stdcall SetPalette(_In_ IWICPalette* palette) noexcept override
     {
-        TRACE("%p jpegls_bitmap_encoder::SetPalette, palette=%p\n", this, palette);
+        TRACE("{} jpegls_bitmap_encoder::SetPalette, palette={}\n", fmt::ptr(this), fmt::ptr(palette));
 
         // Note: the current implementation doesn't support storing a palette to the JPEG-LS stream.
         //       The JPEG-LS standard does support it.

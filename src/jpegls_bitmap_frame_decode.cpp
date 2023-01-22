@@ -259,21 +259,21 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
 // IWICBitmapSource
 HRESULT jpegls_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::GetSize, width=%p, height=%p\n", this, width, height);
+    TRACE("{} jpegls_bitmap_frame_decoder::GetSize, width={}, height={}\n", fmt::ptr(this), fmt::ptr(width), fmt::ptr(height));
 
     return bitmap_source_->GetSize(width, height);
 }
 
 HRESULT jpegls_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format)
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::GetPixelFormat, pixel_format=%p\n", this, pixel_format);
+    TRACE("{} jpegls_bitmap_frame_decoder::GetPixelFormat, pixel_format={}\n", fmt::ptr(this), fmt::ptr(pixel_format));
 
     return bitmap_source_->GetPixelFormat(pixel_format);
 }
 
 HRESULT jpegls_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
+    TRACE("{} jpegls_bitmap_frame_decoder::GetResolution, dpi_x={}, dpi_y={}\n", fmt::ptr(this), fmt::ptr(dpi_x), fmt::ptr(dpi_y));
 
     return bitmap_source_->GetResolution(dpi_x, dpi_y);
 }
@@ -281,15 +281,15 @@ HRESULT jpegls_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 HRESULT jpegls_bitmap_frame_decode::CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
     BYTE* buffer)
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle,
-        buffer_size, buffer);
+    TRACE("{} jpegls_bitmap_frame_decoder::CopyPixels, rectangle={}, buffer_size={}, buffer={}\n", fmt::ptr(this), fmt::ptr(rectangle),
+        buffer_size, fmt::ptr(buffer));
 
     return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
 }
 
 HRESULT jpegls_bitmap_frame_decode::CopyPalette(IWICPalette* /*palette*/) noexcept
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::CopyPalette\n", this);
+    TRACE("{} jpegls_bitmap_frame_decoder::CopyPalette\n", fmt::ptr(this));
     return wincodec::error_palette_unavailable;
 }
 
@@ -303,8 +303,8 @@ HRESULT jpegls_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICC
     uint32_t* actual_count) noexcept
     try
 {
-    TRACE("%p jpegls_bitmap_frame_decoder::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this,
-        count, color_contexts, actual_count);
+    TRACE("{} jpegls_bitmap_frame_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
+        count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
 
     *check_out_pointer(actual_count) = 0;
     return error_ok;
@@ -317,7 +317,7 @@ catch (...)
 HRESULT __stdcall jpegls_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
-    TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
+    TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader={}\n", fmt::ptr(this), fmt::ptr(metadata_query_reader));
 
     // Keep the initial design simple: no support for metadata.
     return wincodec::error_unsupported_operation;

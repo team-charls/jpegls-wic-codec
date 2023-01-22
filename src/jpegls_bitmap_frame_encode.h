@@ -47,7 +47,7 @@ public:
     HRESULT __stdcall Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_encode::Initialize, encoder_options=%p\n", this, encoder_options);
+        TRACE("{} jpegls_bitmap_frame_encode::Initialize, encoder_options={}\n", fmt::ptr(this), fmt::ptr(encoder_options));
 
         check_condition(state_ == state::created, wincodec::error_wrong_state);
         state_ = state::initialized;
@@ -61,7 +61,7 @@ public:
     HRESULT __stdcall SetSize(const uint32_t width, const uint32_t height) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetSize.1, width=%u, height=%u\n", this, width, height);
+        TRACE("{} jpegls_bitmap_frame_encode::SetSize.1, width={}, height={}\n", fmt::ptr(this), width, height);
 
         check_condition(state_ == state::initialized, wincodec::error_wrong_state);
         frame_info_.width = width;
@@ -78,7 +78,7 @@ public:
     HRESULT __stdcall SetResolution(const double dpi_x, const double dpi_y) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetResolution.1, dpi_x=%f, dpi_y=%f\n", this, dpi_x, dpi_y);
+        TRACE("{} jpegls_bitmap_frame_encode::SetResolution.1, dpi_x={}, dpi_y={}\n", fmt::ptr(this), dpi_x, dpi_y);
 
         check_condition(!(state_ == state::commited), wincodec::error_wrong_state);
         dpi_x_ = dpi_x;
@@ -95,7 +95,7 @@ public:
     HRESULT __stdcall SetPixelFormat(GUID* pixel_format) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetPixelFormat, pixel_format=%p\n", this, pixel_format);
+        TRACE("{} jpegls_bitmap_frame_encode::SetPixelFormat, pixel_format={}\n", fmt::ptr(this), fmt::ptr(pixel_format));
 
         check_in_pointer(pixel_format);
         check_condition(state_ == state::initialized, wincodec::error_wrong_state);
@@ -156,7 +156,8 @@ public:
     HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetColorContexts, count=%d, color_context=%p\n", this, count, color_context);
+        TRACE("{} jpegls_bitmap_frame_encode::SetColorContexts, count={}, color_context={}\n", fmt::ptr(this), count,
+              fmt::ptr(color_context));
         return wincodec::error_unsupported_operation;
     }
 
@@ -167,7 +168,7 @@ public:
 
     HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetThumbnail, thumbnail=%p\n", this, thumbnail);
+        TRACE("{} jpegls_bitmap_frame_encode::SetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
         return wincodec::error_unsupported_operation;
     }
 
@@ -175,8 +176,8 @@ public:
                                   BYTE* pixels) noexcept override
     try
     {
-        check_condition((state_ == state::initialized || state_ == state::received_pixels) && size_set_ &&
-                        pixel_format_set_, wincodec::error_wrong_state);
+        check_condition((state_ == state::initialized || state_ == state::received_pixels) && size_set_ && pixel_format_set_,
+                        wincodec::error_wrong_state);
         check_condition(received_line_count_ + line_count <= frame_info_.height, wincodec::error_codec_too_many_scan_lines);
 
         if (source_.empty())
@@ -186,8 +187,9 @@ public:
 
         const size_t destination_stride{stride()};
         std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
-        winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride),
-                                         pixels, static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride), line_count));
+        winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
+                                         static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride),
+                                         line_count));
 
         received_line_count_ += line_count;
         state_ = state::received_pixels;
@@ -202,8 +204,8 @@ public:
                                   [[maybe_unused]] _In_ WICRect* rectangle) noexcept override
     try
     {
-        TRACE("%p jpegls_bitmap_frame_encode::WriteSource, bitmap_source=%p, rectangle=%p\n", this, bitmap_source,
-              rectangle);
+        TRACE("{} jpegls_bitmap_frame_encode::WriteSource, bitmap_source={}, rectangle={}\n", fmt::ptr(this),
+              fmt::ptr(bitmap_source), fmt::ptr(rectangle));
 
         check_in_pointer(bitmap_source);
         check_condition(state_ == state::initialized, wincodec::error_wrong_state);
@@ -275,7 +277,7 @@ public:
 
     HRESULT __stdcall SetPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
-        TRACE("%p jpegls_bitmap_frame_encode::SetPalette, palette=%p\n", this, palette);
+        TRACE("{} jpegls_bitmap_frame_encode::SetPalette, palette={}\n", fmt::ptr(this), fmt::ptr(palette));
         return wincodec::error_palette_unavailable;
     }
 
