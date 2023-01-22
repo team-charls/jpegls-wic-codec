@@ -9,8 +9,8 @@
 #include "errors.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_decode.h"
-#include "util.h"
 #include "trace.h"
+#include "util.h"
 
 #include <charls/charls.h>
 
@@ -37,9 +37,10 @@ class jpegls_bitmap_decoder final : public winrt::implements<jpegls_bitmap_decod
 public:
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
-        try
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::QueryCapability.1, stream=%p, capability=%p\n", this, stream, capability);
+        TRACE("{} jpegls_bitmap_decoder::QueryCapability.1, stream={}, capability={}\n", fmt::ptr(this), fmt::ptr(stream),
+              fmt::ptr(capability));
 
         check_in_pointer(stream);
         *check_out_pointer(capability) = 0;
@@ -63,18 +64,19 @@ public:
         decoder.read_header(error);
         if (error)
         {
-            TRACE("%p jpegls_bitmap_decoder::QueryCapability.2, capability=0, ec=%d, (reason=%s)\n", this, error.value(),
-                jpegls_category().message(error.value()).c_str());
+            TRACE("{} jpegls_bitmap_decoder::QueryCapability.2, capability=0, ec={}, (reason={})\n", fmt::ptr(this),
+                  error.value(), jpegls_category().message(error.value()));
             return error_ok;
         }
 
-        if (const auto& [width, height, bits_per_sample, component_count] {decoder.frame_info()};
+        if (const auto& [width, height, bits_per_sample, component_count]{decoder.frame_info()};
             jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(bits_per_sample, component_count))
         {
             *capability = WICBitmapDecoderCapabilityCanDecodeAllImages;
         }
 
-        TRACE("%p jpegls_bitmap_decoder::QueryCapability.3, stream=%p, *capability=%d\n", this, stream, *capability);
+        TRACE("{} jpegls_bitmap_decoder::QueryCapability.3, stream={}, *capability={}\n", fmt::ptr(this), fmt::ptr(stream),
+              *capability);
         return error_ok;
     }
     catch (...)
@@ -83,13 +85,14 @@ public:
     }
 
     HRESULT __stdcall Initialize(_In_ IStream* stream,
-        [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
-        try
+                                 [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
+        TRACE("{} jpegls_bitmap_decoder::Initialize, stream={}, cache_options={}\n", fmt::ptr(this), fmt::ptr(stream),
+              fmt::underlying(cache_options));
 
         SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
-            scoped_lock lock{mutex_};
+        scoped_lock lock{mutex_};
 
         source_stream_.copy_from(check_in_pointer(stream));
         bitmap_frame_decode_.attach(nullptr);
@@ -102,9 +105,10 @@ public:
     }
 
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
-        try
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetContainerFormat, container_format=%p\n", this, container_format);
+        TRACE("{} jpegls_bitmap_decoder::GetContainerFormat, container_format={}\n", fmt::ptr(this),
+              fmt::ptr(container_format));
 
         *check_out_pointer(container_format) = GUID_ContainerFormatJpegLS;
         return error_ok;
@@ -115,9 +119,9 @@ public:
     }
 
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
-        try
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetContainerFormat, decoder_info=%p\n", this, decoder_info);
+        TRACE("{} jpegls_bitmap_decoder::GetContainerFormat, decoder_info={}\n", fmt::ptr(this), fmt::ptr(decoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
@@ -132,37 +136,38 @@ public:
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::CopyPalette, palette=%p\n", this, palette);
+        TRACE("{} jpegls_bitmap_decoder::CopyPalette, palette={}\n", fmt::ptr(this), fmt::ptr(palette));
 
         // Palettes are for JPEG-LS on frame level.
         return wincodec::error_palette_unavailable;
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-        HRESULT __stdcall GetMetadataQueryReader(
-            [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader(
+        [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
+        TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", fmt::ptr(this),
+              fmt::ptr(metadata_query_reader));
 
         // Keep the initial design simple: no support for container-level metadata.
         return wincodec::error_unsupported_operation;
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-        HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
+    HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::GetPreview, bitmap_source=%p\n", this, bitmap_source);
+        TRACE("{} jpegls_bitmap_decoder::GetPreview, bitmap_source={}\n", fmt::ptr(this), fmt::ptr(bitmap_source));
 
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
-        [[maybe_unused]] IWICColorContext** color_contexts,
-        [[maybe_unused]] uint32_t* actual_count) noexcept override
-        try
+                                       [[maybe_unused]] IWICColorContext** color_contexts,
+                                       [[maybe_unused]] uint32_t* actual_count) noexcept override
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count,
-            color_contexts, actual_count);
+        TRACE("{} jpegls_bitmap_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
+              count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
 
         *check_out_pointer(actual_count) = 0;
         return error_ok;
@@ -173,17 +178,17 @@ public:
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-        HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
+    HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::GetThumbnail, thumbnail=%p\n", this, thumbnail);
+        TRACE("{} jpegls_bitmap_decoder::GetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
 
         return wincodec::error_codec_no_thumbnail;
     }
-
+    
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
-        try
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetFrameCount, count=%p\n", this, count);
+        TRACE("{} jpegls_bitmap_decoder::GetFrameCount, count={}\n", fmt::ptr(this), fmt::ptr(count));
 
         *check_out_pointer(count) = 1; // JPEG-LS format can only store 1 frame.
         return error_ok;
@@ -194,15 +199,15 @@ public:
     }
 
     SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
-        HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
-        try
+    HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
+    try
     {
-        TRACE("%p jpegls_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
+        TRACE("{} jpegls_bitmap_decoder::GetFrame, index={}, bitmap_frame_decode={}\n", fmt::ptr(this), index, fmt::ptr(bitmap_frame_decode));
 
         check_condition(index == 0, wincodec::error_frame_missing);
 
         SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
-            scoped_lock lock{mutex_};
+        scoped_lock lock{mutex_};
 
         check_condition(static_cast<bool>(source_stream_), wincodec::error_not_initialized);
 
@@ -225,7 +230,7 @@ private:
         if (!imaging_factory_)
         {
             check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-                IID_PPV_ARGS(imaging_factory_.put())));
+                                           IID_PPV_ARGS(imaging_factory_.put())));
         }
 
         return imaging_factory_.get();
