@@ -33,7 +33,7 @@ public:
         uint32_t width;
         uint32_t height;
 
-        const hresult result{bitmap_frame_decoder->GetSize(&width, &height)};
+        const HRESULT result{bitmap_frame_decoder->GetSize(&width, &height)};
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(512U, width);
         Assert::AreEqual(512U, height);
@@ -46,7 +46,7 @@ public:
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
 
-        const hresult result{bitmap_frame_decoder->CopyPalette(palette.get())};
+        const HRESULT result{bitmap_frame_decoder->CopyPalette(palette.get())};
         Assert::AreEqual(wincodec::error_palette_unavailable, result);
     }
 
@@ -55,7 +55,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         com_ptr<IWICBitmapSource> thumbnail;
-        const hresult result{bitmap_frame_decoder->GetThumbnail(thumbnail.put())};
+        const HRESULT result{bitmap_frame_decoder->GetThumbnail(thumbnail.put())};
         Assert::AreEqual(wincodec::error_codec_no_thumbnail, result);
     }
 
@@ -64,7 +64,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         GUID pixel_format;
-        const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        const HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
@@ -74,7 +74,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
-            const hresult result {
+        const HRESULT result{
             bitmap_frame_decoder->GetPixelFormat(nullptr)
         };
         Assert::AreEqual(error_invalid_argument, result);
@@ -86,7 +86,7 @@ public:
 
         double dpi_x;
         double dpi_y;
-        const hresult result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
+        const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(96., dpi_x);
         Assert::AreEqual(96., dpi_y);
@@ -97,7 +97,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
-            const hresult result {
+        const HRESULT result{
             bitmap_frame_decoder->GetResolution(nullptr, nullptr)
         };
         Assert::AreEqual(error_invalid_argument, result);
@@ -108,7 +108,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         uint32_t actual_count;
-        hresult result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
+        HRESULT result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
 
@@ -124,7 +124,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
-        const hresult result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
+        const HRESULT result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
@@ -137,7 +137,7 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
-        hresult result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
+        HRESULT result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
                                                         reinterpret_cast<BYTE*>(buffer.data()))};
         Assert::AreEqual(error_ok, result);
 
@@ -184,7 +184,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.jls")};
 
         GUID pixel_format;
-        hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat4bppGray == pixel_format);
 
@@ -224,7 +224,7 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
-        const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
+        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
         Assert::AreEqual(error_ok, result);
 
         compare("tulips-gray-8bit-512-512.pgm", buffer);
@@ -240,7 +240,7 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
-        const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
+        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
         Assert::AreEqual(error_ok, result);
 
         compare("8bit_2x2.pgm", buffer);
@@ -255,7 +255,7 @@ private:
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const uint32_t stride{(width + 15) / 16 * 4};
-        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
         Assert::AreEqual(error_ok, result);
 
         const std::vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};

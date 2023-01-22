@@ -142,7 +142,6 @@ public:
         return wincodec::error_palette_unavailable;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetMetadataQueryReader(
         [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
@@ -153,7 +152,6 @@ public:
         return wincodec::error_unsupported_operation;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetPreview, bitmap_source={}\n", fmt::ptr(this), fmt::ptr(bitmap_source));
@@ -177,7 +175,6 @@ public:
         return to_hresult();
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
@@ -198,7 +195,6 @@ public:
         return to_hresult();
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {

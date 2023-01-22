@@ -10,7 +10,7 @@
 #include "util.h"
 #include "version.h"
 
-#include <OleCtl.h>
+#include <olectl.h>
 #include <ShlObj.h>
 
 #include <array>

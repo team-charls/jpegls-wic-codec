@@ -21,12 +21,6 @@ extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
 // The 2 macros below are used to disable false positives. These warnings are too useful to disable them globally.
 
-// A false warning is generated when a type is returned that can converted to a HRESULT but is not a HRESULT.
-// The HRESULT type is tagged with a SAL annotation that indicates when the function returns an error or not.
-// Reported to Microsoft:
-// https://developercommunity.visualstudio.com/content/problem/804429/static-analysis-emits-a-false-positive-c6101-error.html
-#define SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(6101)
-
 // A false warning is generated when a noexcept methods calls a function that is not marked noexcept.
 // Reported to Microsoft:
 // https://developercommunity.visualstudio.com/content/problem/804372/c26447-false-positive-when-using-stdscoped-lock-ev.html

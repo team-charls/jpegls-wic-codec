@@ -80,7 +80,7 @@ public:
     {
         TRACE("{} jpegls_bitmap_frame_encode::SetResolution.1, dpi_x={}, dpi_y={}\n", fmt::ptr(this), dpi_x, dpi_y);
 
-        check_condition(!(state_ == state::commited), wincodec::error_wrong_state);
+        check_condition(state_ != state::commited, wincodec::error_wrong_state);
         dpi_x_ = dpi_x;
         dpi_y_ = dpi_y;
         dpi_set_ = true;
