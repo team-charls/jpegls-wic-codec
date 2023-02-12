@@ -22,7 +22,7 @@ public:
         const HRESULT result{factory_.create_decoder()->GetContainerFormat(&container_format)};
 
         Assert::AreEqual(error_ok, result);
-        Assert::IsTrue(GUID_ContainerFormatJpegLS == container_format);
+        Assert::IsTrue(id::container_format_jpegls == container_format);
     }
 
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT

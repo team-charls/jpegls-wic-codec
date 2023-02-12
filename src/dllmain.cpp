@@ -28,7 +28,7 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
     registry::set_value(sub_key, L"Author", L"Team CharLS");
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
-    registry::set_value(sub_key, L"ContainerFormat", guid_to_string(GUID_ContainerFormatJpegLS).c_str());
+    registry::set_value(sub_key, L"ContainerFormat", guid_to_string(id::container_format_jpegls).c_str());
     registry::set_value(sub_key, L"Description", L"JPEG-LS Codec");
     registry::set_value(sub_key, L"FileExtensions", L".jls");
     registry::set_value(sub_key, L"FriendlyName", friendly_name);
@@ -38,7 +38,7 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
     registry::set_value(sub_key, L"SupportLossless", 1U);
     registry::set_value(sub_key, L"SupportMultiframe", 0U);
-    registry::set_value(sub_key, L"Vendor", guid_to_string(GUID_VendorTeamCharLS).c_str());
+    registry::set_value(sub_key, L"Vendor", guid_to_string(id::vendor_team_charls).c_str());
     registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
@@ -64,10 +64,10 @@ void register_decoder()
     const array formats{GUID_WICPixelFormat2bppGray,  GUID_WICPixelFormat4bppGray, GUID_WICPixelFormat8bppGray,
                         GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppRGB, GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder",
+    register_general_decoder_encoder_settings(id::jpegls_decoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder",
                                               formats.data(), formats.size());
 
-    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_JpegLSDecoder)};
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::jpegls_decoder)};
 
     const wstring patterns_sub_key{sub_key + LR"(\Patterns\0)"};
     registry::set_value(patterns_sub_key, L"Length", 3);
@@ -103,7 +103,7 @@ void register_encoder()
                         GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppBGR, GUID_WICPixelFormat24bppRGB,
                         GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder",
+    register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder",
                                               formats.data(), formats.size());
 }
 
@@ -157,10 +157,10 @@ _Use_decl_annotations_ HRESULT __stdcall DllCanUnloadNow()
 _Use_decl_annotations_ HRESULT __stdcall DllGetClassObject(GUID const& class_id, GUID const& interface_id, void** result)
 try
 {
-    if (class_id == CLSID_JpegLSDecoder)
+    if (class_id == id::jpegls_decoder)
         return create_jpegls_bitmap_decoder_factory(interface_id, result);
 
-    if (class_id == CLSID_JpegLSEncoder)
+    if (class_id == id::jpegls_encoder)
         return create_jpegls_bitmap_encoder_factory(interface_id, result);
 
     return CLASS_E_CLASSNOTAVAILABLE;
@@ -188,8 +188,8 @@ catch (...)
 HRESULT __stdcall DllUnregisterServer()
 try
 {
-    const HRESULT result_decoder{unregister(CLSID_JpegLSDecoder, CATID_WICBitmapDecoders)};
-    const HRESULT result_encoder{unregister(CLSID_JpegLSEncoder, CATID_WICBitmapEncoders)};
+    const HRESULT result_decoder{unregister(id::jpegls_decoder, CATID_WICBitmapDecoders)};
+    const HRESULT result_encoder{unregister(id::jpegls_encoder, CATID_WICBitmapEncoders)};
 
     // Note: keep the .jls file registration intact.
 

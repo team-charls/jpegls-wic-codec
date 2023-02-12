@@ -110,7 +110,7 @@ public:
         TRACE("{} jpegls_bitmap_decoder::GetContainerFormat, container_format={}\n", fmt::ptr(this),
               fmt::ptr(container_format));
 
-        *check_out_pointer(container_format) = GUID_ContainerFormatJpegLS;
+        *check_out_pointer(container_format) = id::container_format_jpegls;
         return error_ok;
     }
     catch (...)
@@ -124,7 +124,7 @@ public:
         TRACE("{} jpegls_bitmap_decoder::GetContainerFormat, decoder_info={}\n", fmt::ptr(this), fmt::ptr(decoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
-        check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSDecoder, component_info.put()));
+        check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_decoder, component_info.put()));
         check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
         return error_ok;

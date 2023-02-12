@@ -179,75 +179,34 @@ public:
         decode_2_bit_monochrome(L"2bit-parrot-150x200.jls", "2bit-parrot-150x200.pgm");
     }
 
+    TEST_METHOD(decode_4_bit_monochrome_4_pixels) // NOLINT
+    {
+        decode_4_bit_monochrome(L"4bit_4x1.jls", "4bit_4x1.pgm");
+    }
+
+    TEST_METHOD(decode_4_bit_monochrome_5_pixels) // NOLINT
+    {
+        decode_4_bit_monochrome(L"4bit_5x1.jls", "4bit_5x1.pgm");
+    }
+
     TEST_METHOD(decode_monochrome_4_bit) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.jls")};
-
-        GUID pixel_format;
-        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
-        Assert::IsTrue(GUID_WICPixelFormat4bppGray == pixel_format);
-
-        uint32_t width;
-        uint32_t height;
-        result = bitmap_frame_decoder->GetSize(&width, &height);
-        Assert::AreEqual(error_ok, result);
-        Assert::AreEqual(360U, width);
-        Assert::AreEqual(360U, height);
-        const uint32_t stride{width / 2};
-
-        std::vector<std::byte> buffer(static_cast<size_t>(stride) * height);
-        result = bitmap_frame_decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()),
-            reinterpret_cast<BYTE*>(buffer.data()));
-        Assert::AreEqual(error_ok, result);
-
-        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
-        portable_anymap_file anymap_file{"4bit-monochrome.pgm"};
-
-        for (size_t i{}; i != decoded_buffer.size(); ++i)
-        {
-            if (anymap_file.image_data()[i] != decoded_buffer[i])
-            {
-                Assert::IsTrue(false);
-                break;
-            }
-        }
+        decode_4_bit_monochrome(L"4bit-monochrome.jls", "4bit-monochrome.pgm");
     }
 
     TEST_METHOD(decode_8bit_monochrome) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
-
-        uint32_t width;
-        uint32_t height;
-
-        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        vector<std::byte> buffer(static_cast<size_t>(width) * height);
-
-        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
-        Assert::AreEqual(error_ok, result);
-
-        compare("tulips-gray-8bit-512-512.pgm", buffer);
+        decode_8bit_monochrome(L"tulips-gray-8bit-512-512.jls", "tulips-gray-8bit-512-512.pgm");
     }
 
     TEST_METHOD(decode_8bit_monochrome_stride_mismatch) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"8bit_2x2.jls")};
-
-        uint32_t width;
-        uint32_t height;
-
-        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        vector<std::byte> buffer(static_cast<size_t>(width) * height);
-
-        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
-        Assert::AreEqual(error_ok, result);
-
-        compare("8bit_2x2.pgm", buffer);
+        decode_8bit_monochrome(L"8bit_2x2.jls", "8bit_2x2.pgm");
     }
 
 private:
-    void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
+    void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                 _Null_terminated_ const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
@@ -262,6 +221,46 @@ private:
         compare(filename_expected, decoded_buffer);
     }
 
+    void decode_4_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                 _Null_terminated_ const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        GUID pixel_format;
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat4bppGray == pixel_format);
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        const uint32_t stride{(width + 7) / 8 * 4};
+        result = copy_pixels(bitmap_frame_decoder.get(), stride, buffer);
+        Assert::AreEqual(error_ok, result);
+
+        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        compare(filename_expected, decoded_buffer);
+    }
+
+    void decode_8bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                       _Null_terminated_ const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        GUID pixel_format;
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        result = copy_pixels(bitmap_frame_decoder.get(), width, buffer);
+        Assert::AreEqual(error_ok, result);
+
+        compare(filename_expected, buffer);
+    }
+
     [[nodiscard]] static std::vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width,
         const size_t height, const size_t stride)
     {
@@ -270,13 +269,15 @@ private:
         for (size_t j{}, row{}; row != height; ++row)
         {
             const std::byte* nibble_row{nibble_pixels + (row * stride)};
-            for (size_t i{}; i != width / 2; ++i)
+            size_t i{};
+            for (; i != width / 2; ++i)
             {
-                destination[j] = nibble_row[i] >> 4;
-                ++j;
-                constexpr std::byte mask{0x0F};
-                destination[j] = nibble_row[i] & mask;
-                ++j;
+                destination[j++] = nibble_row[i] >> 4;
+                destination[j++] = nibble_row[i] & std::byte{0x0F};
+            }
+            if (width % 2)
+            {
+                destination[j++] = nibble_row[i] >> 4;
             }
         }
 
