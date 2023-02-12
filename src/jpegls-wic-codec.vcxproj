@@ -86,6 +86,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="jpegls_bitmap_encoder.cpp" />
     <ClCompile Include="jpegls_bitmap_frame_decode.cpp" />
+    <ClCompile Include="jpegls_bitmap_frame_encode.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
