@@ -31,7 +31,7 @@ public:
     [[nodiscard]] winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {
         winrt::com_ptr<IWICBitmapDecoder> decoder;
-        winrt::check_hresult(get_class_factory(CLSID_JpegLSDecoder)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
+        winrt::check_hresult(get_class_factory(id::jpegls_decoder)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
 
         return decoder;
     }
@@ -39,7 +39,7 @@ public:
     [[nodiscard]] winrt::com_ptr<IWICBitmapEncoder> create_encoder() const
     {
         winrt::com_ptr<IWICBitmapEncoder> encoder;
-        winrt::check_hresult(get_class_factory(CLSID_JpegLSEncoder)->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
+        winrt::check_hresult(get_class_factory(id::jpegls_encoder)->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
 
         return encoder;
     }

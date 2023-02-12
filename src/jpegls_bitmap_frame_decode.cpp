@@ -13,8 +13,9 @@
 #include <charls/charls.h>
 
 #include <Shlwapi.h>
-#include <span>
 #include <wincodec.h>
+
+#include <span>
 
 
 namespace {
@@ -104,18 +105,21 @@ void pack_to_crumbs(const std::span<const std::byte> byte_pixels, std::byte* cru
     }
 }
 
-void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
+void pack_to_nibbles(const std::span<const std::byte> byte_pixels, std::byte* nibble_pixels, const size_t width,
     const size_t height, const size_t stride) noexcept
 {
     for (size_t j{}, row{}; row != height; ++row)
     {
         std::byte* nibble_row{nibble_pixels + (row * stride)};
-        for (size_t i{}; i != width / 2; ++i)
+        size_t i{};
+        for (; i != width / 2; ++i)
         {
-            nibble_row[i] = byte_pixels[j] << 4;
-            ++j;
-            nibble_row[i] |= byte_pixels[j];
-            ++j;
+            nibble_row[i] = byte_pixels[j++] << 4;
+            nibble_row[i] |= byte_pixels[j++];
+        }
+        if (width % 2)
+        {
+            nibble_row[i] = byte_pixels[j++] << 4;
         }
     }
 }

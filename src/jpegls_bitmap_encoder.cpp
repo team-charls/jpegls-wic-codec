@@ -46,7 +46,7 @@ public:
     {
         TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, container_format={}\n", fmt::ptr(this), fmt::ptr(container_format));
 
-        *check_out_pointer(container_format) = GUID_ContainerFormatJpegLS;
+        *check_out_pointer(container_format) = id::container_format_jpegls;
         return error_ok;
     }
     catch (...)
@@ -60,7 +60,7 @@ public:
         TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, encoder_info={}\n", fmt::ptr(this), fmt::ptr(encoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
-        check_hresult(imaging_factory()->CreateComponentInfo(CLSID_JpegLSEncoder, component_info.put()));
+        check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_encoder, component_info.put()));
         check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
 
         return error_ok;

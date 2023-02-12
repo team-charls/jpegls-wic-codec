@@ -33,4 +33,5 @@
 #pragma warning(push)
 #pragma warning(disable : 5262) // implicit fall-through occurs here;
 #include <string>
+#include <span>
 #pragma warning(pop)
