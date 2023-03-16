@@ -5,10 +5,12 @@
 
 
 // The include files are not used by the macros, but using the macros require the include files.
+#ifndef NDEBUG
 // ReSharper disable CppUnusedIncludeDirective
 #include <format>
 #include <Windows.h>
 // ReSharper restore CppUnusedIncludeDirective
+#endif
 
 namespace fmt {
 
@@ -34,11 +36,6 @@ constexpr auto underlying(Enum e) noexcept -> std::underlying_type_t<Enum>
 #ifdef NDEBUG
     #define TRACE __noop
 #else
-    #ifdef __RESHARPER__
-        // ReSharper 2022.3.1 fails to parse C++20 macro __VA_OPT__
-        #define TRACE __noop
-    #else
-        // Use std::format directly to get compile time checking of the string arguments.
-        #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())
-    #endif
+    // Use std::format directly to get compile time checking of the string arguments.
+    #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())
 #endif
