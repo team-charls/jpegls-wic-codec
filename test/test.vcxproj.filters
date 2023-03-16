@@ -78,6 +78,10 @@
     <CopyFileToFolders Include="data-files\8bit_2x2.jls" />
     <CopyFileToFolders Include="data-files\8bit_2x2.pgm" />
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm" />
+    <CopyFileToFolders Include="data-files\4bit_4x1.jls" />
+    <CopyFileToFolders Include="data-files\4bit_4x1.pgm" />
+    <CopyFileToFolders Include="data-files\4bit_5x1.jls" />
+    <CopyFileToFolders Include="data-files\4bit_5x1.pgm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
