@@ -3,6 +3,11 @@
 
 root = true
 
+[*]
+
+# Spell checker configuration
+spelling_exclusion_path = spelling.dic
+
 [*.{h,cpp}]
 end_of_line = crlf
 charset = utf-8-bom
