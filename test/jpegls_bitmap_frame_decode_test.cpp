@@ -12,9 +12,9 @@
 #include <CppUnitTest.h>
 
 #include <array>
-#include <vector>
 #include <cstddef>
 #include <span>
+#include <vector>
 
 
 using std::array;
@@ -74,9 +74,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
-        const HRESULT result{
-            bitmap_frame_decoder->GetPixelFormat(nullptr)
-        };
+        const HRESULT result{bitmap_frame_decoder->GetPixelFormat(nullptr)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -97,9 +95,7 @@ public:
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
 
         WARNING_SUPPRESS_NEXT_LINE(6387)
-        const HRESULT result{
-            bitmap_frame_decoder->GetResolution(nullptr, nullptr)
-        };
+        const HRESULT result{bitmap_frame_decoder->GetResolution(nullptr, nullptr)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -114,7 +110,7 @@ public:
 
         array<IWICColorContext*, 1> color_contexts{};
         result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(),
-            &actual_count);
+                                                        &actual_count);
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
@@ -142,7 +138,7 @@ public:
         Assert::AreEqual(error_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
-            reinterpret_cast<BYTE*>(buffer.data()));
+                                                  reinterpret_cast<BYTE*>(buffer.data()));
         Assert::AreEqual(error_ok, result);
     }
 
@@ -194,14 +190,53 @@ public:
         decode_4_bit_monochrome(L"4bit-monochrome.jls", "4bit-monochrome.pgm");
     }
 
-    TEST_METHOD(decode_8bit_monochrome) // NOLINT
+    TEST_METHOD(decode_8_bit_monochrome) // NOLINT
     {
         decode_8bit_monochrome(L"tulips-gray-8bit-512-512.jls", "tulips-gray-8bit-512-512.pgm");
     }
 
-    TEST_METHOD(decode_8bit_monochrome_stride_mismatch) // NOLINT
+    TEST_METHOD(decode_8_bit_monochrome_stride_mismatch) // NOLINT
     {
         decode_8bit_monochrome(L"8bit_2x2.jls", "8bit_2x2.pgm");
+    }
+
+    TEST_METHOD(decode_10_bit_monochrome) // NOLINT
+    {
+        decode_16_bit_monochrome(L"10bit_3x2.jls", "10bit_3x2.pgm");
+    }
+
+    TEST_METHOD(decode_12_bit_monochrome) // NOLINT
+    {
+        decode_16_bit_monochrome(L"12bit_3x2.jls", "12bit_3x2.pgm");
+    }
+
+    TEST_METHOD(decode_16_bit_monochrome) // NOLINT
+    {
+        decode_16_bit_monochrome(L"16bit_3x2.jls", "16bit_3x2.pgm");
+    }
+
+    TEST_METHOD(decode_8_bit_rgb) // NOLINT
+    {
+        // TODO: create test file and .jls file
+        Assert::IsTrue(true);
+    }
+
+    TEST_METHOD(decode_8_bit_rgb_by_plane) // NOLINT
+    {
+        // TODO: create test file and .jls file
+        Assert::IsTrue(true);
+    }
+
+    TEST_METHOD(decode_16_bit_rgb) // NOLINT
+    {
+        // TODO: create test file and .jls file
+        Assert::IsTrue(true);
+    }
+
+    TEST_METHOD(decode_16_bit_rgb_by_plane) // NOLINT
+    {
+        // TODO: create test file and .jls file
+        Assert::IsTrue(true);
     }
 
 private:
@@ -210,11 +245,11 @@ private:
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
-        const auto [width, height] {get_size(*bitmap_frame_decoder)};
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const uint32_t stride{(width + 15) / 16 * 4};
-        const HRESULT result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        const HRESULT result{copy_pixels<std::byte>(bitmap_frame_decoder.get(), stride, buffer)};
         Assert::AreEqual(error_ok, result);
 
         const std::vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
@@ -235,7 +270,7 @@ private:
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const uint32_t stride{(width + 7) / 8 * 4};
-        result = copy_pixels(bitmap_frame_decoder.get(), stride, buffer);
+        result = copy_pixels<std::byte>(bitmap_frame_decoder.get(), stride, buffer);
         Assert::AreEqual(error_ok, result);
 
         const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
@@ -243,7 +278,7 @@ private:
     }
 
     void decode_8bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
-                                       _Null_terminated_ const char* filename_expected) const
+                                _Null_terminated_ const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
@@ -255,14 +290,33 @@ private:
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
-        result = copy_pixels(bitmap_frame_decoder.get(), width, buffer);
+        result = copy_pixels<std::byte>(bitmap_frame_decoder.get(), width, buffer);
+        Assert::AreEqual(error_ok, result);
+
+        compare(filename_expected, buffer);
+    }
+
+    void decode_16_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                  _Null_terminated_ const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        GUID pixel_format;
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat16bppGray == pixel_format);
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::uint16_t> buffer(static_cast<size_t>(width) * height);
+
+        result = copy_pixels<uint16_t>(bitmap_frame_decoder.get(), width, buffer);
         Assert::AreEqual(error_ok, result);
 
         compare(filename_expected, buffer);
     }
 
     [[nodiscard]] static std::vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width,
-        const size_t height, const size_t stride)
+                                                               const size_t height, const size_t stride)
     {
         std::vector<std::byte> destination(static_cast<size_t>(width) * height);
 
@@ -302,13 +356,13 @@ private:
     {
         com_ptr<IWICImagingFactory> imaging_factory;
         check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory,
-            imaging_factory.put_void()));
+                                       imaging_factory.put_void()));
 
         return imaging_factory;
     }
 
-    [[nodiscard]] static std::vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width, const size_t height,
-                                                              const size_t stride)
+    [[nodiscard]] static std::vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width,
+                                                              const size_t height, const size_t stride)
     {
         std::vector<std::byte> destination(static_cast<size_t>(width) * height);
 
@@ -350,7 +404,7 @@ private:
         return destination;
     }
 
-    [[nodiscard]] static std::pair<uint32_t, uint32_t> get_size(IWICBitmapFrameDecode& bitmap_frame_decoder)
+    [[nodiscard]] static std::pair<uint32_t, uint32_t> get_size(IWICBitmapFrameDecode & bitmap_frame_decoder)
     {
         uint32_t width;
         uint32_t height;
@@ -359,16 +413,43 @@ private:
         return {width, height};
     }
 
-    [[nodiscard]] static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const std::span<std::byte> buffer)
+    template<typename SampleType>
+    [[nodiscard]] static hresult copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride,
+                                             const std::span<SampleType> buffer)
     {
         void* data = buffer.data();
-        return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()), static_cast<BYTE*>(data));
+        return decoder->CopyPixels(nullptr, stride * sizeof(SampleType),
+                                   static_cast<uint32_t>(buffer.size() * sizeof(SampleType)),
+                                   static_cast<BYTE*>(data));
     }
 
     static void compare(const char* filename, const vector<std::byte>& pixels)
     {
         portable_anymap_file anymap_file{filename};
         const auto& expected_pixels{anymap_file.image_data()};
+
+        for (size_t i{}; i < pixels.size(); ++i)
+        {
+            if (expected_pixels[i] != pixels[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
+    }
+
+    static void shift_samples(uint16_t* pixels, const size_t pixel_count, const uint32_t sample_shift)
+    {
+        std::transform(pixels, pixels + pixel_count, pixels,
+                       [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
+    }
+
+    static void compare(const char* filename, const vector<uint16_t>& pixels)
+    {
+        portable_anymap_file anymap_file{filename};
+        const auto expected_pixels{anymap_file.image_data_as_uint16()};
+
+        shift_samples(expected_pixels.data(), expected_pixels.size(), 16 - anymap_file.bits_per_sample());
 
         for (size_t i{}; i < pixels.size(); ++i)
         {

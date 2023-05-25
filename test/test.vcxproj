@@ -199,6 +199,24 @@
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\10bit_3x2.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\10bit_3x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\12bit_3x2.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\12bit_3x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\16bit_3x2.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\16bit_3x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <ios>
+#include <span>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -47,6 +48,8 @@ public:
         const int bytes_per_sample{(bits_per_sample_ + 7) / 8};
         input_buffer_.resize(static_cast<size_t>(width_) * height_ * bytes_per_sample * component_count_);
         pnm_file.read(reinterpret_cast<char*>(input_buffer_.data()), input_buffer_.size());
+
+        convert_to_little_endian_if_needed();
     }
 
     [[nodiscard]] int width() const noexcept
@@ -74,6 +77,12 @@ public:
         return input_buffer_;
     }
 
+    [[nodiscard]] std::span<std::uint16_t> image_data_as_uint16() noexcept
+    {
+        void* data{input_buffer_.data()};
+        return std::span{static_cast<std::uint16_t*>(data), input_buffer_.size() / 2};
+    }
+
 private:
     [[nodiscard]] static std::vector<int> read_header(std::istream& pnm_file)
     {
@@ -99,6 +108,18 @@ private:
             }
         }
         return result;
+    }
+
+    void convert_to_little_endian_if_needed() noexcept
+    {
+        // Anymap files with multi byte pixels are stored in big endian format in the file.
+        if (bits_per_sample_ > 8)
+        {
+            for (size_t i{}; i < input_buffer_.size() - 1; i += 2)
+            {
+                std::swap(input_buffer_[i], input_buffer_[i + 1]);
+            }
+        }
     }
 
     int component_count_;

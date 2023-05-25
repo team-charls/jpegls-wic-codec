@@ -130,7 +130,7 @@ public:
         Assert::AreEqual(0UL, capability);
     }
 
-    TEST_METHOD(QueryCapability_can_decode_8bit_monochrome) // NOLINT
+    TEST_METHOD(QueryCapability_can_decode_8_bit_monochrome) // NOLINT
     {
         com_ptr<IStream> stream;
         check_hresult(
@@ -140,6 +140,12 @@ public:
 
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
+    }
+
+    TEST_METHOD(QueryCapability_can_not_decode_5_bit_monochrome) // NOLINT
+    {
+        // TODO: create test file and .jls file
+        Assert::IsTrue(true);
     }
 
     TEST_METHOD(QueryCapability_stream_argument_null) // NOLINT

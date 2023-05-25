@@ -66,22 +66,72 @@
     <CopyFileToFolders Include="data-files\2bit-parrot-150x200.jls">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="data-files\2bit_4x1.jls" />
-    <CopyFileToFolders Include="data-files\2bit_4x1.pgm" />
-    <CopyFileToFolders Include="data-files\2bit_5x1.jls" />
-    <CopyFileToFolders Include="data-files\2bit_5x1.pgm" />
-    <CopyFileToFolders Include="data-files\2bit_6x1.jls" />
-    <CopyFileToFolders Include="data-files\2bit_6x1.pgm" />
-    <CopyFileToFolders Include="data-files\2bit_7x1.jls" />
-    <CopyFileToFolders Include="data-files\2bit_7x1.pgm" />
-    <CopyFileToFolders Include="data-files\2bit-parrot-150x200.pgm" />
-    <CopyFileToFolders Include="data-files\8bit_2x2.jls" />
-    <CopyFileToFolders Include="data-files\8bit_2x2.pgm" />
-    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm" />
-    <CopyFileToFolders Include="data-files\4bit_4x1.jls" />
-    <CopyFileToFolders Include="data-files\4bit_4x1.pgm" />
-    <CopyFileToFolders Include="data-files\4bit_5x1.jls" />
-    <CopyFileToFolders Include="data-files\4bit_5x1.pgm" />
+    <CopyFileToFolders Include="data-files\2bit_4x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_4x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_5x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_5x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_6x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_6x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_7x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_7x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit-parrot-150x200.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\4bit_4x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\4bit_4x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\4bit_5x1.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\4bit_5x1.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\10bit_3x2.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\10bit_3x2.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\12bit_3x2.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\12bit_3x2.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\16bit_3x2.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\16bit_3x2.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
