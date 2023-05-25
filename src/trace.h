@@ -16,7 +16,7 @@ namespace fmt {
 
 // Copied from fmtlib as P2510 (Formatting Pointers) is not yet accepted.
 template<typename T>
-auto ptr(T p) -> const void*
+auto ptr(T p) noexcept -> const void*
 {
     static_assert(std::is_pointer_v<T>);
     return std::bit_cast<const void*>(p);

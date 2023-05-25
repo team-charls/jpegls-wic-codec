@@ -6,9 +6,9 @@
 #include "jpegls_bitmap_frame_decode.h"
 
 #include "errors.h"
+#include "storage_buffer.h"
 #include "trace.h"
 #include "util.h"
-#include "storage_buffer.h"
 
 #include <charls/charls.h>
 
@@ -20,8 +20,9 @@
 
 namespace {
 
+[[nodiscard]]
 std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample,
-    const int32_t component_count) noexcept
+                                                          const int32_t component_count) noexcept
 {
     switch (component_count)
     {
@@ -69,7 +70,7 @@ std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per
 }
 
 void pack_to_crumbs(const std::span<const std::byte> byte_pixels, std::byte* crumb_pixels, const size_t width,
-    const size_t height, const size_t stride) noexcept
+                    const size_t height, const size_t stride) noexcept
 {
     size_t j{};
     for (size_t row{}; row != height; ++row)
@@ -106,7 +107,7 @@ void pack_to_crumbs(const std::span<const std::byte> byte_pixels, std::byte* cru
 }
 
 void pack_to_nibbles(const std::span<const std::byte> byte_pixels, std::byte* nibble_pixels, const size_t width,
-    const size_t height, const size_t stride) noexcept
+                     const size_t height, const size_t stride) noexcept
 {
     for (size_t j{}, row{}; row != height; ++row)
     {
@@ -124,6 +125,7 @@ void pack_to_nibbles(const std::span<const std::byte> byte_pixels, std::byte* ni
     }
 }
 
+[[nodiscard]]
 uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
 {
     if (frame_info.bits_per_sample == 2)
@@ -145,12 +147,12 @@ void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample
 {
     auto* const pixels{static_cast<uint16_t*>(buffer)};
     std::transform(pixels, pixels + pixel_count, pixels,
-        [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
+                   [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
 }
 
 template<typename SizeType>
 void convert_planar_to_rgb(const size_t width, const size_t height, const void* source, void* destination,
-    const size_t destination_stride) noexcept
+                           const size_t destination_stride) noexcept
 {
     const auto* r{static_cast<const SizeType*>(source)};
     const auto* g{static_cast<const SizeType*>(source) + (width * height)};
@@ -174,7 +176,7 @@ void convert_planar_to_rgb(const size_t width, const size_t height, const void* 
     }
 }
 
-}
+} // namespace
 
 jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In_ IWICImagingFactory* factory)
 {
@@ -204,8 +206,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
 
     {
         winrt::com_ptr<IWICBitmapLock> bitmap_lock;
-        const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width),
-                                     static_cast<int32_t>(frame_info.height)};
+        const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
         winrt::check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
         uint32_t stride;
@@ -230,8 +231,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
             }
             else
             {
-                convert_planar_to_rgb<std::byte>(frame_info.width, frame_info.height, planar.data(), data_buffer,
-                    stride);
+                convert_planar_to_rgb<std::byte>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
             }
         }
         else if (frame_info.bits_per_sample == 2)
@@ -263,7 +263,8 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
 // IWICBitmapSource
 HRESULT jpegls_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("{} jpegls_bitmap_frame_decoder::GetSize, width={}, height={}\n", fmt::ptr(this), fmt::ptr(width), fmt::ptr(height));
+    TRACE("{} jpegls_bitmap_frame_decoder::GetSize, width={}, height={}\n", fmt::ptr(this), fmt::ptr(width),
+          fmt::ptr(height));
 
     return bitmap_source_->GetSize(width, height);
 }
@@ -277,16 +278,17 @@ HRESULT jpegls_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format)
 
 HRESULT jpegls_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 {
-    TRACE("{} jpegls_bitmap_frame_decoder::GetResolution, dpi_x={}, dpi_y={}\n", fmt::ptr(this), fmt::ptr(dpi_x), fmt::ptr(dpi_y));
+    TRACE("{} jpegls_bitmap_frame_decoder::GetResolution, dpi_x={}, dpi_y={}\n", fmt::ptr(this), fmt::ptr(dpi_x),
+          fmt::ptr(dpi_y));
 
     return bitmap_source_->GetResolution(dpi_x, dpi_y);
 }
 
 HRESULT jpegls_bitmap_frame_decode::CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
-    BYTE* buffer)
+                                               BYTE* buffer)
 {
-    TRACE("{} jpegls_bitmap_frame_decoder::CopyPixels, rectangle={}, buffer_size={}, buffer={}\n", fmt::ptr(this), fmt::ptr(rectangle),
-        buffer_size, fmt::ptr(buffer));
+    TRACE("{} jpegls_bitmap_frame_decoder::CopyPixels, rectangle={}, buffer_size={}, buffer={}\n", fmt::ptr(this),
+          fmt::ptr(rectangle), buffer_size, fmt::ptr(buffer));
 
     return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
 }
@@ -304,11 +306,11 @@ HRESULT jpegls_bitmap_frame_decode::GetThumbnail(IWICBitmapSource** /*source*/) 
 }
 
 HRESULT jpegls_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
-    uint32_t* actual_count) noexcept
-    try
+                                                     uint32_t* actual_count) noexcept
+try
 {
     TRACE("{} jpegls_bitmap_frame_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
-        count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
+          count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
 
     *check_out_pointer(actual_count) = 0;
     return error_ok;
@@ -321,13 +323,15 @@ catch (...)
 HRESULT __stdcall jpegls_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
-    TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader={}\n", fmt::ptr(this), fmt::ptr(metadata_query_reader));
+    TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader={}\n", fmt::ptr(this),
+          fmt::ptr(metadata_query_reader));
 
     // Keep the initial design simple: no support for metadata.
     return wincodec::error_unsupported_operation;
 }
 
-bool jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept
+bool jpegls_bitmap_frame_decode::can_decode_to_wic_pixel_format(const int32_t bits_per_sample,
+                                                                const int32_t component_count) noexcept
 {
     return get_pixel_format(bits_per_sample, component_count).has_value();
 }
