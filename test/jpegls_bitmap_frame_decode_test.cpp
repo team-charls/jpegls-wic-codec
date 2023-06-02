@@ -240,16 +240,19 @@ public:
         decode_8_bit_rgb(L"8bit_rgb_interleave_sample.jls", "test8.ppm");
     }
 
-    TEST_METHOD(decode_16_bit_rgb) // NOLINT
+    TEST_METHOD(decode_16_bit_rgb_interleave_none) // NOLINT
     {
-        // TODO: create test file and .jls file
-        Assert::IsTrue(true);
+        decode_16_bit_rgb(L"16bit_3x2_rgb_interleave_none.jls", "16bit_3x2_rgb.ppm");
     }
 
-    TEST_METHOD(decode_16_bit_rgb_by_plane) // NOLINT
+    TEST_METHOD(decode_16_bit_rgb_interleave_line) // NOLINT
     {
-        // TODO: create test file and .jls file
-        Assert::IsTrue(true);
+        decode_16_bit_rgb(L"16bit_3x2_rgb_interleave_line.jls", "16bit_3x2_rgb.ppm");
+    }
+
+    TEST_METHOD(decode_16_bit_rgb_interleave_sample) // NOLINT
+    {
+        decode_16_bit_rgb(L"16bit_3x2_rgb_interleave_line.jls", "16bit_3x2_rgb.ppm");
     }
 
 private:
@@ -342,6 +345,25 @@ private:
         vector<std::byte> buffer(static_cast<size_t>(width) * height * 3);
 
         result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), width * 3, buffer);
+        Assert::AreEqual(error_ok, result);
+
+        compare(filename_expected, buffer);
+    }
+
+    void decode_16_bit_rgb(_Null_terminated_ const wchar_t* filename_actual, _Null_terminated_ const char* filename_expected)
+        const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        GUID pixel_format;
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat48bppRGB == pixel_format);
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::uint16_t> buffer(static_cast<size_t>(width) * height * 3);
+
+        result = copy_pixels<std::uint16_t>(*bitmap_frame_decoder.get(), width * 3, buffer);
         Assert::AreEqual(error_ok, result);
 
         compare(filename_expected, buffer);
