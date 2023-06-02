@@ -132,6 +132,15 @@
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_rgb_interleave_line.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_rgb_interleave_none.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_rgb_interleave_sample.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
