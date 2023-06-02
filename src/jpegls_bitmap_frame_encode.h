@@ -7,36 +7,43 @@
 #include "trace.h"
 #include "util.h"
 
+#include <winrt/base.h>
+
 #include <charls/charls.h>
 
 class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
 public:
-    [[nodiscard]] const charls::frame_info& frame_info() const noexcept
+    [[nodiscard]]
+    const charls::frame_info& frame_info() const noexcept
     {
         ASSERT(state_ == state::commited);
         return frame_info_;
     }
 
-    [[nodiscard]] const std::vector<std::byte>& source() const noexcept
+    [[nodiscard]]
+    const std::vector<std::byte>& source() const noexcept
     {
         ASSERT(state_ == state::commited);
         return source_;
     }
 
-    [[nodiscard]] bool is_dpi_set() const noexcept
+    [[nodiscard]]
+    bool is_dpi_set() const noexcept
     {
         ASSERT(state_ == state::commited);
         return dpi_set_;
     }
 
-    [[nodiscard]] double dpi_x() const noexcept
+    [[nodiscard]]
+    double dpi_x() const noexcept
     {
         ASSERT(dpi_set_ && state_ == state::commited);
         return dpi_x_;
     }
 
-    [[nodiscard]] double dpi_y() const noexcept
+    [[nodiscard]]
+    double dpi_y() const noexcept
     {
         ASSERT(dpi_set_ && state_ == state::commited);
         return dpi_y_;
@@ -63,7 +70,8 @@ private:
         pixel_format_set_ = true;
     }
 
-    [[nodiscard]] uint32_t stride() const noexcept
+    [[nodiscard]]
+    uint32_t stride() const noexcept
     {
         ASSERT(size_set_ && pixel_format_set_);
         return frame_info_.width * frame_info_.component_count; // TODO: update for 16 bit images.

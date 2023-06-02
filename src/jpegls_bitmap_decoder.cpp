@@ -156,23 +156,19 @@ public:
     {
         TRACE("{} jpegls_bitmap_decoder::GetPreview, bitmap_source={}\n", fmt::ptr(this), fmt::ptr(bitmap_source));
 
+        // The JPEG-LS standard does not define a preview image.
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_contexts,
                                        [[maybe_unused]] uint32_t* actual_count) noexcept override
-    try
     {
         TRACE("{} jpegls_bitmap_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
               count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
 
-        *check_out_pointer(actual_count) = 0;
-        return error_ok;
-    }
-    catch (...)
-    {
-        return to_hresult();
+        // The JPEG-LS standard does not define an overall color profiles. Color profiles are defined on frame level.
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
@@ -187,7 +183,7 @@ public:
     {
         TRACE("{} jpegls_bitmap_decoder::GetFrameCount, count={}\n", fmt::ptr(this), fmt::ptr(count));
 
-        *check_out_pointer(count) = 1; // JPEG-LS format can only store 1 frame.
+        *check_out_pointer(count) = 1; // The JPEG-LS format can only store 1 frame.
         return error_ok;
     }
     catch (...)

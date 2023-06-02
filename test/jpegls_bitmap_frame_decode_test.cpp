@@ -115,6 +115,15 @@ public:
         Assert::AreEqual(0U, actual_count);
     }
 
+    TEST_METHOD(GetColorContexts_with_nullptr) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};
+
+        WARNING_SUPPRESS_NEXT_LINE(6387) // parameter 3 could be 'nullptr': this does not adhere to the specification for the function
+        const HRESULT result{bitmap_frame_decoder->GetColorContexts(0, nullptr, nullptr)};
+        Assert::AreEqual(error_pointer, result);
+    }
+
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.jls")};

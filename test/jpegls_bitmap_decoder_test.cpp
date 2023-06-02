@@ -89,8 +89,7 @@ public:
         uint32_t actual_count;
         const HRESULT result{factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count)};
 
-        Assert::AreEqual(error_ok, result);
-        Assert::AreEqual(0U, actual_count);
+        Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
 
     TEST_METHOD(GetThumbnail) // NOLINT
