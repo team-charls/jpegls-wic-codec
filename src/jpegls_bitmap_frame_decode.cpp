@@ -312,6 +312,8 @@ try
     TRACE("{} jpegls_bitmap_frame_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
           count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
 
+    // Keep the initial design simple: no support for color profiles.
+    // The JPEG-LS standard does support embedded color profiles.
     *check_out_pointer(actual_count) = 0;
     return error_ok;
 }

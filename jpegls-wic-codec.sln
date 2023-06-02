@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B677B97C-D9B9-4204-8E57-2ED4BB5C76AA}"
 	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
+		.clang-tidy = .clang-tidy
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
