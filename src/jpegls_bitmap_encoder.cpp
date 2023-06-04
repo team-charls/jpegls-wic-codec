@@ -57,7 +57,7 @@ public:
     HRESULT __stdcall GetEncoderInfo(_Outptr_ IWICBitmapEncoderInfo** encoder_info) noexcept override
     try
     {
-        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, encoder_info={}\n", fmt::ptr(this), fmt::ptr(encoder_info));
+        TRACE("{} jpegls_bitmap_encoder::GetEncoderInfo, encoder_info={}\n", fmt::ptr(this), fmt::ptr(encoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_encoder, component_info.put()));
@@ -74,7 +74,7 @@ public:
                                      IPropertyBag2** encoder_options) noexcept override
     try
     {
-        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, bitmap_frame_encode={}, encoder_options={}\n", fmt::ptr(this),
+        TRACE("{} jpegls_bitmap_encoder::CreateNewFrame, bitmap_frame_encode={}, encoder_options={}\n", fmt::ptr(this),
               fmt::ptr(bitmap_frame_encode), fmt::ptr(encoder_options));
 
         check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
