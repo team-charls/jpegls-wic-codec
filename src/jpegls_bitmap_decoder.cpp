@@ -121,7 +121,7 @@ public:
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
     try
     {
-        TRACE("{} jpegls_bitmap_decoder::GetContainerFormat, decoder_info={}\n", fmt::ptr(this), fmt::ptr(decoder_info));
+        TRACE("{} jpegls_bitmap_decoder::GetDecoderInfo, decoder_info={}\n", fmt::ptr(this), fmt::ptr(decoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_decoder, component_info.put()));
