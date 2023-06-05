@@ -149,7 +149,7 @@ BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* 
 _Use_decl_annotations_ HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
-    TRACE("jpegls-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
+    TRACE("jpegls-wic-codec::DllCanUnloadNow hr = {} (0 = S_OK -> unload OK)\n", result);
     return result;
 }
 

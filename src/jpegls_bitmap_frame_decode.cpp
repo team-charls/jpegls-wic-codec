@@ -285,8 +285,8 @@ HRESULT jpegls_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 HRESULT jpegls_bitmap_frame_decode::CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
                                                BYTE* buffer)
 {
-    TRACE("{} jpegls_bitmap_frame_decoder::CopyPixels, rectangle={}, buffer_size={}, buffer={}\n", fmt::ptr(this),
-          fmt::ptr(rectangle), buffer_size, fmt::ptr(buffer));
+    TRACE("{} jpegls_bitmap_frame_decoder::CopyPixels, rectangle={}, stride={}, buffer_size={}, buffer={}\n", fmt::ptr(this),
+          fmt::ptr(rectangle), stride, buffer_size, fmt::ptr(buffer));
 
     return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
 }
