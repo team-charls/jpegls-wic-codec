@@ -125,8 +125,9 @@ void pack_to_nibbles(const std::span<const std::byte> byte_pixels, std::byte* ni
     }
 }
 
+#ifndef NDEBUG
 [[nodiscard]]
-uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
+uint32_t compute_minimal_stride(const charls::frame_info& frame_info) noexcept
 {
     if (frame_info.bits_per_sample == 2)
     {
@@ -142,6 +143,7 @@ uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
 
     return stride;
 }
+#endif
 
 void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample_shift)
 {
@@ -211,11 +213,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
 
         uint32_t stride;
         winrt::check_hresult(bitmap_lock->GetStride(&stride));
-        if (stride < compute_stride(frame_info))
-        {
-            ASSERT(false);
-            winrt::throw_hresult(wincodec::error_bad_image);
-        }
+        ASSERT(stride >= compute_minimal_stride(frame_info));
 
         std::byte* data_buffer;
         uint32_t data_buffer_size;
