@@ -7,8 +7,13 @@
 #include "util.h"
 #include "test_stream.h"
 
+#include <charls/charls.h>
+
 #include <CppUnitTest.h>
 
+#include <span>
+
+using std::vector;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -297,6 +302,56 @@ public:
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
+    TEST_METHOD(GetFrame_3_bit_monochrome_is_not_supported) // NOLINT
+    {
+        const vector pixel_data{std::byte{}};
+        auto encoded_data = charls::jpegls_encoder::encode(
+            pixel_data, {.width = 1, .height = 1, .bits_per_sample = 3, .component_count = 1});
+        const auto bitmap_decoder{create_decoder(encoded_data)};
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const HRESULT result{bitmap_decoder->GetFrame(0, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_unsupported_pixel_format, result);
+    }
+
+    TEST_METHOD(GetFrame_7_bit_rgb_is_not_supported) // NOLINT
+    {
+        const vector<std::byte> pixel_data(3);
+        auto encoded_data = charls::jpegls_encoder::encode(
+            pixel_data, {.width = 1, .height = 1, .bits_per_sample = 7, .component_count = 3});
+        const auto bitmap_decoder{create_decoder(encoded_data)};
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const HRESULT result{bitmap_decoder->GetFrame(0, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_unsupported_pixel_format, result);
+    }
+
+    TEST_METHOD(GetFrame_8_bit_2_components_is_not_supported) // NOLINT
+    {
+        const vector<std::byte> pixel_data(2);
+        auto encoded_data = charls::jpegls_encoder::encode(
+            pixel_data, {.width = 1, .height = 1, .bits_per_sample = 8, .component_count = 2});
+        const auto bitmap_decoder{create_decoder(encoded_data)};
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const HRESULT result{bitmap_decoder->GetFrame(0, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_unsupported_pixel_format, result);
+    }
+
+    TEST_METHOD(GetFrame_empty_buffer_causes_bad_header) // NOLINT
+    {
+        const vector<std::byte> empty_buffer(2);
+        const auto bitmap_decoder{create_decoder(empty_buffer)};
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const HRESULT result{bitmap_decoder->GetFrame(0, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_bad_header, result);
+    }
+
 private:
     static com_ptr<IWICImagingFactory> imaging_factory()
     {
@@ -305,6 +360,19 @@ private:
                                        imaging_factory.put_void()));
 
         return imaging_factory;
+    }
+
+    [[nodiscard]]
+    com_ptr<IWICBitmapDecoder> create_decoder(const std::span<const std::byte> buffer) const
+    {
+        const com_ptr<IStream> stream{
+            SHCreateMemStream(reinterpret_cast<const BYTE*>(buffer.data()), static_cast<UINT>(buffer.size())),
+            take_ownership_from_abi};
+
+        const com_ptr bitmap_decoder{factory_.create_decoder()};
+        check_hresult(bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
+
+        return bitmap_decoder;
     }
 
     factory factory_;
