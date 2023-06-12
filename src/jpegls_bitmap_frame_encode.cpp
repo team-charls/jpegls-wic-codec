@@ -75,7 +75,7 @@ try
     if (*pixel_format == GUID_WICPixelFormat4bppGray)
     {
         set_pixel_format(4, 1);
-        return wincodec::error_unsupported_pixel_format;
+        return error_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat8bppGray)
@@ -146,10 +146,11 @@ try
 
     if (source_.empty())
     {
+        // TODO: fix
         source_.resize(static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count);
     }
 
-    const size_t destination_stride{stride()};
+    const size_t destination_stride{compute_stride()};
     std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
     winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
                                      static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride), line_count));
@@ -188,25 +189,14 @@ try
         winrt::check_hresult(SetPixelFormat(&pixel_format));
     }
 
+    const auto source_stride{compute_stride()};
     if (source_.empty())
     {
-        size_t size{static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count};
-        if (frame_info_.bits_per_sample < 8)
-        {
-            // In a WIC bitmap pixels are packed, if bits per sample allows it.
-            size /= 2;
-        }
-
+        const size_t size{static_cast<size_t>(source_stride) * frame_info_.height * frame_info_.component_count};
         source_.resize(size);
     }
 
-    uint32_t s{stride()};
-    if (frame_info_.bits_per_sample < 8)
-    {
-        s /= 2;
-    }
-
-    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, s, static_cast<uint32_t>(source_.size()),
+    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, source_stride, static_cast<uint32_t>(source_.size()),
                                                    reinterpret_cast<BYTE*>(source_.data())));
     state_ = state::received_pixels;
     return error_ok;

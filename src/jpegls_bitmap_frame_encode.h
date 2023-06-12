@@ -71,10 +71,18 @@ private:
     }
 
     [[nodiscard]]
-    uint32_t stride() const noexcept
+    uint32_t compute_stride() const noexcept
     {
         ASSERT(size_set_ && pixel_format_set_);
-        return frame_info_.width * frame_info_.component_count; // TODO: update for 16 bit images.
+        const uint32_t stride{frame_info_.width * frame_info_.component_count};
+        if (frame_info_.bits_per_sample < 8)
+        {
+            return stride / 2;
+        }
+
+        return stride;
+
+        // TODO: update for 16 bit images.
     }
 
     void convert_bgr_to_rgb() noexcept
@@ -87,15 +95,25 @@ private:
 
     void unpack_nibbles()
     {
-        std::vector<std::byte> unpacked(source_.size() * 2);
+        const std::byte* nibble_pixels{source_.data()};
+        const size_t stride{compute_stride()};
+        const size_t width{frame_info_.width};
+        const size_t height{frame_info_.height};
+        std::vector<std::byte> unpacked(width * height);
 
-        size_t j{};
-        for (const auto nibble_pixel : source_)
+        for (size_t j{}, row{}; row != height; ++row)
         {
-            unpacked[j] = nibble_pixel >> 4;
-            ++j;
-            unpacked[j] = nibble_pixel | static_cast<std::byte>(0xF);
-            ++j;
+            const std::byte* nibble_row{nibble_pixels + (row * stride)};
+            size_t i{};
+            for (; i != width / 2; ++i)
+            {
+                unpacked[j++] = nibble_row[i] >> 4;
+                unpacked[j++] = nibble_row[i] & std::byte{0x0F};
+            }
+            if (width % 2)
+            {
+                unpacked[j++] = nibble_row[i] >> 4;
+            }
         }
 
         source_.swap(unpacked);
