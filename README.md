@@ -18,10 +18,8 @@ This project is the development phase:
 
 The JPEG-LS WIC codec supports the following Windows operating systems:
 
-- Windows 11
-- Windows 10
-- Windows Server 2022
-- Windows Server 2019
+- Windows 11 and 10 (x86, x64, ARM64)
+- Windows Server 2022 and 2019 (x86, x64)
 
 Note: on Windows 10 "N" the Media Feature Pack needs to be installed.
 
@@ -34,7 +32,7 @@ The following application have been validated to work with the JPEG-LS WIC codec
  Note: On clean installations of Windows 10 this component is installed but not registered. An Registry file called restore-windows-photo-viewer.reg is provided to restore this functionality. The Registry Editor can be used to add import this .reg file.
 - WIC Explorer (sample application from Microsoft). An updated version of this application can be found at <https://github.com/vbaderks/WICExplorer>
 - ZackViewer <https://github.com/peirick/ZackViewer>. This viewer can also be used to convert from one image encoding format to another.
-- Microsoft Office applications like Word, Excel, Powerpoint. These applications can, when the JPEG-LS codec is installed, import JPEG-LS images in their documents.
+- Microsoft Office applications like Word, Excel, PowerPoint. These applications can, when the JPEG-LS codec is installed, import JPEG-LS images in their documents.
 
 #### Windows 10 Microsoft Photos Application not supported
 
@@ -56,9 +54,9 @@ The following table lists the GUIDs used to identify the native JPEG-LS codec co
 
 |Component|Friendly Name|GUID
 |---|---|---|
-|Container Format|GUID_ContainerFormatJpegLS|52c25458-282d-4ef4-a69f-021bb2984543
-|Decoder|CLSID_JpegLSDecoder|e57dc18b-019c-47f2-8ed0-bf587be4ff1b|
-|Encoder|CLSID_JpegLSEncoder|70a823ea-009f-402f-9bda-e9b8f6332d61|
+|Container Format|id::container_format_jpegls|52c25458-282d-4ef4-a69f-021bb2984543
+|Decoder|id::jpegls_decoder|e57dc18b-019c-47f2-8ed0-bf587be4ff1b|
+|Encoder|id::jpegls_encoder|70a823ea-009f-402f-9bda-e9b8f6332d61|
 
 The following table lists the pixel formats that can be decoded:
 
@@ -71,27 +69,28 @@ The following table lists the pixel formats that can be decoded:
 |GUID_WICPixelFormat24bppRGB|3|8|
 |GUID_WICPixelFormat48bppRGB|3|16|
 
-Note *: monochrome images with 10 or 12 pixels will be upscaled to 16.
+Note \*: monochrome JPEG-LS images with 10 or 12 pixels will be upscaled to 16 to match a defined WIC pixel format.
 
 The following table lists the pixel formats that can be encoded:
 
 |GUID|Component Count|Bits per Sample
 |---|---|---|
-|GUID_WICPixelFormat2bppGray**|1|2|
-|GUID_WICPixelFormat4bppGray**|1|4|
+|GUID_WICPixelFormat2bppGray\*\*|1|2|
+|GUID_WICPixelFormat4bppGray|1|4|
 |GUID_WICPixelFormat8bppGray|1|8|
 |GUID_WICPixelFormat16bppGray|1|16|
-|GUID_WICPixelFormat24bppBGR|3|8|
+|GUID_WICPixelFormat24bppBGR\*\*\*|3|8|
 |GUID_WICPixelFormat24bppRGB|3|8|
-|GUID_WICPixelFormat48bppRGB**|3|16|
+|GUID_WICPixelFormat48bppRGB\*\*|3|16|
 
-Note \**: support for image formats marked with ** is not implemented.
+Note \*\*: support for image formats marked with \*\* is not implemented.  
+Note \*\*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set the color space to BGR
 
 ## Build Instructions
 
 1. Clone this repro, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-1. Open Visual Studio 2019 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
-1. Or use a Developer Command Prompt and run use MSbuild in the root of the cloned repository.
+1. Open Visual Studio 2022 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
+1. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
 ## Installation
 
