@@ -226,14 +226,15 @@ public:
         check_hresult(bitmap_frame_encoder->SetSize(512, 512));
         set_pixel_format(bitmap_frame_encoder.get(), GUID_WICPixelFormat8bppGray);
         vector<uint8_t> source(512 * 512);
-        bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data());
+        check_hresult(bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data()));
 
         const HRESULT result{bitmap_frame_encoder->Commit()};
         Assert::AreEqual(error_ok, result); // TODO: commit should fail.
     }
 
 private:
-    [[nodiscard]] com_ptr<IWICBitmapFrameEncode> create_frame_encoder(const wchar_t* filename = nullptr) const
+    [[nodiscard]]
+    com_ptr<IWICBitmapFrameEncode> create_frame_encoder(const wchar_t* filename = nullptr) const
     {
         com_ptr<IStream> stream;
 
@@ -277,7 +278,8 @@ private:
         check_hresult(bitmap_frame_encoder->SetPixelFormat(&pixel_format));
     }
 
-    [[nodiscard]] IWICImagingFactory* imaging_factory()
+    [[nodiscard]]
+    IWICImagingFactory* imaging_factory()
     {
         if (!imaging_factory_)
         {

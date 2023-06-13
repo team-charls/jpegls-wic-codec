@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -70,19 +70,39 @@ private:
         pixel_format_set_ = true;
     }
 
+    void allocate_pixel_buffer_if_needed(const size_t stride)
+    {
+        ASSERT(size_set_ && pixel_format_set_);
+        if (source_.empty())
+        {
+            source_.resize(stride * frame_info_.height);
+        }
+    }
+
     [[nodiscard]]
     uint32_t compute_stride() const noexcept
     {
         ASSERT(size_set_ && pixel_format_set_);
-        const uint32_t stride{frame_info_.width * frame_info_.component_count};
-        if (frame_info_.bits_per_sample < 8)
+        return compute_stride(frame_info_);
+    }
+
+    [[nodiscard]]
+    static uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
+    {
+        uint32_t stride;
+        if (frame_info.bits_per_sample <= 8)
         {
-            return stride / 2;
+            const uint32_t samples_per_byte{8U / frame_info.bits_per_sample};
+            stride = ((frame_info.width * frame_info.component_count) + (samples_per_byte - 1)) / samples_per_byte;
+        }
+        else
+        {
+            stride = frame_info.width * 2 * frame_info.component_count;
         }
 
-        return stride;
-
-        // TODO: update for 16 bit images.
+        // Windows bitmaps are always DWORD (4 bytes) aligned per scan line.
+        constexpr uint32_t alignment{4};
+        return ((stride + (alignment - 1)) / alignment) * alignment;
     }
 
     void convert_bgr_to_rgb() noexcept

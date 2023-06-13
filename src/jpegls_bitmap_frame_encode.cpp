@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -144,13 +144,9 @@ try
                     wincodec::error_wrong_state);
     check_condition(received_line_count_ + line_count <= frame_info_.height, wincodec::error_codec_too_many_scan_lines);
 
-    if (source_.empty())
-    {
-        // TODO: fix
-        source_.resize(static_cast<size_t>(frame_info_.width) * frame_info_.height * frame_info_.component_count);
-    }
-
     const size_t destination_stride{compute_stride()};
+    allocate_pixel_buffer_if_needed(destination_stride);
+
     std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
     winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
                                      static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride), line_count));
@@ -189,14 +185,10 @@ try
         winrt::check_hresult(SetPixelFormat(&pixel_format));
     }
 
-    const auto source_stride{compute_stride()};
-    if (source_.empty())
-    {
-        const size_t size{static_cast<size_t>(source_stride) * frame_info_.height * frame_info_.component_count};
-        source_.resize(size);
-    }
+    const size_t stride{compute_stride()};
+    allocate_pixel_buffer_if_needed(stride);
 
-    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, source_stride, static_cast<uint32_t>(source_.size()),
+    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, static_cast<uint32_t>(stride), static_cast<uint32_t>(source_.size()),
                                                    reinterpret_cast<BYTE*>(source_.data())));
     state_ = state::received_pixels;
     return error_ok;

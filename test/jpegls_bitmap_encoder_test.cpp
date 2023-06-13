@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -73,19 +73,26 @@ vector<std::byte> read_file(const wchar_t* filename)
 [[nodiscard]]
 uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
 {
+    uint32_t stride;
+
     if (frame_info.bits_per_sample == 2)
     {
-        const uint32_t stride{(frame_info.width + 3) / 4 * frame_info.component_count};
-        return ((stride + 3) / 4) * 4;
+        stride = (frame_info.width + 3) / 4 * frame_info.component_count;
     }
-
-    uint32_t stride{frame_info.width * ((frame_info.bits_per_sample + 7) / 8) * frame_info.component_count};
-    if (frame_info.bits_per_sample < 8)
+    else if (frame_info.bits_per_sample == 4)
     {
-        stride /= 2;
+        stride = (frame_info.width + 1) / 2 * frame_info.component_count;
+    }
+    else if (frame_info.bits_per_sample == 8)
+    {
+        stride = frame_info.width * frame_info.component_count;
+    }
+    else
+    {
+        stride = frame_info.width * 2 * frame_info.component_count;
     }
 
-    return stride;
+    return ((stride + 3) / 4) * 4;
 }
 
 [[nodiscard]]
@@ -367,14 +374,30 @@ public:
         compare(filename, anymap_file.image_data());
     }
 
-    TEST_METHOD(encode_conformance_monochrome_4_bit) // NOLINT
+    TEST_METHOD(encode_conformance_monochrome_4_bit_4x1) // NOLINT
     {
-        const wchar_t* filename{L"4bit_4x1-wic-encoded.jls"};
-        portable_anymap_file anymap_file{"4bit_4x1.pgm"};
+        encode_conformance_monochrome_4_bit("4bit_4x1.pgm", L"4bit_4x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_conformance_monochrome_4_bit_5x1) // NOLINT
+    {
+        encode_conformance_monochrome_4_bit("4bit_5x1.pgm", L"4bit_5x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_conformance_monochrome_4_bit_360x360) // NOLINT
+    {
+        encode_conformance_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
+    }
+
+private:
+    void encode_conformance_monochrome_4_bit(const char* source_filename, const wchar_t* destination_filename) const
+    {
+        portable_anymap_file anymap_file{source_filename};
 
         {
             com_ptr<IStream> stream;
-            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+            check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
+                                                 0, false,
                                                  nullptr, stream.put()));
 
             const com_ptr encoder{factory_.create_encoder()};
@@ -382,8 +405,10 @@ public:
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
 
-            const uint32_t stride = compute_stride(
-                {.width = static_cast<uint32_t>(anymap_file.width()), .height = static_cast<uint32_t>(anymap_file.height()), .bits_per_sample = 4, .component_count = 1});
+            const uint32_t stride = compute_stride({.width = static_cast<uint32_t>(anymap_file.width()),
+                                                    .height = static_cast<uint32_t>(anymap_file.height()),
+                                                    .bits_per_sample = 4,
+                                                    .component_count = 1});
 
             com_ptr<IWICBitmap> bitmap;
             auto nibble_pixels =
@@ -409,10 +434,9 @@ public:
             Assert::AreEqual(error_ok, result);
         }
 
-        compare(filename, anymap_file.image_data());
+        compare(destination_filename, anymap_file.image_data());
     }
 
-private:
     [[nodiscard]]
     static com_ptr<IWICImagingFactory> imaging_factory()
     {
