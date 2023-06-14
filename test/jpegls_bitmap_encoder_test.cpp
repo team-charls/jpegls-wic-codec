@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -23,6 +23,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace {
 
+[[nodiscard]]
 GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_count)
 {
     switch (component_count)
@@ -30,6 +31,8 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
     case 1:
         switch (bits_per_sample)
         {
+        case 2:
+            return GUID_WICPixelFormat2bppGray;
         case 4:
             return GUID_WICPixelFormat4bppGray;
         case 8:
@@ -54,6 +57,7 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
     Assert::Fail();
 }
 
+[[nodiscard]]
 vector<std::byte> read_file(const wchar_t* filename)
 {
     ifstream input;
@@ -93,6 +97,48 @@ uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
     }
 
     return ((stride + 3) / 4) * 4;
+}
+
+[[nodiscard]]
+vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, const size_t width,
+                                 const size_t height, const size_t stride) noexcept
+{
+    vector<std::byte> crumb_pixels(stride * height);
+
+    size_t j{};
+    for (size_t row{}; row != height; ++row)
+    {
+        std::byte* crumb_row{crumb_pixels.data() + (row * stride)};
+        size_t i{};
+        for (; i != width / 4; ++i)
+        {
+            std::byte value{byte_pixels[j++] << 6};
+            value |= byte_pixels[j++] << 4;
+            value |= byte_pixels[j++] << 2;
+            value |= byte_pixels[j++];
+            crumb_row[i] = value;
+        }
+
+        switch (width % 4)
+        {
+        case 3:
+            crumb_row[i] = byte_pixels[j++] << 6;
+            [[fallthrough]];
+
+        case 2:
+            crumb_row[i] |= byte_pixels[j++] << 4;
+            [[fallthrough]];
+
+        case 1:
+            crumb_row[i] |= byte_pixels[j++] << 2;
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    return crumb_pixels;
 }
 
 [[nodiscard]]
@@ -374,23 +420,93 @@ public:
         compare(filename, anymap_file.image_data());
     }
 
-    TEST_METHOD(encode_conformance_monochrome_4_bit_4x1) // NOLINT
+    TEST_METHOD(encode_monochrome_2_bit_4x1) // NOLINT
     {
-        encode_conformance_monochrome_4_bit("4bit_4x1.pgm", L"4bit_4x1-wic-encoded.jls");
+        encode_monochrome_2_bit("2bit_4x1.pgm", L"2bit_4x1-wic-encoded.jls");
     }
 
-    TEST_METHOD(encode_conformance_monochrome_4_bit_5x1) // NOLINT
+    TEST_METHOD(encode_monochrome_2_bit_5x1) // NOLINT
     {
-        encode_conformance_monochrome_4_bit("4bit_5x1.pgm", L"4bit_5x1-wic-encoded.jls");
+        encode_monochrome_2_bit("2bit_5x1.pgm", L"2bit_5x1-wic-encoded.jls");
     }
 
-    TEST_METHOD(encode_conformance_monochrome_4_bit_360x360) // NOLINT
+    TEST_METHOD(encode_monochrome_2_bit_6x1) // NOLINT
     {
-        encode_conformance_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
+        encode_monochrome_2_bit("2bit_6x1.pgm", L"2bit_6x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_monochrome_2_bit_7x1) // NOLINT
+    {
+        encode_monochrome_2_bit("2bit_7x1.pgm", L"2bit_7x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_monochrome_2_bit_150x200) // NOLINT
+    {
+        encode_monochrome_2_bit("2bit-parrot-150x200.pgm", L"2bit-parrot-150x200-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_monochrome_4_bit_4x1) // NOLINT
+    {
+        encode_monochrome_4_bit("4bit_4x1.pgm", L"4bit_4x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_monochrome_4_bit_5x1) // NOLINT
+    {
+        encode_monochrome_4_bit("4bit_5x1.pgm", L"4bit_5x1-wic-encoded.jls");
+    }
+
+    TEST_METHOD(encode_monochrome_4_bit_360x360) // NOLINT
+    {
+        encode_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
     }
 
 private:
-    void encode_conformance_monochrome_4_bit(const char* source_filename, const wchar_t* destination_filename) const
+    void encode_monochrome_2_bit(const char* source_filename, const wchar_t* destination_filename) const
+    {
+        portable_anymap_file anymap_file{source_filename};
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
+                                                 0, false, nullptr, stream.put()));
+
+            const com_ptr encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
+
+            const uint32_t stride{compute_stride({.width = static_cast<uint32_t>(anymap_file.width()),
+                                                  .height = static_cast<uint32_t>(anymap_file.height()),
+                                                  .bits_per_sample = 2,
+                                                  .component_count = 1})};
+
+            auto nibble_pixels{pack_to_crumbs(anymap_file.image_data(), anymap_file.width(), anymap_file.height(), stride)};
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, stride, static_cast<uint32_t>(nibble_pixels.size()),
+                reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(error_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(error_ok, result);
+        }
+
+        compare(destination_filename, anymap_file.image_data());
+    }
+
+    void encode_monochrome_4_bit(const char* source_filename, const wchar_t* destination_filename) const
     {
         portable_anymap_file anymap_file{source_filename};
 
@@ -405,14 +521,13 @@ private:
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
 
-            const uint32_t stride = compute_stride({.width = static_cast<uint32_t>(anymap_file.width()),
-                                                    .height = static_cast<uint32_t>(anymap_file.height()),
-                                                    .bits_per_sample = 4,
-                                                    .component_count = 1});
+            const uint32_t stride{compute_stride({.width = static_cast<uint32_t>(anymap_file.width()),
+                                                  .height = static_cast<uint32_t>(anymap_file.height()),
+                                                  .bits_per_sample = 4,
+                                                  .component_count = 1})};
 
+            auto nibble_pixels{pack_to_nibbles(anymap_file.image_data(), anymap_file.width(), anymap_file.height(), stride)};
             com_ptr<IWICBitmap> bitmap;
-            auto nibble_pixels =
-                pack_to_nibbles(anymap_file.image_data(), anymap_file.width(), anymap_file.height(), stride);
             check_hresult(imaging_factory()->CreateBitmapFromMemory(
                 anymap_file.width(), anymap_file.height(), pixel_format, stride, static_cast<uint32_t>(nibble_pixels.size()),
                 reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
