@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -111,6 +111,45 @@ private:
         {
             std::swap(source_[i], source_[i + 2]);
         }
+    }
+
+    void unpack_crumbs()
+    {
+        const std::byte* crumbs_pixels{source_.data()};
+        const size_t stride{compute_stride()};
+        const size_t width{frame_info_.width};
+        const size_t height{frame_info_.height};
+        std::vector<std::byte> unpacked(width * height);
+
+        for (size_t j{}, row{}; row != height; ++row)
+        {
+            const std::byte* crumbs_row{crumbs_pixels + (row * stride)};
+            size_t i{};
+            for (; i != width / 4; ++i)
+            {
+                unpacked[j++] = crumbs_row[i] >> 6;
+                unpacked[j++] = (crumbs_row[i] & std::byte{0x30}) >> 4;
+                unpacked[j++] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
+                unpacked[j++] = crumbs_row[i] & std::byte{0x03};
+            }
+            switch (width % 4)
+            {
+            case 3:
+                unpacked[j++] = crumbs_row[i] >> 6;
+                [[fallthrough]];
+            case 2:
+                unpacked[j++] = (crumbs_row[i] & std::byte{0x30}) >> 4;
+                [[fallthrough]];
+            case 1:
+                unpacked[j++] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        source_.swap(unpacked);
     }
 
     void unpack_nibbles()

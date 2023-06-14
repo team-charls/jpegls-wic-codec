@@ -21,6 +21,25 @@ using winrt::implements;
 using winrt::make;
 using winrt::to_hresult;
 
+namespace {
+
+void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encode& bitmap_frame_encode)
+{
+    if (const auto color_space{bitmap_frame_encode.frame_info().component_count == 1 ? spiff_color_space::grayscale
+                                                                                     : spiff_color_space::rgb};
+        bitmap_frame_encode.is_dpi_set())
+    {
+        encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
+                                            lround(bitmap_frame_encode.dpi_y()), lround(bitmap_frame_encode.dpi_x()));
+    }
+    else
+    {
+        encoder.write_standard_spiff_header(color_space);
+    }
+}
+
+}
+
 class jpegls_bitmap_encoder final : public implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
 public:
@@ -117,24 +136,13 @@ public:
             encoder.interleave_mode(interleave_mode::sample);
         }
 
-        if (const auto color_space{bitmap_frame_encode_->frame_info().component_count == 1 ? spiff_color_space::grayscale
-                                                                                           : spiff_color_space::rgb};
-            bitmap_frame_encode_->is_dpi_set())
-        {
-            encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
-                                                lround(bitmap_frame_encode_->dpi_y()),
-                                                lround(bitmap_frame_encode_->dpi_x()));
-        }
-        else
-        {
-            encoder.write_standard_spiff_header(color_space);
-        }
+        write_spiff_header(encoder, *bitmap_frame_encode_.get());
 
-        const auto bytes_written = encoder.encode(bitmap_frame_encode_->source());
+        const auto bytes_written{encoder.encode(bitmap_frame_encode_->source())};
+        bitmap_frame_encode_ = nullptr;
+
         check_hresult(destination_->Write(destination.data(), static_cast<ULONG>(bytes_written), nullptr));
         check_hresult(destination_->Commit(STGC_DEFAULT));
-
-        bitmap_frame_encode_ = nullptr;
         destination_ = nullptr;
 
         committed_ = true;
@@ -189,7 +197,8 @@ public:
     }
 
 private:
-    [[nodiscard]] IWICImagingFactory* imaging_factory()
+    [[nodiscard]]
+    IWICImagingFactory* imaging_factory()
     {
         if (!imaging_factory_)
         {

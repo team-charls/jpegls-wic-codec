@@ -75,7 +75,7 @@ The following table lists the pixel formats that can be encoded:
 
 |GUID|Component Count|Bits per Sample
 |---|---|---|
-|GUID_WICPixelFormat2bppGray\*\*|1|2|
+|GUID_WICPixelFormat2bppGray|1|2|
 |GUID_WICPixelFormat4bppGray|1|4|
 |GUID_WICPixelFormat8bppGray|1|8|
 |GUID_WICPixelFormat16bppGray|1|16|
@@ -84,7 +84,7 @@ The following table lists the pixel formats that can be encoded:
 |GUID_WICPixelFormat48bppRGB\*\*|3|16|
 
 Note \*\*: support for image formats marked with \*\* is not implemented.  
-Note \*\*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set the color space to BGR
+Note \*\*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set a BGR color space in the SPIFF header.
 
 ## Build Instructions
 

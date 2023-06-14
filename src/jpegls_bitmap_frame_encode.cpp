@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -69,7 +69,7 @@ try
     if (*pixel_format == GUID_WICPixelFormat2bppGray)
     {
         set_pixel_format(2, 1);
-        return wincodec::error_unsupported_pixel_format;
+        return error_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat4bppGray)
@@ -201,13 +201,19 @@ catch (...)
 HRESULT __stdcall jpegls_bitmap_frame_encode::Commit() noexcept
 try
 {
-    check_condition(state_ == state::received_pixels && size_set_ && pixel_format_set_, wincodec::error_wrong_state);
+    TRACE("{} jpegls_bitmap_frame_encode::Commit\n", fmt::ptr(this));
+    check_condition(state_ == state::received_pixels, wincodec::error_wrong_state);
+    ASSERT(size_set_ && pixel_format_set_);
 
     if (swap_pixels_)
     {
         convert_bgr_to_rgb();
     }
-    else if (frame_info_.bits_per_sample < 8)
+    else if (frame_info_.bits_per_sample == 2)
+    {
+        unpack_crumbs();
+    }
+    else if (frame_info_.bits_per_sample == 4)
     {
         unpack_nibbles();
     }
