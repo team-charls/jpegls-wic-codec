@@ -24,7 +24,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace {
 
 [[nodiscard]]
-GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_count)
+GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_count, const bool bgr_input = false)
 {
     switch (component_count)
     {
@@ -45,7 +45,7 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
         switch (bits_per_sample)
         {
         case 8:
-            return GUID_WICPixelFormat24bppRGB;
+            return bgr_input ? GUID_WICPixelFormat24bppBGR : GUID_WICPixelFormat24bppRGB;
         default:
             Assert::Fail();
         }
@@ -163,6 +163,14 @@ vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, 
     }
 
     return nibble_pixels;
+}
+
+constexpr void convert_rgb_to_bgr_in_place(const std::span<std::byte> pixels) noexcept
+{
+    for (size_t i{}; i < pixels.size(); i += 3)
+    {
+        std::swap(pixels[i], pixels[i + 2]);
+    }
 }
 
 } // namespace
@@ -357,6 +365,26 @@ public:
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
+    TEST_METHOD(CreateNewFrame_twice) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        const com_ptr encoder{factory_.create_encoder()};
+
+        HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
+        Assert::AreEqual(error_ok, result);
+
+        com_ptr<IWICBitmapFrameEncode> frame_encode;
+        result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+        Assert::AreEqual(error_ok, result);
+
+        com_ptr<IWICBitmapFrameEncode> frame_encode2;
+        result = encoder->CreateNewFrame(frame_encode2.put(), nullptr);
+        Assert::AreEqual(wincodec::error_wrong_state, result);
+        Assert::IsNull(frame_encode2.get());
+    }
+
     TEST_METHOD(Commit_while_not_initialized) // NOLINT
     {
         const com_ptr encoder{factory_.create_encoder()};
@@ -379,6 +407,46 @@ public:
         Assert::AreEqual(wincodec::error_frame_missing, result);
     }
 
+    TEST_METHOD(Commit_twice) // NOLINT
+    {
+        const wchar_t* filename{L"encode_conformance_color_lossless.jls"};
+        portable_anymap_file anymap_file{"test8.ppm"};
+
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                             nullptr, stream.put()));
+
+        const com_ptr encoder{factory_.create_encoder()};
+        check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+        const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
+
+        com_ptr<IWICBitmap> bitmap;
+        check_hresult(imaging_factory()->CreateBitmapFromMemory(
+            anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
+            static_cast<uint32_t>(anymap_file.image_data().size()),
+            reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+
+        com_ptr<IWICBitmapFrameEncode> frame_encode;
+        HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+        Assert::AreEqual(error_ok, result);
+
+        result = frame_encode->Initialize(nullptr);
+        Assert::AreEqual(error_ok, result);
+
+        result = frame_encode->WriteSource(bitmap.get(), nullptr);
+        Assert::AreEqual(error_ok, result);
+
+        result = frame_encode->Commit();
+        Assert::AreEqual(error_ok, result);
+
+        result = encoder->Commit();
+        Assert::AreEqual(error_ok, result);
+
+        result = encoder->Commit();
+        Assert::AreEqual(wincodec::error_wrong_state, result);
+    }
+
     TEST_METHOD(encode_conformance_color_lossless) // NOLINT
     {
         const wchar_t* filename{L"encode_conformance_color_lossless.jls"};
@@ -399,6 +467,49 @@ public:
                 anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
                 static_cast<uint32_t>(anymap_file.image_data().size()),
                 reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(error_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(error_ok, result);
+        }
+
+        compare(filename, anymap_file.image_data());
+    }
+
+    TEST_METHOD(encode_conformance_color_lossless_bgr) // NOLINT
+    {
+        const wchar_t* filename{L"encode_conformance_color_lossless_bgr_input.jls"};
+        portable_anymap_file anymap_file{"test8.ppm"};
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
+
+            const com_ptr encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count(), true)};
+
+            auto input_data{anymap_file.image_data()};
+            convert_rgb_to_bgr_in_place(input_data);
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
+                static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
             HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
@@ -458,6 +569,37 @@ public:
     TEST_METHOD(encode_monochrome_4_bit_360x360) // NOLINT
     {
         encode_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
+    }
+
+    // GUID_WICPixelFormatBlackWhite
+    TEST_METHOD(encode_unsupported_format) // NOLINT
+    {
+        const wchar_t* filename{L"encode_unsupported_format.jls"};
+
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                             nullptr, stream.put()));
+
+        const com_ptr encoder{factory_.create_encoder()};
+        check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+        std::vector<std::byte> input_data(4);
+
+        com_ptr<IWICBitmap> bitmap;
+        check_hresult(imaging_factory()->CreateBitmapFromMemory(
+            32, 1, GUID_WICPixelFormatBlackWhite,
+            4,
+            static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
+
+        com_ptr<IWICBitmapFrameEncode> frame_encode;
+        HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+        Assert::AreEqual(error_ok, result);
+
+        result = frame_encode->Initialize(nullptr);
+        Assert::AreEqual(error_ok, result);
+
+        result = frame_encode->WriteSource(bitmap.get(), nullptr);
+        Assert::AreEqual(wincodec::error_unsupported_pixel_format, result);
     }
 
 private:

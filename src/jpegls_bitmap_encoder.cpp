@@ -121,9 +121,9 @@ public:
     {
         TRACE("{} jpegls_bitmap_encoder::Commit\n", fmt::ptr(this));
 
+        check_condition(!committed_, wincodec::error_wrong_state);
         check_condition(static_cast<bool>(destination_), wincodec::error_not_initialized);
         check_condition(static_cast<bool>(bitmap_frame_encode_), wincodec::error_frame_missing);
-        check_condition(!committed_, wincodec::error_wrong_state);
 
         jpegls_encoder encoder;
         encoder.frame_info(bitmap_frame_encode_->frame_info());
