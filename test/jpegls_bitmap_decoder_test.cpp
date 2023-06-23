@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Team CharLS.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "pch.h"
 
@@ -353,6 +353,7 @@ public:
     }
 
 private:
+    [[nodiscard]]
     static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;

@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Team CharLS.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "pch.h"
 
@@ -571,7 +571,6 @@ public:
         encode_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
     }
 
-    // GUID_WICPixelFormatBlackWhite
     TEST_METHOD(encode_unsupported_format) // NOLINT
     {
         const wchar_t* filename{L"encode_unsupported_format.jls"};

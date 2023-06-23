@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Team CharLS.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "pch.h"
 
@@ -177,7 +177,7 @@ public:
 
         return wincodec::error_codec_no_thumbnail;
     }
-    
+
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     try
     {
