@@ -100,8 +100,8 @@ uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, const size_t width,
-                                 const size_t height, const size_t stride) noexcept
+vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, const size_t width, const size_t height,
+                                 const size_t stride) noexcept
 {
     vector<std::byte> crumb_pixels(stride * height);
 
@@ -142,8 +142,8 @@ vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, c
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, const size_t width,
-                                  const size_t height, const size_t stride) noexcept
+vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, const size_t width, const size_t height,
+                                  const size_t stride) noexcept
 {
     vector<std::byte> nibble_pixels(stride * height);
 
@@ -164,6 +164,25 @@ vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, 
 
     return nibble_pixels;
 }
+
+[[nodiscard]]
+vector<std::byte> pack_to_bytes_correct_stride(const std::span<const std::byte> byte_pixels, const size_t width,
+                                               const size_t height, const size_t stride) noexcept
+{
+    vector<std::byte> pixels(stride * height);
+
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        std::byte* pixel_row{pixels.data() + (row * stride)};
+        for (size_t i{}; i != width; ++i)
+        {
+            pixel_row[i] = byte_pixels[j++];
+        }
+    }
+
+    return pixels;
+}
+
 
 constexpr void convert_rgb_to_bgr_in_place(const std::span<std::byte> pixels) noexcept
 {
@@ -358,7 +377,7 @@ public:
 
     TEST_METHOD(CreateNewFrame_while_not_initialized) // NOLINT
     {
-        const com_ptr<IWICBitmapEncoder> encoder{factory_.create_encoder()};
+        const com_ptr encoder{factory_.create_encoder()};
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
         const HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
@@ -424,8 +443,8 @@ public:
         com_ptr<IWICBitmap> bitmap;
         check_hresult(imaging_factory()->CreateBitmapFromMemory(
             anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
-            static_cast<uint32_t>(anymap_file.image_data().size()),
-            reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+            static_cast<uint32_t>(anymap_file.image_data().size()), reinterpret_cast<BYTE*>(anymap_file.image_data().data()),
+            bitmap.put()));
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
         HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
@@ -571,6 +590,55 @@ public:
         encode_monochrome_4_bit("4bit-monochrome.pgm", L"4bit-monochrome-wic-encoded.jls");
     }
 
+    TEST_METHOD(encode_monochrome_8_bit) // NOLINT
+    {
+        const char* source_filename{"8bit_2x2.pgm"};
+        const wchar_t* destination_filename{L"8bit_2x2-wic-encoded.jls"};
+        portable_anymap_file anymap_file{source_filename};
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
+                                                 0, false, nullptr, stream.put()));
+
+            const com_ptr encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
+
+            const uint32_t stride{compute_stride({.width = static_cast<uint32_t>(anymap_file.width()),
+                                                  .height = static_cast<uint32_t>(anymap_file.height()),
+                                                  .bits_per_sample = 8,
+                                                  .component_count = 1})};
+
+            auto byte_pixels{
+                pack_to_bytes_correct_stride(anymap_file.image_data(), anymap_file.width(), anymap_file.height(), stride)};
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, stride, static_cast<uint32_t>(byte_pixels.size()),
+                reinterpret_cast<BYTE*>(byte_pixels.data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(error_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(error_ok, result);
+        }
+
+        compare(destination_filename, anymap_file.image_data());
+    }
+
     TEST_METHOD(encode_unsupported_format) // NOLINT
     {
         const wchar_t* filename{L"encode_unsupported_format.jls"};
@@ -585,10 +653,9 @@ public:
         std::vector<std::byte> input_data(4);
 
         com_ptr<IWICBitmap> bitmap;
-        check_hresult(imaging_factory()->CreateBitmapFromMemory(
-            32, 1, GUID_WICPixelFormatBlackWhite,
-            4,
-            static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
+        check_hresult(imaging_factory()->CreateBitmapFromMemory(32, 1, GUID_WICPixelFormatBlackWhite, 4,
+                                                                static_cast<uint32_t>(input_data.size()),
+                                                                reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
         HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
@@ -654,8 +721,7 @@ private:
         {
             com_ptr<IStream> stream;
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
-                                                 0, false,
-                                                 nullptr, stream.put()));
+                                                 0, false, nullptr, stream.put()));
 
             const com_ptr encoder{factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
@@ -674,7 +740,7 @@ private:
                 reinterpret_cast<BYTE*>(nibble_pixels.data()), bitmap.put()));
 
             com_ptr<IWICBitmapFrameEncode> frame_encode;
-            HRESULT result = encoder->CreateNewFrame(frame_encode.put(), nullptr);
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
             Assert::AreEqual(error_ok, result);
 
             result = frame_encode->Initialize(nullptr);

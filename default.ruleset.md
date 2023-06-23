@@ -16,25 +16,22 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 
 - C26459: You called an STL function 'std::transform' with a raw pointer parameter. Consider wrapping your range in a
 gsl::span and pass as a span iterator (stl.1)  
-**Rationale**: gsl:span() cannot be used. Update to std:span when available (C++20).
-
-- C26466: Don't use static_cast downcasts. A cast from a polymorphic type should use dynamic_cast.  
-**Rationale**: not using RTTI to support dynamic_cast.
+**Rationale**: gsl\std:span() cannot be used.
 
 - C26472: Don't use static_cast for arithmetic conversions  
 **Rationale**: can only be solved with gsl::narrow_cast
 
 - C26474: No implicit cast  
-**Rationale**: false warnings (VS 2022 17.4.3)
+**Rationale**: false warnings for GetProcAddress
 
 - C26481: Do not pass an array as a single pointer.  
-**Rationale**: gsl::span is not available.
+**Rationale**: Many false warnings at locations when std::span cannot be used.
 
 - C26482:Only index into arrays using constant expressions.  
 **Rationale**: static analysis can verify access.
 
 - C26485: Do not pass an array as a single pointer  
-**Rationale**: see C26481.
+**Rationale**: false warnings when passing wchar_t arrays.
 
 - C26490: Don't use reinterpret_cast  
 **Rationale**: required to work with win32 API, manual verification required.

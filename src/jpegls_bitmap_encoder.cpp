@@ -138,7 +138,7 @@ public:
 
         write_spiff_header(encoder, *bitmap_frame_encode_.get());
 
-        const auto bytes_written{encoder.encode(bitmap_frame_encode_->source())};
+        const auto bytes_written{encoder.encode(bitmap_frame_encode_->source(), bitmap_frame_encode_->source_stride())};
         bitmap_frame_encode_ = nullptr;
 
         check_hresult(destination_->Write(destination.data(), static_cast<ULONG>(bytes_written), nullptr));
