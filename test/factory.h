@@ -28,7 +28,8 @@ public:
     factory& operator=(const factory&) = delete;
     factory& operator=(factory&&) = delete;
 
-    [[nodiscard]] winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
+    [[nodiscard]]
+    winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {
         winrt::com_ptr<IWICBitmapDecoder> decoder;
         winrt::check_hresult(get_class_factory(id::jpegls_decoder)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
@@ -36,7 +37,8 @@ public:
         return decoder;
     }
 
-    [[nodiscard]] winrt::com_ptr<IWICBitmapEncoder> create_encoder() const
+    [[nodiscard]]
+    winrt::com_ptr<IWICBitmapEncoder> create_encoder() const
     {
         winrt::com_ptr<IWICBitmapEncoder> encoder;
         winrt::check_hresult(get_class_factory(id::jpegls_encoder)->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
@@ -44,7 +46,8 @@ public:
         return encoder;
     }
 
-    [[nodiscard]] winrt::com_ptr<IClassFactory> get_class_factory(GUID const& class_id) const
+    [[nodiscard]]
+    winrt::com_ptr<IClassFactory> get_class_factory(GUID const& class_id) const
     {
         winrt::com_ptr<IClassFactory> class_factory;
         winrt::check_hresult(get_class_factory(class_id, class_factory));
@@ -52,7 +55,8 @@ public:
         return class_factory;
     }
 
-    [[nodiscard]] HRESULT get_class_factory(GUID const& class_id, winrt::com_ptr<IClassFactory>& class_factory) const
+    [[nodiscard]]
+    HRESULT get_class_factory(GUID const& class_id, winrt::com_ptr<IClassFactory>& class_factory) const
     {
         const auto get_class_object{
             static_cast<dll_get_class_object_ptr>(static_cast<void*>(GetProcAddress(library_, "DllGetClassObject")))};

@@ -7,7 +7,6 @@
 
 #include <mfapi.h>
 
-
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
 try
 {
@@ -140,7 +139,8 @@ HRESULT __stdcall jpegls_bitmap_frame_encode::WritePixels(const uint32_t line_co
                                                           uint32_t /* buffer_size */, BYTE* pixels) noexcept
 try
 {
-    check_condition((state_ == state::initialized || state_ == state::received_pixels) && size_set_ && pixel_format_set_,
+    using enum state;
+    check_condition((state_ == initialized || state_ == received_pixels) && size_set_ && pixel_format_set_,
                     wincodec::error_wrong_state);
     check_condition(received_line_count_ + line_count <= frame_info_.height, wincodec::error_codec_too_many_scan_lines);
 
@@ -152,7 +152,7 @@ try
                                      static_cast<LONG>(source_stride), static_cast<DWORD>(destination_stride), line_count));
 
     received_line_count_ += line_count;
-    state_ = state::received_pixels;
+    state_ = received_pixels;
     return error_ok;
 }
 catch (...)
@@ -216,6 +216,10 @@ try
     else if (frame_info_.bits_per_sample == 4)
     {
         unpack_nibbles();
+    }
+    else
+    {
+        source_stride_ = compute_stride(); // TODO: move to allocate_pixel_buffer_if_needed
     }
 
     state_ = state::commited;

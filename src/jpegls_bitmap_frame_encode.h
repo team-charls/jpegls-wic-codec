@@ -49,6 +49,13 @@ public:
         return dpi_y_;
     }
 
+    [[nodiscard]]
+    uint32_t source_stride() const noexcept
+    {
+        ASSERT(state_ == state::commited);
+        return source_stride_;
+    }
+
     HRESULT __stdcall Initialize(_In_ IPropertyBag2* encoder_options) noexcept override;
     HRESULT __stdcall SetSize(uint32_t width, uint32_t height) noexcept override;
     HRESULT __stdcall SetResolution(double dpi_x, double dpi_y) noexcept override;
@@ -192,6 +199,7 @@ private:
     bool dpi_set_{};
     bool swap_pixels_{};
     uint32_t received_line_count_{};
+    uint32_t source_stride_{};
     std::vector<std::byte> source_;
     charls::frame_info frame_info_{};
     double dpi_x_{};
