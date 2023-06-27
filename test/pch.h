@@ -46,4 +46,5 @@
 #include <array>
 #include <cstddef>
 #include <vector>
+#include <array>
 #pragma warning(pop)

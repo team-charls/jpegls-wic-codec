@@ -37,6 +37,9 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
             return GUID_WICPixelFormat4bppGray;
         case 8:
             return GUID_WICPixelFormat8bppGray;
+        case 16:
+            return GUID_WICPixelFormat16bppGray;
+
         default:
             Assert::Fail();
         }
@@ -46,6 +49,9 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
         {
         case 8:
             return bgr_input ? GUID_WICPixelFormat24bppBGR : GUID_WICPixelFormat24bppRGB;
+        case 16:
+            return GUID_WICPixelFormat48bppRGB;
+
         default:
             Assert::Fail();
         }
@@ -177,6 +183,25 @@ vector<std::byte> pack_to_bytes_correct_stride(const std::span<const std::byte> 
         for (size_t i{}; i != width; ++i)
         {
             pixel_row[i] = byte_pixels[j++];
+        }
+    }
+
+    return pixels;
+}
+
+[[nodiscard]]
+vector<std::byte> pack_to_bytes_correct_stride_16_bit(const std::span<const std::byte> word_pixels, const size_t width,
+                                                      const size_t height, const size_t stride) noexcept
+{
+    vector<std::byte> pixels(stride * height);
+
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        std::byte* pixel_row{pixels.data() + (row * stride)};
+        for (size_t i{}; i != width * 2; i += 2)
+        {
+            pixel_row[i] = word_pixels[j++];
+            pixel_row[i + 1] = word_pixels[j++];
         }
     }
 
@@ -639,6 +664,56 @@ public:
         compare(destination_filename, anymap_file.image_data());
     }
 
+    TEST_METHOD(encode_monochrome_16_bit_rgb) // NOLINT
+    {
+        const wchar_t* destination_filename{L"16bit_3x2-wic-encoded.jls"};
+        std::array anymap_pixels{std::byte{0}, std::byte{1}, std::byte{0}, std::byte{2}, std::byte{0}, std::byte{3},
+                                 std::byte{0}, std::byte{4}, std::byte{0}, std::byte{5}, std::byte{0}, std::byte{6}};
+
+        {
+            constexpr uint32_t width{3};
+            constexpr uint32_t height{2};
+            constexpr uint32_t component_count{1};
+
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
+                                                 0, false, nullptr, stream.put()));
+
+            const com_ptr encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(16, component_count)};
+
+            const uint32_t stride{compute_stride(
+                {.width = width, .height = height, .bits_per_sample = 16, .component_count = component_count})};
+
+            auto byte_pixels{pack_to_bytes_correct_stride_16_bit(anymap_pixels, 3, 2, stride)};
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                width, height, pixel_format, stride, static_cast<uint32_t>(byte_pixels.size()),
+                reinterpret_cast<BYTE*>(byte_pixels.data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(error_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(error_ok, result);
+        }
+
+        compare(destination_filename, anymap_pixels);
+    }
+
     TEST_METHOD(encode_unsupported_format) // NOLINT
     {
         const wchar_t* filename{L"encode_unsupported_format.jls"};
@@ -769,7 +844,7 @@ private:
         return imaging_factory;
     }
 
-    static void compare(const wchar_t* filename, const vector<std::byte>& decoded_source)
+    static void compare(const wchar_t* filename, const std::span<std::byte> decoded_source)
     {
         const auto encoded_source{read_file(filename)};
 
