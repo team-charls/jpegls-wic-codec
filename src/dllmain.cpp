@@ -73,9 +73,9 @@ void register_decoder()
     registry::set_value(patterns_sub_key, L"Length", 3);
     registry::set_value(patterns_sub_key, L"Position", 0U);
 
-    const array mask{0xFF_byte, 0xFF_byte, 0xFF_byte};
+    constexpr array mask{0xFF_byte, 0xFF_byte, 0xFF_byte};
     registry::set_value(patterns_sub_key, L"Mask", mask.data(), static_cast<DWORD>(mask.size()));
-    const array pattern{0xFF_byte, 0xD8_byte, 0xFF_byte};
+    constexpr array pattern{0xFF_byte, 0xD8_byte, 0xFF_byte};
     registry::set_value(patterns_sub_key, L"Pattern", pattern.data(), static_cast<DWORD>(pattern.size()));
 
     registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"", L"jlsfile");
