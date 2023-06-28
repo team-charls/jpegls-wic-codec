@@ -117,26 +117,31 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <UseDebugLibraries>true</UseDebugLibraries>
     <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">false</LinkIncremental>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">ProgramDatabase</DebugInformationFormat>
     </ClCompile>
 
     <!-- Switch to full debug info when the environment variable VS_DEBUG_FULL_INFO is defined and not empty
         In debug builds, "fast" info is the default but the VS code coverage tool requires full info. -->
     <Link Condition="'$(VS_DEBUG_FULL_INFO)'!=''">
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <Profile Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">true</Profile>
+    </Link>
+    <Link Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
 
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-
   </ItemDefinitionGroup>
-
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <UseDebugLibraries>false</UseDebugLibraries>
