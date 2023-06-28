@@ -105,7 +105,7 @@ try
     if (*pixel_format == GUID_WICPixelFormat48bppRGB)
     {
         set_pixel_format(16, 3);
-        return wincodec::error_unsupported_pixel_format;
+        return error_ok;
     }
 
     *pixel_format = GUID_WICPixelFormatUndefined;
