@@ -73,15 +73,22 @@ public:
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 
-    TEST_METHOD(SetResolution) // NOLINT
+    TEST_METHOD(SetResolution_bad_dpi_x) // NOLINT
     {
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
-        const HRESULT result{bitmap_frame_encoder->SetResolution(96., 96.)};
-        Assert::AreEqual(error_ok, result);
+        const HRESULT result{bitmap_frame_encoder->SetResolution(0., 96.)};
+        Assert::AreEqual(error_invalid_argument, result);
+    }
 
-        // TODO: extend this test by encode\decode a sample image.
+    TEST_METHOD(SetResolution_bad_dpi_y) // NOLINT
+    {
+        const com_ptr bitmap_frame_encoder{create_frame_encoder()};
+        check_hresult(bitmap_frame_encoder->Initialize(nullptr));
+
+        const HRESULT result{bitmap_frame_encoder->SetResolution(96., 0)};
+        Assert::AreEqual(error_invalid_argument, result);
     }
 
     TEST_METHOD(SetResolution_not_initialized) // NOLINT
@@ -188,6 +195,32 @@ public:
         GUID pixel_format{GUID_WICPixelFormat8bppGray};
 
         const HRESULT result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
+        Assert::AreEqual(wincodec::error_wrong_state, result);
+    }
+
+    TEST_METHOD(WritePixels_not_initialized) // NOLINT
+    {
+        const com_ptr bitmap_frame_encoder{create_frame_encoder()};
+
+        const HRESULT result{bitmap_frame_encoder->WritePixels(0, 0, 0, nullptr)};
+        Assert::AreEqual(wincodec::error_wrong_state, result);
+    }
+
+    TEST_METHOD(WritePixels_size_not_set) // NOLINT
+    {
+        const com_ptr bitmap_frame_encoder{create_frame_encoder()};
+
+        check_hresult(bitmap_frame_encoder->Initialize(nullptr));
+
+        const HRESULT result{bitmap_frame_encoder->WritePixels(0, 0, 0, nullptr)};
+        Assert::AreEqual(wincodec::error_wrong_state, result);
+    }
+
+    TEST_METHOD(WriteSource_not_initialized) // NOLINT
+    {
+        const com_ptr bitmap_frame_encoder{create_frame_encoder()};
+
+        const HRESULT result{bitmap_frame_encoder->WriteSource(nullptr, nullptr)};
         Assert::AreEqual(wincodec::error_wrong_state, result);
     }
 

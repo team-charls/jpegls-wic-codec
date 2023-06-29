@@ -797,6 +797,59 @@ public:
         Assert::AreEqual(wincodec::error_unsupported_pixel_format, result);
     }
 
+    TEST_METHOD(encode_with_dpi_set) // NOLINT
+    {
+        const wchar_t* filename{L"encode_dpi_set.jls"};
+        constexpr double expected_dpi_x{100.};
+        constexpr double expected_dpi_y{75.};
+
+        {
+            portable_anymap_file anymap_file{"test8.ppm"};
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
+
+            const com_ptr encoder{factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
+                static_cast<uint32_t>(anymap_file.image_data().size()),
+                reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->SetResolution(expected_dpi_x, expected_dpi_y);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(error_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(error_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(error_ok, result);
+        }
+
+        const auto frame_decoder{create_frame_decoder(filename)};
+        double dpi_x{};
+        double dpi_y{};
+
+        const HRESULT result{frame_decoder->GetResolution(&dpi_x, &dpi_y)};
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(expected_dpi_x, dpi_x);
+        Assert::AreEqual(expected_dpi_y, dpi_y);
+    }
+
 private:
     void encode_monochrome_2_bit(const char* source_filename, const wchar_t* destination_filename) const
     {
@@ -896,6 +949,20 @@ private:
                                        imaging_factory.put_void()));
 
         return imaging_factory;
+    }
+    [[nodiscard]]
+    com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        check_hresult(wic_bitmap_decoder->GetFrame(0, bitmap_frame_decode.put()));
+
+        return bitmap_frame_decode;
     }
 
     static void compare(const wchar_t* filename, const std::span<std::byte> decoded_source)

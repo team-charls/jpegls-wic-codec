@@ -29,24 +29,10 @@ public:
     }
 
     [[nodiscard]]
-    bool is_dpi_set() const noexcept
+    const auto& resolution() const noexcept
     {
         ASSERT(state_ == state::commited);
-        return dpi_set_;
-    }
-
-    [[nodiscard]]
-    double dpi_x() const noexcept
-    {
-        ASSERT(dpi_set_ && state_ == state::commited);
-        return dpi_x_;
-    }
-
-    [[nodiscard]]
-    double dpi_y() const noexcept
-    {
-        ASSERT(dpi_set_ && state_ == state::commited);
-        return dpi_y_;
+        return resolution_;
     }
 
     [[nodiscard]]
@@ -196,12 +182,10 @@ private:
     state state_{};
     bool size_set_{};
     bool pixel_format_set_{};
-    bool dpi_set_{};
+    std::optional<std::pair<uint32_t, uint32_t>> resolution_;
     bool swap_pixels_{};
     uint32_t received_line_count_{};
     uint32_t source_stride_{};
     std::vector<std::byte> source_;
     charls::frame_info frame_info_{};
-    double dpi_x_{};
-    double dpi_y_{};
 };

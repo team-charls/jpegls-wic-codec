@@ -44,10 +44,12 @@ try
     TRACE("{} jpegls_bitmap_frame_encode::SetResolution.1, dpi_x={}, dpi_y={}\n", fmt::ptr(this), dpi_x, dpi_y);
 
     check_condition(state_ != state::commited, wincodec::error_wrong_state);
-    dpi_x_ = dpi_x;
-    dpi_y_ = dpi_y;
-    dpi_set_ = true;
 
+    const auto resolution_x{lround(dpi_x)};
+    const auto resolution_y{lround(dpi_y)};
+    check_condition(resolution_x > 0 && resolution_y > 0, error_invalid_argument);
+
+    resolution_ = {resolution_x, resolution_y};
     return error_ok;
 }
 catch (...)
@@ -167,8 +169,8 @@ try
     TRACE("{} jpegls_bitmap_frame_encode::WriteSource, bitmap_source={}, rectangle={}\n", fmt::ptr(this),
           fmt::ptr(bitmap_source), fmt::ptr(rectangle));
 
-    check_in_pointer(bitmap_source);
     check_condition(state_ == state::initialized, wincodec::error_wrong_state);
+    check_in_pointer(bitmap_source);
 
     if (!size_set_)
     {
