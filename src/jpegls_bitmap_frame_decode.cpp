@@ -18,6 +18,12 @@
 #include <span>
 
 
+using namespace charls;
+using std::make_pair;
+using winrt::check_hresult;
+using winrt::throw_hresult;
+
+
 namespace {
 
 [[nodiscard]]
@@ -30,18 +36,18 @@ std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per
         switch (bits_per_sample)
         {
         case 2:
-            return std::make_pair(GUID_WICPixelFormat2bppGray, 0);
+            return make_pair(GUID_WICPixelFormat2bppGray, 0);
 
         case 4:
-            return std::make_pair(GUID_WICPixelFormat4bppGray, 0);
+            return make_pair(GUID_WICPixelFormat4bppGray, 0);
 
         case 8:
-            return std::make_pair(GUID_WICPixelFormat8bppGray, 0);
+            return make_pair(GUID_WICPixelFormat8bppGray, 0);
 
         case 10:
         case 12:
         case 16:
-            return std::make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
+            return make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
 
         default:
             break;
@@ -52,10 +58,10 @@ std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per
         switch (bits_per_sample)
         {
         case 8:
-            return std::make_pair(GUID_WICPixelFormat24bppRGB, 0);
+            return make_pair(GUID_WICPixelFormat24bppRGB, 0);
 
         case 16:
-            return std::make_pair(GUID_WICPixelFormat48bppRGB, 0);
+            return make_pair(GUID_WICPixelFormat48bppRGB, 0);
 
         default:
             break;
@@ -127,7 +133,7 @@ void pack_to_nibbles(const std::span<const std::byte> byte_pixels, std::byte* ni
 
 #ifndef NDEBUG
 [[nodiscard]]
-uint32_t compute_minimal_stride(const charls::frame_info& frame_info) noexcept
+uint32_t compute_minimal_stride(const frame_info& frame_info) noexcept
 {
     if (frame_info.bits_per_sample == 2)
     {
@@ -178,46 +184,67 @@ void convert_planar_to_rgb(const size_t width, const size_t height, const void* 
     }
 }
 
+void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
+{
+    if (decoder.spiff_header_has_value())
+    {
+        const auto& spiff_header{decoder.spiff_header()};
+        if (spiff_header.resolution_units == spiff_resolution_units::dots_per_inch &&
+            spiff_header.vertical_resolution != 0 && spiff_header.horizontal_resolution != 0)
+        {
+            check_hresult(bitmap.SetResolution(spiff_header.horizontal_resolution, spiff_header.vertical_resolution));
+            return;
+        }
+    }
+
+    check_hresult(bitmap.SetResolution(96, 96));
+}
+
+
 } // namespace
 
 jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In_ IWICImagingFactory* factory)
 {
     ULARGE_INTEGER size;
-    winrt::check_hresult(IStream_Size(stream, &size));
+    check_hresult(IStream_Size(stream, &size));
 
     const storage_buffer buffer{size.LowPart};
-    winrt::check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
+    check_hresult(IStream_Read(stream, buffer.data(), static_cast<ULONG>(buffer.size())));
 
-    charls::jpegls_decoder decoder{buffer, false};
+    jpegls_decoder decoder{buffer, false};
 
     std::error_code error;
+    decoder.read_spiff_header(error);
+    if (error)
+        throw_hresult(wincodec::error_bad_header);
+
     decoder.read_header(error);
     if (error)
-        winrt::throw_hresult(wincodec::error_bad_header);
+        throw_hresult(wincodec::error_bad_header);
 
     const auto& frame_info{decoder.frame_info()};
     auto pixel_format_info{get_pixel_format(frame_info.bits_per_sample, frame_info.component_count)};
     if (!pixel_format_info)
-        winrt::throw_hresult(wincodec::error_unsupported_pixel_format);
+        throw_hresult(wincodec::error_unsupported_pixel_format);
 
     const auto& [pixel_format, sample_shift] = pixel_format_info.value();
     winrt::com_ptr<IWICBitmap> bitmap;
-    winrt::check_hresult(
+    check_hresult(
         factory->CreateBitmap(frame_info.width, frame_info.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
-    winrt::check_hresult(bitmap->SetResolution(96, 96));
+    set_resolution(decoder, *bitmap);
 
     {
         winrt::com_ptr<IWICBitmapLock> bitmap_lock;
         const WICRect complete_image{0, 0, static_cast<int32_t>(frame_info.width), static_cast<int32_t>(frame_info.height)};
-        winrt::check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
+        check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
         uint32_t stride;
-        winrt::check_hresult(bitmap_lock->GetStride(&stride));
+        check_hresult(bitmap_lock->GetStride(&stride));
         ASSERT(stride >= compute_minimal_stride(frame_info));
 
         std::byte* data_buffer;
         uint32_t data_buffer_size;
-        winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
+        check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
         if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
@@ -255,7 +282,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
         }
     }
 
-    winrt::check_hresult(bitmap->QueryInterface(bitmap_source_.put()));
+    check_hresult(bitmap->QueryInterface(bitmap_source_.put()));
 }
 
 // IWICBitmapSource

@@ -25,12 +25,13 @@ namespace {
 
 void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encode& bitmap_frame_encode)
 {
-    if (const auto color_space{bitmap_frame_encode.frame_info().component_count == 1 ? spiff_color_space::grayscale
-                                                                                     : spiff_color_space::rgb};
-        bitmap_frame_encode.is_dpi_set())
+    const auto color_space{bitmap_frame_encode.frame_info().component_count == 1 ? spiff_color_space::grayscale
+                                                                                 : spiff_color_space::rgb};
+
+    if (const auto& resolution{bitmap_frame_encode.resolution()}; resolution.has_value())
     {
-        encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch,
-                                            lround(bitmap_frame_encode.dpi_y()), lround(bitmap_frame_encode.dpi_x()));
+        encoder.write_standard_spiff_header(color_space, spiff_resolution_units::dots_per_inch, resolution->second,
+                                            resolution->first);
     }
     else
     {
@@ -38,7 +39,7 @@ void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encod
     }
 }
 
-}
+} // namespace
 
 class jpegls_bitmap_encoder final : public implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
@@ -49,7 +50,7 @@ public:
     try
     {
         TRACE("{} jpegls_bitmap_encoder::Initialize, stream={}, cache_option={}\n", fmt::ptr(this), fmt::ptr(destination),
-            fmt::underlying(cache_option));
+              fmt::underlying(cache_option));
 
         check_condition(!static_cast<bool>(destination_), wincodec::error_wrong_state);
         destination_.copy_from(check_in_pointer(destination));
@@ -63,7 +64,8 @@ public:
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     try
     {
-        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, container_format={}\n", fmt::ptr(this), fmt::ptr(container_format));
+        TRACE("{} jpegls_bitmap_encoder::GetContainerFormat, container_format={}\n", fmt::ptr(this),
+              fmt::ptr(container_format));
 
         *check_out_pointer(container_format) = id::container_format_jpegls;
         return error_ok;
@@ -169,7 +171,8 @@ public:
     HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_context) noexcept override
     {
-        TRACE("{} jpegls_bitmap_encoder::SetColorContexts, count={}, color_context={}\n", fmt::ptr(this), count, fmt::ptr(color_context));
+        TRACE("{} jpegls_bitmap_encoder::SetColorContexts, count={}, color_context={}\n", fmt::ptr(this), count,
+              fmt::ptr(color_context));
 
         // Note: the current implementation doesn't support color contexts.
         //       Normally ICC color context profiles can be stored in the JPEG APP2 marker section.
@@ -179,7 +182,8 @@ public:
     HRESULT __stdcall GetMetadataQueryWriter(
         [[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
     {
-        TRACE("{} jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer={}\n", fmt::ptr(this), fmt::ptr(metadata_query_writer));
+        TRACE("{} jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer={}\n", fmt::ptr(this),
+              fmt::ptr(metadata_query_writer));
 
         // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
