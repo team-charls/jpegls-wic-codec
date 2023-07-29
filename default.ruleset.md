@@ -24,6 +24,9 @@ gsl::span and pass as a span iterator (stl.1)
 - C26474: No implicit cast  
 **Rationale**: false warnings for GetProcAddress
 
+- C26478: Don't use std::move on constant variables. (es.56).  
+**Rationale**: false warnings when defining local const variables [Visual Studio 2022 17.7.0 Preview 5.0]
+
 - C26481: Do not pass an array as a single pointer.  
 **Rationale**: Many false warnings at locations when std::span cannot be used.
 
