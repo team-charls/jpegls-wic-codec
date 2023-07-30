@@ -8,6 +8,7 @@
 #include "util.h"
 
 #include "../src/errors.h"
+#include "charls/charls_jpegls_encoder.h"
 
 #include <CppUnitTest.h>
 
@@ -88,6 +89,52 @@ public:
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(96., dpi_x);
         Assert::AreEqual(96., dpi_y);
+    }
+
+    TEST_METHOD(GetResolution_dots_per_inch_in_spiff_header) // NOLINT
+    {
+        charls::jpegls_encoder encoder;
+        encoder.frame_info({1, 1, 8, 1});
+        std::vector<std::byte> destination(encoder.estimated_destination_size());
+        encoder.destination(destination);
+
+        encoder.write_standard_spiff_header(charls::spiff_color_space::grayscale,
+                                            charls::spiff_resolution_units::dots_per_inch, 100, 100);
+
+        constexpr std::array pixel_data{std::byte{0}};
+        destination.resize(encoder.encode(pixel_data));
+
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(destination)};
+
+        double dpi_x;
+        double dpi_y;
+        const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(100., dpi_x);
+        Assert::AreEqual(100., dpi_y);
+    }
+
+    TEST_METHOD(GetResolution_dots_per_centimeter_in_spiff_header) // NOLINT
+    {
+        charls::jpegls_encoder encoder;
+        encoder.frame_info({1, 1, 8, 1});
+        std::vector<std::byte> destination(encoder.estimated_destination_size());
+        encoder.destination(destination);
+
+        encoder.write_standard_spiff_header(charls::spiff_color_space::grayscale,
+                                            charls::spiff_resolution_units::dots_per_centimeter, 100, 100);
+
+        constexpr std::array pixel_data{std::byte{0}};
+        destination.resize(encoder.encode(pixel_data));
+
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(destination)};
+
+        double dpi_x;
+        double dpi_y;
+        const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(254., dpi_x);
+        Assert::AreEqual(254., dpi_y);
     }
 
     TEST_METHOD(GetResolution_with_nullptr) // NOLINT
@@ -398,6 +445,22 @@ private:
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        check_hresult(wic_bitmap_decoder->GetFrame(0, bitmap_frame_decode.put()));
+
+        return bitmap_frame_decode;
+    }
+
+    [[nodiscard]]
+    com_ptr<IWICBitmapFrameDecode> create_frame_decoder(const std::span<const std::byte> jpegls_buffer) const
+    {
+        const com_ptr<IStream> stream{
+            SHCreateMemStream(reinterpret_cast<const BYTE*>(jpegls_buffer.data()), static_cast<UINT>(jpegls_buffer.size())),
+            take_ownership_from_abi};
 
         const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
