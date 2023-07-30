@@ -189,11 +189,24 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
     if (decoder.spiff_header_has_value())
     {
         const auto& spiff_header{decoder.spiff_header()};
-        if (spiff_header.resolution_units == spiff_resolution_units::dots_per_inch &&
-            spiff_header.vertical_resolution != 0 && spiff_header.horizontal_resolution != 0)
+        if (spiff_header.vertical_resolution != 0 && spiff_header.horizontal_resolution != 0)
         {
-            check_hresult(bitmap.SetResolution(spiff_header.horizontal_resolution, spiff_header.vertical_resolution));
-            return;
+            switch (spiff_header.resolution_units)
+            {
+            case spiff_resolution_units::aspect_ratio:
+                break;
+
+            case spiff_resolution_units::dots_per_centimeter: {
+                constexpr double dpc_to_dpi{2.54};
+                check_hresult(bitmap.SetResolution(round(spiff_header.horizontal_resolution * dpc_to_dpi),
+                                                   round(spiff_header.vertical_resolution * dpc_to_dpi)));
+                return;
+            }
+
+            case spiff_resolution_units::dots_per_inch:
+                check_hresult(bitmap.SetResolution(spiff_header.horizontal_resolution, spiff_header.vertical_resolution));
+                return;
+            }
         }
     }
 
