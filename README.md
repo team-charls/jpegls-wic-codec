@@ -43,59 +43,59 @@ Microsoft currently does not make it possible to create WIC codecs that can be u
 
 The following table provides the codec identification information:
 
-|Property||
-|---|---|
-|Formal Name|JPEG-LS Format|
-|File Name Extension|.jls|
-|MIME type| image/jls|
-|Specification Support| JPEG-LS (ISO/IEC 14495-1), SPIFF header (ISO/IEC 10918-3)|
+| Property              |                                                           |
+|-----------------------|-----------------------------------------------------------|
+| Formal Name           | JPEG-LS Format                                            |
+| File Name Extension   | .jls                                                      |
+| MIME type             | image/jls                                                 |
+| Specification Support | JPEG-LS (ISO/IEC 14495-1), SPIFF header (ISO/IEC 10918-3) |
 
 The following table lists the GUIDs used to identify the native JPEG-LS codec components:
 
-|Component|Friendly Name|GUID
-|---|---|---|
-|Container Format|id::container_format_jpegls|52c25458-282d-4ef4-a69f-021bb2984543
-|Decoder|id::jpegls_decoder|e57dc18b-019c-47f2-8ed0-bf587be4ff1b|
-|Encoder|id::jpegls_encoder|70a823ea-009f-402f-9bda-e9b8f6332d61|
+| Component        | Friendly Name               | GUID                                 |
+|------------------|-----------------------------|--------------------------------------|
+| Container Format | id::container_format_jpegls | 52c25458-282d-4ef4-a69f-021bb2984543 |
+| Decoder          | id::jpegls_decoder          | e57dc18b-019c-47f2-8ed0-bf587be4ff1b |
+| Encoder          | id::jpegls_encoder          | 70a823ea-009f-402f-9bda-e9b8f6332d61 |
 
 The following table lists the pixel formats that can be decoded:
 
-|GUID|Component Count|Bits per Sample
-|---|---|---|
-|GUID_WICPixelFormat2bppGray|1|2|
-|GUID_WICPixelFormat4bppGray|1|4|
-|GUID_WICPixelFormat8bppGray|1|8|
-|GUID_WICPixelFormat16bppGray|1|16,12,10*|
-|GUID_WICPixelFormat24bppRGB|3|8|
-|GUID_WICPixelFormat48bppRGB|3|16|
+| GUID                         | Component Count | Bits per Sample |
+|------------------------------|-----------------|-----------------|
+| GUID_WICPixelFormat2bppGray  | 1               | 2               |
+| GUID_WICPixelFormat4bppGray  | 1               | 4               |
+| GUID_WICPixelFormat8bppGray  | 1               | 8               |
+| GUID_WICPixelFormat16bppGray | 1               | 16,12,10*       |
+| GUID_WICPixelFormat24bppRGB  | 3               | 8               |
+| GUID_WICPixelFormat48bppRGB  | 3               | 16              |
 
 Note \*: monochrome JPEG-LS images with 10 or 12 pixels will be upscaled to 16 to match a defined WIC pixel format.
 
 The following table lists the pixel formats that can be encoded:
 
-|GUID|Component Count|Bits per Sample
-|---|---|---|
-|GUID_WICPixelFormat2bppGray|1|2|
-|GUID_WICPixelFormat4bppGray|1|4|
-|GUID_WICPixelFormat8bppGray|1|8|
-|GUID_WICPixelFormat16bppGray|1|16|
-|GUID_WICPixelFormat24bppBGR\*\*|3|8|
-|GUID_WICPixelFormat24bppRGB|3|8|
-|GUID_WICPixelFormat48bppRGB|3|16|
+| GUID                            | Component Count | Bits per Sample |
+|---------------------------------|-----------------|-----------------|
+| GUID_WICPixelFormat2bppGray     | 1               | 2               |
+| GUID_WICPixelFormat4bppGray     | 1               | 4               |
+| GUID_WICPixelFormat8bppGray     | 1               | 8               |
+| GUID_WICPixelFormat16bppGray    | 1               | 16              |
+| GUID_WICPixelFormat24bppBGR\*\* | 3               | 8               |
+| GUID_WICPixelFormat24bppRGB     | 3               | 8               |
+| GUID_WICPixelFormat48bppRGB     | 3               | 16              |
 
 Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set a BGR color space in the SPIFF header.
 
 ## Build Instructions
 
-1. Clone this repro, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-1. Open Visual Studio 2022 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
-1. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
+1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
+2. Open Visual Studio 2022 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
+3. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
 ## Installation
 
 1. Open a command prompt with elevated rights
-1. Navigate to folder with the jpegls-wic-codec.dll
-1. Execute:
+2. Navigate to folder with the jpegls-wic-codec.dll
+3. Execute:
 
 ```shell
 regsvr32 jpegls-wic-codec.dll
@@ -104,8 +104,8 @@ regsvr32 jpegls-wic-codec.dll
 ## Uninstall
 
 1. Open a command prompt with elevated rights
-1. Navigate to folder with the jpegls-wic-codec.dll
-1. Execute:
+2. Navigate to folder with the jpegls-wic-codec.dll
+3. Execute:
 
 ```shell
 regsvr32 -u jpegls-wic-codec.dll
