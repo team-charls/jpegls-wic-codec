@@ -39,6 +39,19 @@ The following application have been validated to work with the JPEG-LS WIC codec
 The standard Windows 10 Microsoft Photos application cannot be used at this moment as it is limited to the WIC codecs that are pre-installed on Windows or are provided by Microsoft in the Microsoft Store.
 Microsoft currently does not make it possible to create WIC codecs that can be uploaded to the Microsoft Store.
 
+#### 16 bit grayscale images may display as only containg black pixels
+
+Windows has full support for the 16 bit grayscale pixel format (GUID_WICPixelFormat16bppGray).
+It expect however that the full dynamic range (0 .. 65535) is used. To be able to display the image
+on the screen Windows needs to convert the image internally to 24 bits BRGA. In essence this means
+that only the high 8 bits are used.  
+Medical (DICOM) grayscale images are often using more then 256 different values of gray and will therefore
+need to use 10, 12 or even 16 bits. If the image format is 16 bit but the dynamic range is much smaller, standard
+Windows viewing software will show these images as a black rectangle.  
+Medical viewing software should be used to view these kinds of images. Often additional metadata, not stored in the .jls file,
+is needed for a good display.  
+The WIC Explorer, see the section above, has also special support to transform the pixels into the correct dynamic range and can be used to view these images.
+
 ## WIC Codec Identity
 
 The following table provides the codec identification information:
