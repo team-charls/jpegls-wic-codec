@@ -5,7 +5,6 @@
 
 #include "jpegls_bitmap_decoder.h"
 
-#include "jpegls_bitmap_frame_decode.h"
 #include "trace.h"
 #include "macros.h"
 
@@ -21,6 +20,7 @@ import class_factory;
 import guids;
 import util;
 import errors;
+import jpegls_bitmap_frame_decode;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;
