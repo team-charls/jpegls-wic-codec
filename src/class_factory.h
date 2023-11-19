@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "errors.h"
+import errors;
 
 template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>

@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "errors.h"
-
 #include <wincodec.h>
 
 #include <winrt/base.h>
@@ -12,6 +10,8 @@
 #include <cassert>
 #include <cstddef>
 #include <string>
+
+import errors;
 
 extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 

@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "errors.h"
 #include "trace.h"
 #include "util.h"
 

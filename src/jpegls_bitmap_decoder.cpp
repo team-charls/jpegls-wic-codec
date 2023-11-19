@@ -6,7 +6,6 @@
 #include "jpegls_bitmap_decoder.h"
 
 #include "class_factory.h"
-#include "errors.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_decode.h"
 #include "trace.h"

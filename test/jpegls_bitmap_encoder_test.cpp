@@ -7,11 +7,11 @@
 #include "portable_anymap_file.h"
 #include "util.h"
 
-#include "../src/errors.h"
-
 #include <CppUnitTest.h>
 
 #include <charls/charls.h>
+
+import errors;
 
 using charls::jpegls_decoder;
 using std::ifstream;

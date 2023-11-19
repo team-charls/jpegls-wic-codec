@@ -49,6 +49,9 @@
     <ClCompile Include="dllmain_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="errors.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.jls">

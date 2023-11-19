@@ -5,7 +5,6 @@
 
 #include "jpegls_bitmap_frame_decode.h"
 
-#include "errors.h"
 #include "storage_buffer.h"
 #include "trace.h"
 #include "util.h"
