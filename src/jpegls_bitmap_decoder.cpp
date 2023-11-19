@@ -5,7 +5,6 @@
 
 #include "jpegls_bitmap_decoder.h"
 
-#include "class_factory.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_decode.h"
 #include "trace.h"
@@ -18,6 +17,8 @@
 
 #include <array>
 #include <mutex>
+
+import class_factory;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;

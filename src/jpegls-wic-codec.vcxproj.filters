@@ -36,9 +36,6 @@
     <ClInclude Include="jpegls_bitmap_encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="class_factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="jpegls_bitmap_frame_encode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="errors.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="class_factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

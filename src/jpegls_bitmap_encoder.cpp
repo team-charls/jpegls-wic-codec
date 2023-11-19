@@ -5,9 +5,10 @@
 
 #include "jpegls_bitmap_encoder.h"
 
-#include "class_factory.h"
 #include "guids.h"
 #include "jpegls_bitmap_frame_encode.h"
+
+import class_factory;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;
