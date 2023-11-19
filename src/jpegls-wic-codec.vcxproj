@@ -72,7 +72,6 @@
     <ClInclude Include="jpegls_bitmap_decoder.h" />
     <ClInclude Include="jpegls_bitmap_encoder.h" />
     <ClInclude Include="jpegls_bitmap_frame_decode.h" />
-    <ClInclude Include="guids.h" />
     <ClInclude Include="jpegls_bitmap_frame_encode.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="storage_buffer.h" />
@@ -91,6 +90,14 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="errors.ixx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="guids.ixx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>

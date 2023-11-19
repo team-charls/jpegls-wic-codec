@@ -3,7 +3,6 @@
 
 #include "pch.h"
 
-#include "guids.h"
 #include "jpegls_bitmap_decoder.h"
 #include "jpegls_bitmap_encoder.h"
 #include "trace.h"
@@ -14,6 +13,8 @@
 #include <ShlObj.h>
 
 #include <array>
+
+import guids;
 
 using std::array;
 using std::wstring;
