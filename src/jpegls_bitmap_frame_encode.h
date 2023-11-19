@@ -3,8 +3,8 @@
 
 #pragma once
 
+#include "macros.h"
 #include "trace.h"
-#include "util.h"
 
 #include <winrt/base.h>
 

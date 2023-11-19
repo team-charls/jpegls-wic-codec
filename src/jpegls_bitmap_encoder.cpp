@@ -9,6 +9,7 @@
 
 import class_factory;
 import guids;
+import errors;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;

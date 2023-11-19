@@ -7,6 +7,8 @@
 
 #include <mfapi.h>
 
+import errors;
+
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
 try
 {

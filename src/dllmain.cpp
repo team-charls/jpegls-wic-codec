@@ -6,8 +6,8 @@
 #include "jpegls_bitmap_decoder.h"
 #include "jpegls_bitmap_encoder.h"
 #include "trace.h"
-#include "util.h"
 #include "version.h"
+#include "macros.h"
 
 #include <olectl.h>
 #include <ShlObj.h>
@@ -15,6 +15,8 @@
 #include <array>
 
 import guids;
+import util;
+import errors;
 
 using std::array;
 using std::wstring;

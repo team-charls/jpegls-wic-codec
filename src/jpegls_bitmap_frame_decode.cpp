@@ -7,7 +7,7 @@
 
 #include "storage_buffer.h"
 #include "trace.h"
-#include "util.h"
+#include "macros.h"
 
 #include <charls/charls.h>
 
@@ -15,6 +15,9 @@
 #include <wincodec.h>
 
 #include <span>
+
+import util;
+import errors;
 
 
 using namespace charls;
