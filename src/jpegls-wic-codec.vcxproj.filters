@@ -21,9 +21,6 @@
     <ClInclude Include="trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jpegls_bitmap_decoder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="jpegls_bitmap_encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -74,6 +71,7 @@
     <ClCompile Include="jpegls_bitmap_frame_decode.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="jpegls_bitmap_decoder.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="jpegls-wic-codec.def">

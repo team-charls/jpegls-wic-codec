@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
-
-#include "jpegls_bitmap_decoder.h"
+module;
 
 #include "trace.h"
 #include "macros.h"
@@ -15,6 +13,8 @@
 
 #include <array>
 #include <mutex>
+
+module jpegls_bitmap_decoder;
 
 import class_factory;
 import guids;

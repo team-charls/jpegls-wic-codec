@@ -7,4 +7,4 @@ module;
 
 export module jpegls_bitmap_decoder;
 
-export HRESULT create_jpegls_bitmap_decoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result);
+export HRESULT create_jpegls_bitmap_decoder_factory(GUID const& interface_id, void** result);
