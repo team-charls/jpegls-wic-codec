@@ -1,17 +1,15 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
-
 #include "trace.h"
 #include "version.h"
 #include "macros.h"
 
-#include <olectl.h>
-#include <ShlObj.h>
-
 #include <array>
 #include <cassert>
+#include <string>
+
+import "win.h";
 
 import guids;
 import util;

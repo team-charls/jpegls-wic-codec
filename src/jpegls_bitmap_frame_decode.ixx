@@ -3,11 +3,11 @@
 
 module;
 
-#include <wincodec.h>
-
 #include <cstdint>
 
 export module jpegls_bitmap_frame_decode;
+
+import "win.h";
 
 import winrt;
 

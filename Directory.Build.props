@@ -47,6 +47,7 @@
 
       <!--
         Disable level All warnings that are not useful:
+        C4005 = macro redefinition [Caused by the use of header units]
         C4061 = enumerator 'identifier' in switch of enum 'enumeration' is not explicitly handled by a case label
         C4265 = class has virtual functions, but its non-trivial destructor is not virtual; instances of this class may not be destructed correctly
         C4365 = action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
@@ -72,7 +73,7 @@
         C5246 = the initialization of a subobject should be wrapped in braces [prevents simple usage of std::byte]
         C5264 = 'const' variable is not used [Too many warnings from STL headers, Visual Studio 2022 17.5 Preview 2.0]
       -->
-      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4061;4265;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4744;4774;4820;4946;5026;5027;5039;5045;5204;5246;5264</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4005;4061;4265;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4744;4774;4820;4946;5026;5027;5039;5045;5204;5246;5264</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro

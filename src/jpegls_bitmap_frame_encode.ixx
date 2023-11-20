@@ -5,14 +5,14 @@ module;
 
 #include "macros.h"
 
-#include <wincodec.h>
-
 #include <charls/charls.h>
 
 #include <cassert>
 #include <optional>
 
 export module jpegls_bitmap_frame_encode;
+
+import "win.h";
 
 import winrt;
 

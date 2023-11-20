@@ -8,18 +8,19 @@ module;
 
 #include <charls/charls.h>
 
-#include <wincodec.h>
-
 #include <array>
 #include <mutex>
 
 module jpegls_bitmap_decoder;
+
+import "win.h";
 
 import class_factory;
 import guids;
 import util;
 import errors;
 import jpegls_bitmap_frame_decode;
+
 import winrt;
 
 using charls::jpegls_category;

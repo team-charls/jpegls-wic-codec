@@ -5,13 +5,13 @@ module;
 
 #include "macros.h"
 
-#include <wincodec.h>
-
 #include <cassert>
 #include <cstddef>
 #include <string>
 
 export module util;
+
+import "win.h";
 
 import errors;
 
