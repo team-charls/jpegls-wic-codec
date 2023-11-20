@@ -1,16 +1,18 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+module;
 
 #include "macros.h"
-#include "trace.h"
 
+#include <wincodec.h>
 #include <winrt/base.h>
 
 #include <charls/charls.h>
 
-class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
+export module jpegls_bitmap_frame_encode;
+
+export class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
 public:
     [[nodiscard]]

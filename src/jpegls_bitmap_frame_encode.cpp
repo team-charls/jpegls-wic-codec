@@ -1,11 +1,17 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
+module;
 
-#include "jpegls_bitmap_frame_encode.h"
+#include "macros.h"
+#include "trace.h"
 
 #include <mfapi.h>
+
+#include <wincodec.h>
+#include <winrt/base.h>
+
+module jpegls_bitmap_frame_encode;
 
 import errors;
 

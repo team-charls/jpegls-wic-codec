@@ -4,12 +4,12 @@
 #include "pch.h"
 
 #include "jpegls_bitmap_encoder.h"
-
-#include "jpegls_bitmap_frame_encode.h"
+#include "trace.h"
 
 import class_factory;
 import guids;
 import errors;
+import jpegls_bitmap_frame_encode;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;

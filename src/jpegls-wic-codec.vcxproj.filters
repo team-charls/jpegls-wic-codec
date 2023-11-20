@@ -24,9 +24,6 @@
     <ClInclude Include="jpegls_bitmap_encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jpegls_bitmap_frame_encode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="jpegls_bitmap_decoder.ixx" />
+    <ClCompile Include="jpegls_bitmap_frame_encode.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="jpegls-wic-codec.def">
