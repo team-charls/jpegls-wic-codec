@@ -3,7 +3,6 @@
 
 module;
 
-#include "storage_buffer.h"
 #include "trace.h"
 #include "macros.h"
 
@@ -19,7 +18,7 @@ module jpegls_bitmap_frame_decode;
 
 import util;
 import errors;
-
+import storage_buffer;
 
 using namespace charls;
 using std::make_pair;

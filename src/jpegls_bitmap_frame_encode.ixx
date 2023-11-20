@@ -43,18 +43,18 @@ public:
         return source_stride_;
     }
 
-    HRESULT __stdcall Initialize(_In_ IPropertyBag2* encoder_options) noexcept override;
+    HRESULT __stdcall Initialize(IPropertyBag2* encoder_options) noexcept override;
     HRESULT __stdcall SetSize(uint32_t width, uint32_t height) noexcept override;
     HRESULT __stdcall SetResolution(double dpi_x, double dpi_y) noexcept override;
     HRESULT __stdcall SetPixelFormat(GUID* pixel_format) noexcept override;
     HRESULT __stdcall SetColorContexts(uint32_t count, IWICColorContext** color_context) noexcept override;
     HRESULT __stdcall GetMetadataQueryWriter(IWICMetadataQueryWriter** /* writer */) noexcept override;
-    HRESULT __stdcall SetThumbnail(_In_ IWICBitmapSource* thumbnail) noexcept override;
+    HRESULT __stdcall SetThumbnail(IWICBitmapSource* thumbnail) noexcept override;
     HRESULT __stdcall WritePixels(uint32_t line_count, uint32_t source_stride, uint32_t buffer_size,
                                   BYTE* pixels) noexcept override;
-    HRESULT __stdcall WriteSource(_In_ IWICBitmapSource* bitmap_source, _In_ WICRect* rectangle) noexcept override;
+    HRESULT __stdcall WriteSource(IWICBitmapSource* bitmap_source, WICRect* rectangle) noexcept override;
     HRESULT __stdcall Commit() noexcept override;
-    HRESULT __stdcall SetPalette(_In_ IWICPalette* palette) noexcept override;
+    HRESULT __stdcall SetPalette(IWICPalette* palette) noexcept override;
 
 private:
     void set_pixel_format(const int32_t bits_per_sample, const int32_t component_count) noexcept

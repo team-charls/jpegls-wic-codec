@@ -3,7 +3,6 @@
 
 #include "pch.h"
 
-#include "jpegls_bitmap_encoder.h"
 #include "trace.h"
 #include "version.h"
 #include "macros.h"
@@ -17,6 +16,7 @@ import guids;
 import util;
 import errors;
 import jpegls_bitmap_decoder;
+import jpegls_bitmap_encoder;
 
 using std::array;
 using std::wstring;

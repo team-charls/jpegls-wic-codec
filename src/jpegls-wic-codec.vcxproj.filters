@@ -21,13 +21,7 @@
     <ClInclude Include="trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jpegls_bitmap_encoder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="storage_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="macros.h">
@@ -68,8 +62,16 @@
     <ClCompile Include="jpegls_bitmap_frame_decode.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="jpegls_bitmap_decoder.ixx" />
     <ClCompile Include="jpegls_bitmap_frame_encode.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jpegls_bitmap_encoder.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jpegls_bitmap_decoder.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="storage_buffer.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

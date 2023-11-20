@@ -1,13 +1,15 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+module;
 
 #include <memory>
 #include <cstddef>
 
+export module storage_buffer;
+
 // purpose: replacement container for std::vector that doesn't initialize its content
-class storage_buffer final
+export class storage_buffer final
 {
 public:
     using value_type = std::byte;
