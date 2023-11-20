@@ -10,15 +10,20 @@ module;
 
 #include <Shlwapi.h>
 #include <wincodec.h>
-#include <winrt/base.h>
 
+#include <algorithm>
 #include <span>
+#include <optional>
+#include <cassert>
 
 module jpegls_bitmap_frame_decode;
 
 import util;
 import errors;
 import storage_buffer;
+
+import winrt;
+
 
 using namespace charls;
 using std::make_pair;

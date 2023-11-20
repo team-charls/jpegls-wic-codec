@@ -7,13 +7,15 @@ module;
 #include "trace.h"
 
 #include <mfapi.h>
-
 #include <wincodec.h>
-#include <winrt/base.h>
+
+#include <cassert>
 
 module jpegls_bitmap_frame_encode;
 
 import errors;
+
+import winrt;
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
 try

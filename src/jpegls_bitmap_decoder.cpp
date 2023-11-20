@@ -9,7 +9,6 @@ module;
 #include <charls/charls.h>
 
 #include <wincodec.h>
-#include <winrt/base.h>
 
 #include <array>
 #include <mutex>
@@ -21,6 +20,7 @@ import guids;
 import util;
 import errors;
 import jpegls_bitmap_frame_decode;
+import winrt;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;

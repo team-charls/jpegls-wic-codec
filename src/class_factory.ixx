@@ -4,11 +4,11 @@
 module;
 
 #include <Unknwn.h>
-#include <winrt/base.h>
 
 export module class_factory;
 
 import errors;
+import winrt;
 
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>

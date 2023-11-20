@@ -4,9 +4,10 @@
 module;
 
 #include <winerror.h>
-#include <winrt/base.h>
 
 export module errors;
+
+import winrt;
 
 export {
 

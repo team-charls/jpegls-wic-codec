@@ -11,6 +11,7 @@
 #include <ShlObj.h>
 
 #include <array>
+#include <cassert>
 
 import guids;
 import util;

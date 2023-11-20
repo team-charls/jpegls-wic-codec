@@ -7,8 +7,6 @@ module;
 
 #include <wincodec.h>
 
-#include <winrt/base.h>
-
 #include <cassert>
 #include <cstddef>
 #include <string>
@@ -16,6 +14,8 @@ module;
 export module util;
 
 import errors;
+
+import winrt;
 
 extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 

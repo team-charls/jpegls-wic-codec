@@ -6,12 +6,14 @@ module;
 #include "trace.h"
 
 #include <wincodec.h>
-#include <winrt/base.h>
 
 #include <charls/charls.h>
 
+#include <cassert>
+
 module jpegls_bitmap_encoder;
 
+import winrt;
 import class_factory;
 import guids;
 import errors;

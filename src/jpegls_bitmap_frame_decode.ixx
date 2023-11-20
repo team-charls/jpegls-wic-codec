@@ -4,11 +4,12 @@
 module;
 
 #include <wincodec.h>
-#include <winrt/base.h>
 
 #include <cstdint>
 
 export module jpegls_bitmap_frame_decode;
+
+import winrt;
 
 export class jpegls_bitmap_frame_decode final
     : public winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>

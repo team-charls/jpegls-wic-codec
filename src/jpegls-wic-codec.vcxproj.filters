@@ -74,6 +74,9 @@
     <ClCompile Include="storage_buffer.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="winrt.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="jpegls-wic-codec.def">
