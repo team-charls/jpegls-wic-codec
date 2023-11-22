@@ -4,7 +4,6 @@
 export module errors;
 
 import "win.h";
-
 import winrt;
 
 export {

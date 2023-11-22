@@ -5,12 +5,8 @@
 #include "version.h"
 #include "macros.h"
 
-#include <array>
-#include <cassert>
-#include <string>
-
+import "std.h";
 import "win.h";
-
 import guids;
 import util;
 import errors;

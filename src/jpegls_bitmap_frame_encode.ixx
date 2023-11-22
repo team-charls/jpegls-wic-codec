@@ -7,13 +7,10 @@ module;
 
 #include <charls/charls.h>
 
-#include <cassert>
-#include <optional>
-
 export module jpegls_bitmap_frame_encode;
 
+import "std.h";
 import "win.h";
-
 import winrt;
 
 export class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>

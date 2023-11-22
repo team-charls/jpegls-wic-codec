@@ -71,6 +71,7 @@
   <ItemGroup>
     <ClInclude Include="macros.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="std.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="win.h" />
@@ -177,9 +178,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="jpegls_bitmap_decoder.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

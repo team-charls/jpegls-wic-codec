@@ -10,14 +10,11 @@ module;
 module jpegls_bitmap_encoder;
 
 import "win.h";
-
 import class_factory;
 import guids;
 import errors;
 import jpegls_bitmap_frame_encode;
-
 import winrt;
-
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;

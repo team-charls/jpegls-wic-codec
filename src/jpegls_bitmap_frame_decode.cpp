@@ -8,27 +8,19 @@ module;
 
 #include <charls/charls.h>
 
-#include <algorithm>
-#include <span>
-#include <optional>
-#include <cassert>
-
 module jpegls_bitmap_frame_decode;
 
 import "win.h";
-
+import "std.h";
 import util;
 import errors;
 import storage_buffer;
-
 import winrt;
-
 
 using namespace charls;
 using std::make_pair;
 using winrt::check_hresult;
 using winrt::throw_hresult;
-
 
 namespace {
 

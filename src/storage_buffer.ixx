@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include <memory>
-#include <cstddef>
-
 export module storage_buffer;
+
+import "std.h";
 
 // purpose: replacement container for std::vector that doesn't initialize its content
 export class storage_buffer final

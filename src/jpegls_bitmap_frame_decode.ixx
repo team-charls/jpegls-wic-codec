@@ -1,14 +1,10 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include <cstdint>
-
 export module jpegls_bitmap_frame_decode;
 
+import "std.h";
 import "win.h";
-
 import winrt;
 
 export class jpegls_bitmap_frame_decode final
