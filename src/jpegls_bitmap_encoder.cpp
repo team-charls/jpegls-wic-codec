@@ -5,16 +5,16 @@ module;
 
 #include "trace.h"
 
-#include <charls/charls.h>
-
 module jpegls_bitmap_encoder;
 
 import "win.h";
+import "std.h";
 import class_factory;
 import guids;
 import errors;
 import jpegls_bitmap_frame_encode;
 import winrt;
+import charls;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;

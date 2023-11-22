@@ -80,6 +80,9 @@
     <ClCompile Include="generate_header_units.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\charls\include\charls\charls.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="jpegls-wic-codec.def">
