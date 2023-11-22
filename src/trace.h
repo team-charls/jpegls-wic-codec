@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <bit>
 
 // The include files are not used by the macros, but using the macros require the include files.
 #ifndef NDEBUG

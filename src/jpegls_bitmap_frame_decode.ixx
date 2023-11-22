@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+export module jpegls_bitmap_frame_decode;
 
-#include <wincodec.h>
-#include <winrt/base.h>
+import "std.h";
+import "win.h";
+import winrt;
 
-class jpegls_bitmap_frame_decode final
+export class jpegls_bitmap_frame_decode final
     : public winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
 public:
-    jpegls_bitmap_frame_decode(_In_ IStream* stream, _In_ IWICImagingFactory* factory);
+    jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory);
 
     // IWICBitmapSource
     HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) override;

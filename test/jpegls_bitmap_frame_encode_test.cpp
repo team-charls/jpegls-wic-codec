@@ -6,11 +6,11 @@
 #include "factory.h"
 #include "util.h"
 
-#include "../src/errors.h"
-
 #include <CppUnitTest.h>
 
 #include <array>
+
+import errors;
 
 using std::array;
 using std::vector;

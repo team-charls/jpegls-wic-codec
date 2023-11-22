@@ -48,6 +48,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>../charls/include;%(AdditionalIncludeDirectories);$(GeneratedFilesDir)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -69,28 +70,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="class_factory.h" />
-    <ClInclude Include="errors.h" />
-    <ClInclude Include="jpegls_bitmap_decoder.h" />
-    <ClInclude Include="jpegls_bitmap_encoder.h" />
-    <ClInclude Include="jpegls_bitmap_frame_decode.h" />
-    <ClInclude Include="guids.h" />
-    <ClInclude Include="jpegls_bitmap_frame_encode.h" />
+    <ClInclude Include="macros.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="storage_buffer.h" />
+    <ClInclude Include="std.h" />
     <ClInclude Include="trace.h" />
-    <ClInclude Include="util.h" />
     <ClInclude Include="version.h" />
+    <ClInclude Include="win.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="class_factory.ixx" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="jpegls_bitmap_encoder.cpp" />
-    <ClCompile Include="jpegls_bitmap_frame_decode.cpp" />
-    <ClCompile Include="jpegls_bitmap_frame_encode.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
+    <ClCompile Include="errors.ixx" />
+    <ClCompile Include="generate_header_units.cpp">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ScanSourceForModuleDependencies>
     </ClCompile>
+    <ClCompile Include="guids.ixx" />
     <ClCompile Include="jpegls_bitmap_decoder.cpp" />
+    <ClCompile Include="jpegls_bitmap_decoder.ixx" />
+    <ClCompile Include="jpegls_bitmap_encoder.cpp" />
+    <ClCompile Include="jpegls_bitmap_encoder.ixx" />
+    <ClCompile Include="jpegls_bitmap_frame_decode.cpp" />
+    <ClCompile Include="jpegls_bitmap_frame_decode.ixx" />
+    <ClCompile Include="jpegls_bitmap_frame_encode.cpp" />
+    <ClCompile Include="jpegls_bitmap_frame_encode.ixx" />
+    <ClCompile Include="storage_buffer.ixx" />
+    <ClCompile Include="util.ixx" />
+    <ClCompile Include="winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

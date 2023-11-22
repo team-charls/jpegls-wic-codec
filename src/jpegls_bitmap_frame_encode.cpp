@@ -1,11 +1,17 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
+module;
 
-#include "jpegls_bitmap_frame_encode.h"
+#include "macros.h"
+#include "trace.h"
 
-#include <mfapi.h>
+module jpegls_bitmap_frame_encode;
+
+import "win.h";
+import "std.h";
+import errors;
+import winrt;
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
 try

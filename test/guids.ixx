@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+module;
 
 #include <guiddef.h>
 
-namespace id {
+export module guids;
+
+export namespace id {
 
 // {52c25458-282d-4ef4-a69f-021bb2984543}
 inline constexpr GUID container_format_jpegls{0x52c25458, 0x282d, 0x4ef4, {0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43}};

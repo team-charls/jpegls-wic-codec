@@ -1,10 +1,10 @@
 ﻿#pragma once
 
-#include "../src/guids.h"
-
 #include <Windows.h>
 #include <wincodec.h>
 #include <winrt/base.h>
+
+import guids;
 
 class factory final
 {

@@ -48,6 +48,7 @@
       <!--
         Disable level All warnings that are not useful:
         C4061 = enumerator 'identifier' in switch of enum 'enumeration' is not explicitly handled by a case label
+        C4265 = class has virtual functions, but its non-trivial destructor is not virtual; instances of this class may not be destructed correctly
         C4365 = action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
         C4464 = A #include directive has a path that includes a '..' parent directory specifier. [Just informational]
         C4514 = function' : unreferenced inline function has been removed [Just informational]
@@ -61,14 +62,21 @@
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
         C4774 = ‘<function>’ : format string expected in argument <position> is not a string literal [Just informational]
         C4820 = bytes' bytes padding added after construct 'member_name' [Just informational]
+        C4946 = reinterpret_cast used between related classes: '' and ''
         C5026 = 'type': move constructor was implicitly defined as deleted [Just informational]
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
+        C5204 = '': class has virtual functions, but its trivial destructor is not virtual; instances of objects derived from this class may not be destructed correctly
         C5246 = the initialization of a subobject should be wrapped in braces [prevents simple usage of std::byte]
         C5264 = 'const' variable is not used [Too many warnings from STL headers, Visual Studio 2022 17.5 Preview 2.0]
       -->
-      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045;5246;5264</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4005;4061;4265;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;4946;5026;5027;5039;5045;5204;5246;5264</DisableSpecificWarnings>
+      <!--
+        C4005 = macro redefinition [Caused by the use of header units]
+        C4744 = '' has different type [caused by using named module]
+      -->
+      <DisableSpecificWarnings>4005;4744;%(DisableSpecificWarnings)</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
@@ -96,6 +104,7 @@
         NOIME;
         NOMINMAX;
         WINRT_NO_MAKE_DETECTION;
+        __STDC_WANT_SECURE_LIB__=1;
         _SILENCE_CLANG_COROUTINE_MESSAGE;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>

@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 #pragma once
 
-#include "../src/errors.h"
 
 #include <Windows.h>
+
+import errors;
 
 class test_stream final : public winrt::implements<test_stream, IStream>
 {

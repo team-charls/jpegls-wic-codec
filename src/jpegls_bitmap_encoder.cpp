@@ -1,14 +1,20 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
+module;
 
-#include "jpegls_bitmap_encoder.h"
+#include "trace.h"
 
-#include "class_factory.h"
-#include "errors.h"
-#include "guids.h"
-#include "jpegls_bitmap_frame_encode.h"
+#include <charls/charls.h>
+
+module jpegls_bitmap_encoder;
+
+import "win.h";
+import class_factory;
+import guids;
+import errors;
+import jpegls_bitmap_frame_encode;
+import winrt;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;
@@ -219,7 +225,7 @@ private:
     com_ptr<jpegls_bitmap_frame_encode> bitmap_frame_encode_;
 };
 
-HRESULT create_jpegls_bitmap_encoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
+HRESULT create_jpegls_bitmap_encoder_factory(GUID const& interface_id, void** result)
 {
     return make<class_factory<jpegls_bitmap_encoder>>()->QueryInterface(interface_id, result);
 }

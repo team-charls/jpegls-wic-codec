@@ -6,9 +6,10 @@
 #include "factory.h"
 #include "util.h"
 
-#include "../src/errors.h"
 
 #include <CppUnitTest.h>
+
+import errors;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

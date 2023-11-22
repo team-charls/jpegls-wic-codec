@@ -7,7 +7,6 @@
 #include "portable_anymap_file.h"
 #include "util.h"
 
-#include "../src/errors.h"
 #include "charls/charls_jpegls_encoder.h"
 
 #include <CppUnitTest.h>
@@ -17,6 +16,7 @@
 #include <span>
 #include <vector>
 
+import errors;
 
 using std::array;
 using std::vector;

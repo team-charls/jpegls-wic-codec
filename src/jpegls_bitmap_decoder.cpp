@@ -1,24 +1,23 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
+module;
 
-#include "jpegls_bitmap_decoder.h"
-
-#include "class_factory.h"
-#include "errors.h"
-#include "guids.h"
-#include "jpegls_bitmap_frame_decode.h"
 #include "trace.h"
-#include "util.h"
+#include "macros.h"
 
 #include <charls/charls.h>
 
-#include <wincodec.h>
-#include <winrt/base.h>
+module jpegls_bitmap_decoder;
 
-#include <array>
-#include <mutex>
+import "win.h";
+import "std.h";
+import class_factory;
+import guids;
+import util;
+import errors;
+import jpegls_bitmap_frame_decode;
+import winrt;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;

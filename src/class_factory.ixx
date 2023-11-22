@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+export module class_factory;
 
-#include "errors.h"
+import "win.h";
+import errors;
+import winrt;
 
-template<typename Class>
+export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
     HRESULT __stdcall CreateInstance(IUnknown* outer, GUID const& interface_id, void** result) noexcept override

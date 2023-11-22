@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+export module errors;
 
-#include <winerror.h>
-#include <winrt/base.h>
+import "win.h";
+import winrt;
+
+export {
 
 inline constexpr HRESULT error_ok{S_OK};
 inline constexpr HRESULT error_fail{E_FAIL};
@@ -51,4 +53,6 @@ inline void check_condition(const bool condition, const winrt::hresult result_to
 {
     if (!condition)
         throw_hresult(result_to_throw);
+}
+
 }

@@ -1,28 +1,26 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
+module;
 
-#include "jpegls_bitmap_frame_decode.h"
-
-#include "errors.h"
-#include "storage_buffer.h"
 #include "trace.h"
-#include "util.h"
+#include "macros.h"
 
 #include <charls/charls.h>
 
-#include <Shlwapi.h>
-#include <wincodec.h>
+module jpegls_bitmap_frame_decode;
 
-#include <span>
-
+import "win.h";
+import "std.h";
+import util;
+import errors;
+import storage_buffer;
+import winrt;
 
 using namespace charls;
 using std::make_pair;
 using winrt::check_hresult;
 using winrt::throw_hresult;
-
 
 namespace {
 
