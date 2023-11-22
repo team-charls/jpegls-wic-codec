@@ -6,8 +6,6 @@ module;
 #include "trace.h"
 #include "macros.h"
 
-#include <charls/charls.h>
-
 module jpegls_bitmap_decoder;
 
 import "win.h";
@@ -18,6 +16,7 @@ import util;
 import errors;
 import jpegls_bitmap_frame_decode;
 import winrt;
+import charls;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;

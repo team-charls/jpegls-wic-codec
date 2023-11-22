@@ -5,13 +5,12 @@ module;
 
 #include "macros.h"
 
-#include <charls/charls.h>
-
 export module jpegls_bitmap_frame_encode;
 
 import "std.h";
 import "win.h";
 import winrt;
+import charls;
 
 export class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {

@@ -77,6 +77,7 @@
     <ClInclude Include="win.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\charls\include\charls\charls.ixx" />
     <ClCompile Include="class_factory.ixx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="errors.ixx" />

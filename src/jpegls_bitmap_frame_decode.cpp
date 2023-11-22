@@ -6,8 +6,6 @@ module;
 #include "trace.h"
 #include "macros.h"
 
-#include <charls/charls.h>
-
 module jpegls_bitmap_frame_decode;
 
 import "win.h";
@@ -16,6 +14,7 @@ import util;
 import errors;
 import storage_buffer;
 import winrt;
+import charls;
 
 using namespace charls;
 using std::make_pair;
