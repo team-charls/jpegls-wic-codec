@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+
+[[nodiscard]]
 constexpr int32_t log_2(const int32_t n) noexcept
 {
     int32_t x{};
@@ -52,39 +54,46 @@ public:
         convert_to_little_endian_if_needed();
     }
 
-    [[nodiscard]] int width() const noexcept
+    [[nodiscard]]
+    int width() const noexcept
     {
         return width_;
     }
 
-    [[nodiscard]] int height() const noexcept
+    [[nodiscard]]
+    int height() const noexcept
     {
         return height_;
     }
 
-    [[nodiscard]] int component_count() const noexcept
+    [[nodiscard]]
+    int component_count() const noexcept
     {
         return component_count_;
     }
 
-    [[nodiscard]] int bits_per_sample() const noexcept
+    [[nodiscard]]
+    int bits_per_sample() const noexcept
     {
         return bits_per_sample_;
     }
 
-    [[nodiscard]] std::vector<std::byte>& image_data() noexcept
+    [[nodiscard]]
+    std::vector<std::byte>& image_data() noexcept
     {
         return input_buffer_;
     }
 
-    [[nodiscard]] std::span<std::uint16_t> image_data_as_uint16() noexcept
+    [[nodiscard]]
+    std::span<std::uint16_t> image_data_as_uint16() noexcept
     {
         void* data{input_buffer_.data()};
         return std::span{static_cast<std::uint16_t*>(data), input_buffer_.size() / 2};
     }
 
 private:
-    [[nodiscard]] static std::vector<int> read_header(std::istream& pnm_file)
+    [[nodiscard]]
+    static std::vector<int> read_header(std::istream& pnm_file)
     {
         // All portable anymap format (PNM) start with the character P.
         if (const auto first{static_cast<char>(pnm_file.get())}; first != 'P')

@@ -95,7 +95,7 @@ public:
     {
         charls::jpegls_encoder encoder;
         encoder.frame_info({1, 1, 8, 1});
-        std::vector<std::byte> destination(encoder.estimated_destination_size());
+        vector<std::byte> destination(encoder.estimated_destination_size());
         encoder.destination(destination);
 
         encoder.write_standard_spiff_header(charls::spiff_color_space::grayscale,
@@ -118,7 +118,7 @@ public:
     {
         charls::jpegls_encoder encoder;
         encoder.frame_info({1, 1, 8, 1});
-        std::vector<std::byte> destination(encoder.estimated_destination_size());
+        vector<std::byte> destination(encoder.estimated_destination_size());
         encoder.destination(destination);
 
         encoder.write_standard_spiff_header(charls::spiff_color_space::grayscale,
@@ -188,7 +188,7 @@ public:
         uint32_t width;
         uint32_t height;
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        std::vector<std::byte> buffer(static_cast<size_t>(width) * height);
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         HRESULT result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
                                                         reinterpret_cast<BYTE*>(buffer.data()))};
@@ -315,7 +315,7 @@ private:
         const HRESULT result{copy_pixels<std::byte>(*bitmap_frame_decoder.get(), stride, buffer)};
         Assert::AreEqual(error_ok, result);
 
-        const std::vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
+        const vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
     }
 
@@ -336,7 +336,7 @@ private:
         result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), stride, buffer);
         Assert::AreEqual(error_ok, result);
 
-        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        const vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
     }
 
@@ -417,10 +417,10 @@ private:
     }
 
     [[nodiscard]]
-    static std::vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width, const size_t height,
+    static vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width, const size_t height,
                                                  const size_t stride)
     {
-        std::vector<std::byte> destination(static_cast<size_t>(width) * height);
+        vector<std::byte> destination(static_cast<size_t>(width) * height);
 
         for (size_t j{}, row{}; row != height; ++row)
         {
@@ -482,10 +482,10 @@ private:
     }
 
     [[nodiscard]]
-    static std::vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width,
+    static vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width,
                                                 const size_t height, const size_t stride)
     {
-        std::vector<std::byte> destination(static_cast<size_t>(width) * height);
+        vector<std::byte> destination(static_cast<size_t>(width) * height);
 
         for (size_t j{}, row{}; row != height; ++row)
         {

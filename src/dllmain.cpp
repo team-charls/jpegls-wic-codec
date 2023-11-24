@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "trace.h"
-#include "version.h"
 #include "macros.h"
+#include "version.h"
 
 import "std.h";
 import "win.h";
@@ -87,8 +86,8 @@ void register_decoder()
     constexpr wchar_t CLSID_PhotoThumbnailProvider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
 
     registry::set_value(LR"(SOFTWARE\Classes\.jls\ShellEx\)" + IID_IThumbnailProvider, L"", CLSID_PhotoThumbnailProvider);
-    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\)" + IID_IThumbnailProvider,
-                        L"", CLSID_PhotoThumbnailProvider);
+    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.jls\ShellEx\)" + IID_IThumbnailProvider, L"",
+                        CLSID_PhotoThumbnailProvider);
 
     // Register with the legacy Windows Photo Viewer (still installed on Windows 10), just forward to the TIFF registration.
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".jls",

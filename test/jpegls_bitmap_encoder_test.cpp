@@ -779,7 +779,7 @@ public:
         const com_ptr encoder{factory_.create_encoder()};
         check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
-        std::vector<std::byte> input_data(4);
+        vector<std::byte> input_data(4);
 
         com_ptr<IWICBitmap> bitmap;
         check_hresult(imaging_factory()->CreateBitmapFromMemory(32, 1, GUID_WICPixelFormatBlackWhite, 4,

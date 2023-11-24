@@ -3,7 +3,6 @@
 
 module;
 
-#include "trace.h"
 #include "macros.h"
 
 module jpegls_bitmap_frame_decode;
@@ -18,6 +17,7 @@ import charls;
 
 using namespace charls;
 using std::make_pair;
+using std::vector;
 using winrt::check_hresult;
 using winrt::throw_hresult;
 
@@ -259,7 +259,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
 
         if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
         {
-            const auto planar{decoder.decode<std::vector<std::byte>>()};
+            const auto planar{decoder.decode<vector<std::byte>>()};
             if (frame_info.bits_per_sample > 8)
             {
                 convert_planar_to_rgb<uint16_t>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
@@ -271,13 +271,13 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In
         }
         else if (frame_info.bits_per_sample == 2)
         {
-            std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+            vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
             decoder.decode(byte_pixels);
             pack_to_crumbs(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
         }
         else if (frame_info.bits_per_sample == 4)
         {
-            std::vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+            vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
             decoder.decode(byte_pixels);
             pack_to_nibbles(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
         }

@@ -42,4 +42,4 @@ SpaceBeforeCpp11BracedList: false
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
-BreakAfterAttributes: Leave
+BreakAfterAttributes: Always

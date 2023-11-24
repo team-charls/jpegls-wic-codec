@@ -101,7 +101,7 @@ Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no su
 ## Build Instructions
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-2. Open Visual Studio 2022 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
+2. Open Visual Studio 2022 17.8.0 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
 3. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
 ## Installation

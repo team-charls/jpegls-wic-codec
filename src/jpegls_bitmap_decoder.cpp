@@ -3,7 +3,6 @@
 
 module;
 
-#include "trace.h"
 #include "macros.h"
 
 module jpegls_bitmap_decoder;
@@ -89,7 +88,6 @@ public:
         TRACE("{} jpegls_bitmap_decoder::Initialize, stream={}, cache_options={}\n", fmt::ptr(this), fmt::ptr(stream),
               fmt::underlying(cache_options));
 
-        SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
         source_stream_.copy_from(check_in_pointer(stream));
@@ -196,7 +194,6 @@ public:
 
         check_condition(index == 0, wincodec::error_frame_missing);
 
-        SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
 
         check_condition(static_cast<bool>(source_stream_), wincodec::error_not_initialized);
