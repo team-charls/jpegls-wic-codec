@@ -16,17 +16,20 @@ extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
 export {
 
+[[nodiscard]]
 constexpr std::byte operator"" _byte(const unsigned long long int n)
 {
     return static_cast<std::byte>(n);
 }
 
-[[nodiscard]] inline HMODULE get_current_module() noexcept
+[[nodiscard]]
+inline HMODULE get_current_module() noexcept
 {
     return reinterpret_cast<HINSTANCE>(&__ImageBase);
 }
 
-[[nodiscard]] inline std::wstring get_module_path()
+[[nodiscard]]
+inline std::wstring get_module_path()
 {
     std::wstring path(100, L'?');
     size_t path_size;
@@ -48,7 +51,8 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
     return path;
 }
 
-[[nodiscard]] inline std::wstring guid_to_string(const GUID& guid)
+[[nodiscard]]
+inline std::wstring guid_to_string(const GUID& guid)
 {
     std::wstring guid_text;
 
@@ -61,7 +65,8 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
     return guid_text;
 }
 
-[[nodiscard]] inline const char* pixel_format_to_string(const GUID& guid) noexcept
+[[nodiscard]]
+inline const char* pixel_format_to_string(const GUID& guid) noexcept
 {
     if (guid == GUID_WICPixelFormat2bppGray)
         return "GUID_WICPixelFormat2bppGray";
@@ -84,10 +89,34 @@ constexpr std::byte operator"" _byte(const unsigned long long int n)
     return "Unknown";
 }
 
+
+[[nodiscard]]
 constexpr bool failed(winrt::hresult const result) noexcept
 {
     return result < 0;
 }
+
+namespace fmt {
+
+// Copied from fmtlib as P2510 (Formatting Pointers) is not yet accepted.
+template<typename T>
+[[nodiscard]]
+auto ptr(T p) noexcept -> const void*
+{
+    static_assert(std::is_pointer_v<T>);
+    return std::bit_cast<const void*>(p);
+}
+
+// Copied from fmtlib as replacement for std::to_underlying (C++23)
+template<typename Enum>
+[[nodiscard]]
+constexpr auto underlying(Enum e) noexcept -> std::underlying_type_t<Enum>
+{
+    return static_cast<std::underlying_type_t<Enum>>(e);
+}
+
+} // namespace fmt
+
 
 namespace registry {
 
@@ -95,22 +124,22 @@ SUPPRESS_WARNING_NEXT_LINE(26493)                  // Don't use C-style casts (u
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
 inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                      _Null_terminated_ const wchar_t* value)
+                        _Null_terminated_ const wchar_t* value)
 {
     const auto length{wcslen(value) + 1};
     winrt::check_win32(
         RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
-                       static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
+                        static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
 inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
-                      _Null_terminated_ const wchar_t* value)
+                        _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
 inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                      const uint32_t value)
+                        const uint32_t value)
 {
     winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
@@ -121,17 +150,19 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
 }
 
 inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                      const void* value, const DWORD value_size_in_bytes)
+                        const void* value, const DWORD value_size_in_bytes)
 {
     winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
 }
 
 inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value,
-                      const DWORD value_size_in_bytes)
+                        const DWORD value_size_in_bytes)
 {
     set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
 }
 
+
+[[nodiscard]]
 inline HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
 {
     if (const LSTATUS result{RegDeleteTreeW(hkey_local_machine, sub_key)}; result != ERROR_SUCCESS)

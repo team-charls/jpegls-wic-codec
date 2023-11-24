@@ -16,12 +16,14 @@ public:
     {
     }
 
-    [[nodiscard]] size_t size() const noexcept
+    [[nodiscard]]
+    size_t size() const noexcept
     {
         return size_;
     }
 
-    [[nodiscard]] std::byte* data() const noexcept
+    [[nodiscard]]
+    std::byte* data() const noexcept
     {
         return buffer_.get();
     }
@@ -30,4 +32,3 @@ private:
     size_t size_;
     std::unique_ptr<std::byte[]> buffer_; // NOLINT(cppcoreguidelines-avoid-c-arrays)
 };
-

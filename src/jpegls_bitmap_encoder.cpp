@@ -3,7 +3,7 @@
 
 module;
 
-#include "trace.h"
+#include "macros.h"
 
 module jpegls_bitmap_encoder;
 
@@ -15,6 +15,7 @@ import errors;
 import jpegls_bitmap_frame_encode;
 import winrt;
 import charls;
+import util;
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;

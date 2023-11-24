@@ -72,7 +72,6 @@
   <ItemGroup>
     <ClInclude Include="macros.h" />
     <ClInclude Include="std.h" />
-    <ClInclude Include="trace.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="win.h" />
   </ItemGroup>

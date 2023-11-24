@@ -4,7 +4,6 @@
 module;
 
 #include "macros.h"
-#include "trace.h"
 
 module jpegls_bitmap_frame_encode;
 
@@ -12,6 +11,7 @@ import "win.h";
 import "std.h";
 import errors;
 import winrt;
+import util;
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
 try
