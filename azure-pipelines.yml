@@ -40,7 +40,7 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
       maximumCpuCount: true
-      msbuildArgs: -p:JPEGLS_WIC_CODEC_PROFILE=true
+      msbuildArgs: -p:JPEGLS_WIC_CODEC_PROFILE=true -p:VCToolsVersion=14.38.33130
 
   - task: VSTest@2
     inputs:

@@ -30,7 +30,7 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild jpegls-wic-codec.sln /t:jpegls-wic-codec:rebuild /p:Configuration="Release" /p:Platform="x64" /nodeReuse:false
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild jpegls-wic-codec.sln /t:jpegls-wic-codec:rebuild /p:Configuration="Release" /p:Platform="x64" /p:VCToolsVersion=14.38.33130 /nodeReuse:false
 
       - name: Run sonar-scanner
         env:
