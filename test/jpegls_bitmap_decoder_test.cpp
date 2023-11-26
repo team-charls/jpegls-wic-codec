@@ -1,17 +1,24 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
-
-#include "factory.h"
-#include "util.h"
-#include "test_stream.h"
-
-#include <charls/charls.h>
-
+#include "macros.h"
 #include <CppUnitTest.h>
 
-#include <span>
+import test_stream;
+import errors;
+import factory;
+import guids;
+import util;
+import charls;
+import winrt;
+import "std.h";
+import "win.h";
+
+template<>
+inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<winrt::hresult>(const winrt::hresult& q)
+{
+    RETURN_WIDE_STRING(static_cast<int>(q));
+}
 
 using std::vector;
 using namespace winrt;

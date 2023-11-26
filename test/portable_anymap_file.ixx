@@ -1,15 +1,9 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#pragma once
+export module portable_anymap_file;
 
-
-#include <fstream>
-#include <ios>
-#include <span>
-#include <sstream>
-#include <string>
-#include <vector>
+import "std.h";
 
 
 [[nodiscard]]
@@ -28,7 +22,7 @@ constexpr int32_t log_2(const int32_t n) noexcept
 //          The 2 binary formats P5 and P6 are supported:
 //          Portable GrayMap: P5 = binary, extension = .pgm, 0-2^16 (gray scale)
 //          Portable PixMap: P6 = binary, extension.ppm, range 0-2^16 (RGB)
-class portable_anymap_file final
+export class portable_anymap_file final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>

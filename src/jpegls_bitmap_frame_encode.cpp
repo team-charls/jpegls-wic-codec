@@ -13,7 +13,7 @@ import errors;
 import winrt;
 import util;
 
-HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] _In_ IPropertyBag2* encoder_options) noexcept
+HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] IPropertyBag2* encoder_options) noexcept
 try
 {
     TRACE("{} jpegls_bitmap_frame_encode::Initialize, encoder_options={}\n", fmt::ptr(this), fmt::ptr(encoder_options));

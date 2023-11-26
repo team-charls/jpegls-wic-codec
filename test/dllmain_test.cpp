@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
-
-#include "factory.h"
-#include "util.h"
-
-
+#include "macros.h"
 #include <CppUnitTest.h>
 
 import errors;
+import factory;
+import guids;
+import util;
+import winrt;
+import "win.h";
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

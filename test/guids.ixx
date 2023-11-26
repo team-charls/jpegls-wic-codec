@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include <guiddef.h>
-
 export module guids;
+
+import "win.h";
 
 export namespace id {
 

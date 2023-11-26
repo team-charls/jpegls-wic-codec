@@ -1,12 +1,13 @@
-﻿#pragma once
+﻿// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
-#include <Windows.h>
-#include <wincodec.h>
-#include <winrt/base.h>
+export module factory;
 
 import guids;
+import winrt;
+import "win.h";
 
-class factory final
+export class factory final
 {
 public:
     factory() noexcept(false) : library_{LoadLibrary(L"jpegls-wic-codec.dll")}

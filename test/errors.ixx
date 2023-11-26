@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include <winerror.h>
-
 export module errors;
+
+import "win.h";
 
 export {
 

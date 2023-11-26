@@ -1,13 +1,18 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
-#pragma once
 
+module;
 
-#include <Windows.h>
+#include "macros.h"
+#include <rpcsal.h>
+
+export module test_stream;
 
 import errors;
+import winrt;
+import "win.h";
 
-class test_stream final : public winrt::implements<test_stream, IStream>
+export class test_stream final : public winrt::implements<test_stream, IStream>
 {
 public:
     test_stream(const bool fail_on_read, const int fail_on_seek_counter) noexcept :

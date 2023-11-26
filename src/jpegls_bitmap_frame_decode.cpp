@@ -213,7 +213,7 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
 
 } // namespace
 
-jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(_In_ IStream* stream, _In_ IWICImagingFactory* factory)
+jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
 {
     ULARGE_INTEGER size;
     check_hresult(IStream_Size(stream, &size));
