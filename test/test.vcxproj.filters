@@ -14,26 +14,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="portable_anymap_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_stream.h">
+    <ClInclude Include="macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="jpegls_bitmap_decoder_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,6 +38,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="guids.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_stream.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winrt.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="factory.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="portable_anymap_file.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\charls\include\charls\charls.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

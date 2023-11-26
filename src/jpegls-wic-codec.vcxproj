@@ -31,7 +31,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -46,9 +46,8 @@
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>../charls/include;%(AdditionalIncludeDirectories);$(GeneratedFilesDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../std-header-units;%(AdditionalIncludeDirectories);$(GeneratedFilesDir)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalDependencies>windowscodecs.lib;onecore.lib;Shlwapi.lib;mfplat.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -59,7 +58,6 @@
     <ClCompile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -71,23 +69,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
-    <ClInclude Include="std.h" />
     <ClInclude Include="version.h" />
-    <ClInclude Include="win.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\charls\include\charls\charls.ixx" />
     <ClCompile Include="class_factory.ixx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="errors.ixx" />
-    <ClCompile Include="generate_header_units.cpp">
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ScanSourceForModuleDependencies>
-    </ClCompile>
     <ClCompile Include="guids.ixx" />
     <ClCompile Include="jpegls_bitmap_decoder.cpp" />
     <ClCompile Include="jpegls_bitmap_decoder.ixx" />
@@ -110,6 +98,9 @@
     <ProjectReference Include="..\charls\src\CharLS.vcxproj">
       <Project>{1e31f9f1-f175-4082-b3e2-b1f0eca3f44c}</Project>
       <Private>true</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\std-header-units\std-header-units.vcxproj">
+      <Project>{154ad843-e510-4271-a1dc-8eb291482c38}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

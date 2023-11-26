@@ -109,9 +109,7 @@
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 
-      <!-- Use by default precompiled headers with the modern name pch.h -->
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
 
     <Link>

@@ -21,12 +21,6 @@
     <ClInclude Include="macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="win.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="std.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -72,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="winrt.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="generate_header_units.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\charls\include\charls\charls.ixx">

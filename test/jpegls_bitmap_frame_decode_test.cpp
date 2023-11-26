@@ -1,22 +1,17 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "pch.h"
-
-#include "factory.h"
-#include "portable_anymap_file.h"
-#include "util.h"
-
-#include "charls/charls_jpegls_encoder.h"
-
+#include "macros.h"
 #include <CppUnitTest.h>
 
-#include <array>
-#include <cstddef>
-#include <span>
-#include <vector>
-
 import errors;
+import factory;
+import portable_anymap_file;
+import util;
+import charls;
+import winrt;
+import "std.h";
+import "win.h";
 
 using std::array;
 using std::vector;
