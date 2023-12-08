@@ -6,6 +6,7 @@
 
 import "std.h";
 import "win.h";
+
 import guids;
 import util;
 import errors;
@@ -19,7 +20,7 @@ using namespace std::string_literals;
 namespace {
 
 void register_general_decoder_encoder_settings(const GUID& class_id, const GUID& wic_category_id,
-                                               const wchar_t* friendly_name, const GUID* formats, const size_t format_count)
+                                               const wchar_t* friendly_name, const std::span<const GUID* const> formats)
 {
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
@@ -39,9 +40,9 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
     registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
-    for (size_t i{}; i != format_count; ++i)
+    for (const GUID* format : formats)
     {
-        registry::set_value(formats_sub_key + guid_to_string(formats[i]), L"", L"");
+        registry::set_value(formats_sub_key + guid_to_string(*format), L"", L"");
     }
 
     // COM co-create registration.
@@ -58,11 +59,10 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
 
 void register_decoder()
 {
-    const array formats{GUID_WICPixelFormat2bppGray,  GUID_WICPixelFormat4bppGray, GUID_WICPixelFormat8bppGray,
-                        GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppRGB, GUID_WICPixelFormat48bppRGB};
+    constexpr array formats{&GUID_WICPixelFormat2bppGray,  &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
+                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB, &GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(id::jpegls_decoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder",
-                                              formats.data(), formats.size());
+    register_general_decoder_encoder_settings(id::jpegls_decoder, CATID_WICBitmapDecoders, L"JPEG-LS Decoder", formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::jpegls_decoder)};
 
@@ -96,12 +96,11 @@ void register_decoder()
 
 void register_encoder()
 {
-    const array formats{GUID_WICPixelFormat2bppGray,  GUID_WICPixelFormat4bppGray, GUID_WICPixelFormat8bppGray,
-                        GUID_WICPixelFormat16bppGray, GUID_WICPixelFormat24bppBGR, GUID_WICPixelFormat24bppRGB,
-                        GUID_WICPixelFormat48bppRGB};
+    constexpr array formats{&GUID_WICPixelFormat2bppGray,  &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
+                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppBGR, &GUID_WICPixelFormat24bppRGB,
+                            &GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder",
-                                              formats.data(), formats.size());
+    register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder", formats);
 }
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
@@ -145,7 +144,7 @@ BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
 _Use_decl_annotations_ HRESULT __stdcall DllCanUnloadNow()
 {
-    const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
+    const auto result{winrt::get_module_lock() ? S_FALSE : S_OK};
     TRACE("jpegls-wic-codec::DllCanUnloadNow hr = {} (0 = S_OK -> unload OK)\n", result);
     return result;
 }
