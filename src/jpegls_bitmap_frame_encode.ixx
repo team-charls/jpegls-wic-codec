@@ -64,12 +64,13 @@ private:
         pixel_format_set_ = true;
     }
 
-    void allocate_pixel_buffer_if_needed(const size_t stride)
+    void allocate_pixel_buffer()
     {
         ASSERT(size_set_ && pixel_format_set_);
         if (source_.empty())
         {
-            source_.resize(stride * frame_info_.height);
+            source_stride_ = compute_stride();
+            source_.resize(source_stride_ * frame_info_.height);
         }
     }
 
@@ -110,7 +111,7 @@ private:
     void unpack_crumbs()
     {
         const std::byte* crumbs_pixels{source_.data()};
-        const size_t stride{compute_stride()};
+        const size_t stride{source_stride_};
         const size_t width{frame_info_.width};
         const size_t height{frame_info_.height};
         std::vector<std::byte> unpacked(width * height);
@@ -144,12 +145,13 @@ private:
         }
 
         source_.swap(unpacked);
+        source_stride_ = 0; // JPEG-LS encoder should re-compute the stride
     }
 
     void unpack_nibbles()
     {
         const std::byte* nibble_pixels{source_.data()};
-        const size_t stride{compute_stride()};
+        const size_t stride{source_stride_};
         const size_t width{frame_info_.width};
         const size_t height{frame_info_.height};
         std::vector<std::byte> unpacked(width * height);
@@ -170,6 +172,7 @@ private:
         }
 
         source_.swap(unpacked);
+        source_stride_ = 0; // JPEG-LS encoder should re-compute the stride
     }
 
     enum class state

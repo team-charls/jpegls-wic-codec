@@ -3,6 +3,7 @@
 This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can leverage WIC codecs. It makes it possible to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
 
 [![Build Status](https://dev.azure.com/team-charls/jpegls-wic-codec/_apis/build/status/team-charls.jpegls-wic-codec?branchName=main)](https://dev.azure.com/team-charls/jpegls-wic-codec/_build/latest?definitionId=1&branchName=main)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=team-charls_jpegls-wic-codec&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=team-charls_jpegls-wic-codec)
 
 ## Introduction
 

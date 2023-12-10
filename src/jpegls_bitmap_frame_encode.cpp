@@ -7,10 +7,11 @@ module;
 
 module jpegls_bitmap_frame_encode;
 
-import "win.h";
 import "std.h";
-import errors;
+import "win.h";
 import winrt;
+
+import errors;
 import util;
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] IPropertyBag2* encoder_options) noexcept
@@ -152,8 +153,8 @@ try
                     wincodec::error_wrong_state);
     check_condition(received_line_count_ + line_count <= frame_info_.height, wincodec::error_codec_too_many_scan_lines);
 
-    const size_t destination_stride{compute_stride()};
-    allocate_pixel_buffer_if_needed(destination_stride);
+    allocate_pixel_buffer();
+    const size_t destination_stride{source_stride_};
 
     std::byte* destination{source_.data() + (received_line_count_ * destination_stride)};
     winrt::check_hresult(MFCopyImage(reinterpret_cast<BYTE*>(destination), static_cast<LONG>(destination_stride), pixels,
@@ -193,10 +194,9 @@ try
         winrt::check_hresult(SetPixelFormat(&pixel_format));
     }
 
-    const size_t stride{compute_stride()};
-    allocate_pixel_buffer_if_needed(stride);
+    allocate_pixel_buffer();
 
-    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, static_cast<uint32_t>(stride), static_cast<uint32_t>(source_.size()),
+    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, static_cast<uint32_t>(source_stride_), static_cast<uint32_t>(source_.size()),
                                                    reinterpret_cast<BYTE*>(source_.data())));
     state_ = state::received_pixels;
     return error_ok;
@@ -224,10 +224,6 @@ try
     else if (frame_info_.bits_per_sample == 4)
     {
         unpack_nibbles();
-    }
-    else
-    {
-        source_stride_ = compute_stride(); // TODO: move to allocate_pixel_buffer_if_needed
     }
 
     state_ = state::commited;
