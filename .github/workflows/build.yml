@@ -22,7 +22,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1.3
 
       - name: Install sonar-scanner and build-wrapper
-        uses: SonarSource/sonarcloud-github-c-cpp@v1
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
 
       - name: Restore NuGet packages
         working-directory: ${{env.GITHUB_WORKSPACE}}
