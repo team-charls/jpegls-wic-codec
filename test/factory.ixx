@@ -1,11 +1,16 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
+module;
+
+#include "macros.h"
+
 export module factory;
 
-import guids;
-import winrt;
 import "win.h";
+import winrt;
+
+import guids;
 
 export class factory final
 {

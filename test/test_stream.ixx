@@ -86,7 +86,6 @@ public:
         return error_fail;
     }
 
-    SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
     HRESULT __stdcall Clone(__RPC__deref_out_opt IStream**) noexcept override
     {
         return error_fail;
