@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
+module;
+
+#include "macros.h"
+
 export module errors;
 
 import "win.h";
