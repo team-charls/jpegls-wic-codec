@@ -46,11 +46,8 @@ void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encod
     }
 }
 
-} // namespace
-
-class jpegls_bitmap_encoder final : public implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
+struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
-public:
     // IWICBitmapEncoder
     HRESULT __stdcall Initialize(_In_ IStream* destination,
                                  [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
@@ -192,7 +189,7 @@ public:
         TRACE("{} jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer={}\n", fmt::ptr(this),
               fmt::ptr(metadata_query_writer));
 
-        // Note: the current implementation doesn't writing metadata to the JPEG-LS stream.
+        // Note: the current implementation doesn't write metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
         constexpr HRESULT result = wincodec::error_unsupported_operation;
         return result;
@@ -225,6 +222,8 @@ private:
     com_ptr<IStream> destination_;
     com_ptr<jpegls_bitmap_frame_encode> bitmap_frame_encode_;
 };
+
+} // namespace
 
 HRESULT create_jpegls_bitmap_encoder_factory(GUID const& interface_id, void** result)
 {

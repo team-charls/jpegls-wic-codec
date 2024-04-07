@@ -7,10 +7,9 @@ import "std.h";
 import "win.h";
 import winrt;
 
-export class jpegls_bitmap_frame_decode final
-    : public winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
+export struct jpegls_bitmap_frame_decode
+    : winrt::implements<jpegls_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
-public:
     jpegls_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory);
 
     // IWICBitmapSource
