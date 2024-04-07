@@ -12,9 +12,8 @@ import "win.h";
 import winrt;
 import charls;
 
-export class jpegls_bitmap_frame_encode final : public winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
+export struct jpegls_bitmap_frame_encode : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {
-public:
     [[nodiscard]]
     const charls::frame_info& frame_info() const noexcept
     {

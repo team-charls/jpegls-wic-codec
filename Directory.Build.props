@@ -94,19 +94,13 @@
         NOMINMAX: Prevent that the Windows SDK header files define the macros min and max (conflict with C++ std::min\max).
 
         * WINRT *
-        WINRT_NO_MAKE_DETECTION: Enable making COM class implementation final
-        _SILENCE_CLANG_COROUTINE_MESSAGE: Supress warning that coroutine is not compatible wih clang (clang-tidy fix)
+        WINRT_LEAN_AND_MEAN: If defined, disables rarely-used WinRT features (in order to reduce compile times)
+
+        * C *
+        __STDC_WANT_SECURE_LIB__=1: Enable the secure methods of the C standard library.
       -->
       <PreprocessorDefinitions>
-        WIN32_LEAN_AND_MEAN;
-        NOSERVICE;
-        NOMCX;
-        NOIME;
-        NOMINMAX;
-        WINRT_NO_MAKE_DETECTION;
-        __STDC_WANT_SECURE_LIB__=1;
-        _SILENCE_CLANG_COROUTINE_MESSAGE;
-        %(PreprocessorDefinitions)
+        WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;__STDC_WANT_SECURE_LIB__=1;%(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>

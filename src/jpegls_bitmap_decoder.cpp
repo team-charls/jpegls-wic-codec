@@ -28,10 +28,10 @@ using winrt::com_ptr;
 using winrt::make;
 using winrt::to_hresult;
 
+namespace {
 
-class jpegls_bitmap_decoder final : public winrt::implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
+struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitmapDecoder>
 {
-public:
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try
@@ -190,7 +190,8 @@ public:
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {
-        TRACE("{} jpegls_bitmap_decoder::GetFrame, index={}, bitmap_frame_decode={}\n", fmt::ptr(this), index, fmt::ptr(bitmap_frame_decode));
+        TRACE("{} jpegls_bitmap_decoder::GetFrame, index={}, bitmap_frame_decode={}\n", fmt::ptr(this), index,
+              fmt::ptr(bitmap_frame_decode));
 
         check_condition(index == 0, wincodec::error_frame_missing);
 
@@ -228,6 +229,8 @@ private:
     com_ptr<IStream> source_stream_;
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
+
+} // namespace
 
 HRESULT create_jpegls_bitmap_decoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result)
 {
