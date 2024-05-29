@@ -10,6 +10,7 @@ import guids;
 import util;
 import winrt;
 import "win.h";
+import "std.h";
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -88,6 +89,23 @@ public:
         const HRESULT result{class_factory->CreateInstance(outer, IID_PPV_ARGS(decoder.put()))};
 
         Assert::AreEqual(error_no_aggregation, result);
+    }
+
+    TEST_METHOD(marked_for_self_registration) // NOLINT
+    {
+        const wchar_t dll_name[]{L"jpegls-wic-codec.dll"};
+        DWORD not_used;
+        const DWORD size{GetFileVersionInfoSizeEx(FILE_VER_GET_NEUTRAL, dll_name, &not_used)};
+        Assert::IsTrue(size != 0);
+
+        std::vector<std::byte> buffer(size);
+        bool result = GetFileVersionInfoEx(FILE_VER_GET_NEUTRAL, dll_name, 0, size, buffer.data());
+        Assert::IsTrue(result);
+
+        void* value;
+        UINT value_size;
+        result = VerQueryValue(buffer.data(), L"\\StringFileInfo\\000004b0\\OLESelfRegister", &value, &value_size);
+        Assert::IsTrue(result);
     }
 
 private:

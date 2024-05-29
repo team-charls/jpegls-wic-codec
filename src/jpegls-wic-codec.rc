@@ -34,6 +34,7 @@ BEGIN
             VALUE "OriginalFilename", L"jpegls-wic-codec.dll"
             VALUE "ProductName", L"JPEG-LS WIC codec"
             VALUE "ProductVersion", VERSION
+            VALUE "OLESelfRegister", "\0"
         END
     END
     BLOCK "VarFileInfo"
