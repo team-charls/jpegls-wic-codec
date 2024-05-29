@@ -191,8 +191,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
 
         // Note: the current implementation doesn't write metadata to the JPEG-LS stream.
         //       The SPIFF header can be used to store metadata items.
-        constexpr HRESULT result = wincodec::error_unsupported_operation;
-        return result;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetPalette(_In_ IWICPalette* palette) noexcept override
