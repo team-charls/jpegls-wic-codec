@@ -257,7 +257,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(IStream* stream, IWICImag
         check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
-        if (frame_info.component_count != 1 && decoder.interleave_mode() == charls::interleave_mode::none)
+        if (frame_info.component_count != 1 && decoder.get_interleave_mode() == charls::interleave_mode::none)
         {
             const auto planar{decoder.decode<vector<std::byte>>()};
             if (frame_info.bits_per_sample > 8)

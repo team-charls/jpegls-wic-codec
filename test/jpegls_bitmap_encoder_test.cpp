@@ -974,7 +974,7 @@ private:
         decoder.source(encoded_source);
         decoder.read_header();
 
-        vector<std::byte> destination{decoder.destination_size()};
+        vector<std::byte> destination{decoder.get_destination_size()};
         decoder.decode(destination);
 
         for (size_t i{}; i != destination.size(); ++i)
