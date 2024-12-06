@@ -3,7 +3,7 @@
 
 export module storage_buffer;
 
-import "std.h";
+import std;
 
 // purpose: replacement container for std::vector that doesn't initialize its content
 export class storage_buffer final

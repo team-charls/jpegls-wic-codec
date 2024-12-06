@@ -3,16 +3,19 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
+#include "intellisense.hpp"
 
 module jpegls_bitmap_frame_encode;
 
-import "std.h";
-import "win.h";
+import std;
+import <win.hpp>;
 import winrt;
 
-import errors;
+import hresults;
 import util;
+
+using std::uint32_t;
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Initialize([[maybe_unused]] IPropertyBag2* encoder_options) noexcept
 try
@@ -21,7 +24,7 @@ try
 
     check_condition(state_ == state::created, wincodec::error_wrong_state);
     state_ = state::initialized;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {
@@ -38,7 +41,7 @@ try
     frame_info_.height = height;
     size_set_ = true;
 
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {
@@ -52,12 +55,12 @@ try
 
     check_condition(state_ != state::commited, wincodec::error_wrong_state);
 
-    const auto resolution_x{lround(dpi_x)};
-    const auto resolution_y{lround(dpi_y)};
+    const auto resolution_x{std::lround(dpi_x)};
+    const auto resolution_y{std::lround(dpi_y)};
     check_condition(resolution_x > 0 && resolution_y > 0, error_invalid_argument);
 
     resolution_ = {resolution_x, resolution_y};
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {
@@ -77,44 +80,44 @@ try
     if (*pixel_format == GUID_WICPixelFormat2bppGray)
     {
         set_pixel_format(2, 1);
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat4bppGray)
     {
         set_pixel_format(4, 1);
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat8bppGray)
     {
         set_pixel_format(8, 1);
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat16bppGray)
     {
         set_pixel_format(16, 1);
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat24bppRGB)
     {
         set_pixel_format(8, 3);
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat24bppBGR)
     {
         set_pixel_format(8, 3);
         swap_pixels_ = true;
-        return error_ok;
+        return success_ok;
     }
 
     if (*pixel_format == GUID_WICPixelFormat48bppRGB)
     {
         set_pixel_format(16, 3);
-        return error_ok;
+        return success_ok;
     }
 
     *pixel_format = GUID_WICPixelFormatUndefined;
@@ -162,7 +165,7 @@ try
 
     received_line_count_ += line_count;
     state_ = received_pixels;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {
@@ -199,7 +202,7 @@ try
     winrt::check_hresult(bitmap_source->CopyPixels(nullptr, static_cast<uint32_t>(source_stride_), static_cast<uint32_t>(source_.size()),
                                                    reinterpret_cast<BYTE*>(source_.data())));
     state_ = state::received_pixels;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {
@@ -227,7 +230,7 @@ try
     }
 
     state_ = state::commited;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {

@@ -3,8 +3,8 @@
 
 export module jpegls_bitmap_frame_decode;
 
-import "std.h";
-import "win.h";
+import std;
+import <win.hpp>;
 import winrt;
 
 export struct jpegls_bitmap_frame_decode

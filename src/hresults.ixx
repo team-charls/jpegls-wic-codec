@@ -1,18 +1,18 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.h"
+#include "intellisense.hpp"
 
-export module errors;
+export module hresults;
 
-import "win.h";
+import <win.hpp>;
 import winrt;
 
 export {
 
-inline constexpr HRESULT error_ok{S_OK};
+inline constexpr HRESULT success_ok{S_OK};
 inline constexpr HRESULT error_fail{E_FAIL};
 inline constexpr HRESULT error_pointer{E_POINTER};
 inline constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
@@ -34,29 +34,5 @@ inline constexpr HRESULT error_bad_header{WINCODEC_ERR_BADHEADER};
 inline constexpr HRESULT error_bad_image{WINCODEC_ERR_BADIMAGE};
 
 } // namespace wincodec
-
-template<typename T>
-T* check_in_pointer(_In_ T* pointer)
-{
-    if (!pointer)
-        winrt::throw_hresult(error_invalid_argument);
-
-    return pointer;
-}
-
-template<typename T>
-T* check_out_pointer(T* pointer)
-{
-    if (!pointer)
-        winrt::throw_hresult(error_pointer);
-
-    return pointer;
-}
-
-inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
-{
-    if (!condition)
-        throw_hresult(result_to_throw);
-}
 
 }

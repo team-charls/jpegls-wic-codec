@@ -1,4 +1,9 @@
-﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+﻿<!--
+  SPDX-FileCopyrightText: © 2020 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Class Id="$(var.CLSID_JpegLSEncoder)" Context="InprocServer32" Server="$(var.ComServerFileId)" ThreadingModel="both" />
 
     <RegistryKey Root="HKCR" Key="CLSID\$(var.CLSID_JpegLSEncoder)">

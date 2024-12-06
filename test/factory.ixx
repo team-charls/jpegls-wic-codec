@@ -1,13 +1,13 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 export module factory;
 
-import "win.h";
+import <win.hpp>;
 import winrt;
 
 import guids;

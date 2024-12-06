@@ -1,4 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<!--
+  SPDX-FileCopyrightText: © 2019 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
@@ -28,14 +32,18 @@
       <!-- Use all cores to speed up the compilation (MS recommended best practice). -->
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
-      <!-- Explicit define that all projects are compiled according the C++20 standard -->
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <!-- Explicit define that all projects are compiled according the draft C++23 standard -->
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor> <!-- Needed as stdcpp20 doesn't enable it by default. -->
 
       <!-- To ensure high quality C++ code use Warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
+
+      <!-- Enables recommended Security Development Lifecycle (SDL) checks.
+           These checks change security-relevant warnings into errors, and set additional secure code-generation features. -->
+      <SDLCheck>true</SDLCheck>
 
       <!-- Explicit set the 'external' warning level to off (Supported since Visual Studio 2019 16.10) -->
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
@@ -95,15 +103,22 @@
 
         * WINRT *
         WINRT_LEAN_AND_MEAN: If defined, disables rarely-used WinRT features (in order to reduce compile times)
+        WINRT_NO_SOURCE_LOCATION (prevents full namespace names in the binary).
 
         * C *
         __STDC_WANT_SECURE_LIB__=1: Enable the secure methods of the C standard library.
+
+        * Microsoft STL *
+        _USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0: Keep function name info short to reduce binary size.
       -->
       <PreprocessorDefinitions>
-        WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;__STDC_WANT_SECURE_LIB__=1;%(PreprocessorDefinitions)
+        WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;%(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+
+      <!-- Add metadata about valid EH handler, prevent IP hijacking -->
+      <GuardEHContMetadata Condition="'$(Platform)'=='x64'">true</GuardEHContMetadata>
     </ClCompile>
 
     <Link>
@@ -111,6 +126,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <MinimumRequiredVersion>10</MinimumRequiredVersion>
+
+      <!-- Indicate DLL is compatible with Hardware supported Shadow stack (requires Zen3+ or Intel 11th Gen CPU)  -->
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
     </Link>
   </ItemDefinitionGroup>
 

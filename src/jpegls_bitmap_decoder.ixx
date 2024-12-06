@@ -3,6 +3,6 @@
 
 export module jpegls_bitmap_decoder;
 
-import "win.h";
+import <win.hpp>;
 
 export HRESULT create_jpegls_bitmap_decoder_factory(GUID const& interface_id, void** result);

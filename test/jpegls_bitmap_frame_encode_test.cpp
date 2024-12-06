@@ -1,14 +1,15 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.h"
+#include "macros.hpp"
 #include <CppUnitTest.h>
 
-import errors;
-import factory;
+import std;
+import <win.hpp>;
 import winrt;
-import "win.h";
-import "std.h";
+
+import hresults;
+import factory;
 
 using std::array;
 using std::vector;
@@ -24,7 +25,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
         const HRESULT result{bitmap_frame_encoder->Initialize(nullptr)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(Initialize_twice) // NOLINT
@@ -51,7 +52,7 @@ public:
         check_hresult(bitmap_frame_encoder->Initialize(nullptr));
 
         const HRESULT result{bitmap_frame_encoder->SetSize(512, 512)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(SetSize_not_initialized) // NOLINT
@@ -94,7 +95,7 @@ public:
         const com_ptr bitmap_frame_encoder{create_frame_encoder()};
 
         const HRESULT result{bitmap_frame_encoder->SetResolution(96., 96.)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(SetResolution_after_commit) // NOLINT
@@ -158,7 +159,7 @@ public:
         {
             GUID pixel_format{format};
             const HRESULT result{bitmap_frame_encoder->SetPixelFormat(&pixel_format)};
-            Assert::AreEqual(error_ok, result);
+            Assert::AreEqual(success_ok, result);
             Assert::IsTrue(pixel_format == format);
         }
     }
@@ -260,7 +261,7 @@ public:
         check_hresult(bitmap_frame_encoder->WritePixels(512, 512, static_cast<UINT>(source.size()), source.data()));
 
         const HRESULT result{bitmap_frame_encoder->Commit()};
-        Assert::AreEqual(error_ok, result); // TODO: commit should fail.
+        Assert::AreEqual(success_ok, result); // TODO: commit should fail.
     }
 
 private:

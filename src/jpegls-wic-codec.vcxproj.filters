@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="version.h">
+    <ClInclude Include="version.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="macros.h">
+    <ClInclude Include="macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="dll_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="jpegls_bitmap_encoder.cpp">
@@ -38,7 +38,7 @@
     <ClCompile Include="jpegls_bitmap_frame_encode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="errors.ixx">
+    <ClCompile Include="hresults.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="class_factory.ixx">

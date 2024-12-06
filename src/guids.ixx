@@ -3,7 +3,7 @@
 
 export module guids;
 
-import "win.h";
+import <win.hpp>;
 
 export namespace id {
 

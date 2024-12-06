@@ -1,11 +1,12 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module class_factory;
 
-import "win.h";
-import errors;
+import <win.hpp>;
 import winrt;
+
+import hresults;
 
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
@@ -32,6 +33,6 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 
     HRESULT __stdcall LockServer(BOOL /*lock*/) noexcept override
     {
-        return error_ok;
+        return success_ok;
     }
 };

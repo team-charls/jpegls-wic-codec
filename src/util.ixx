@@ -1,35 +1,38 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
+#include "intellisense.hpp"
 
 export module util;
 
-import "win.h";
-import "std.h";
-import errors;
+import std;
+import <win.hpp>;
 import winrt;
+
+import hresults;
+
+
+using std::uint32_t;
 
 extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
-export {
-
-[[nodiscard]]
+export [[nodiscard]]
 constexpr std::byte operator"" _byte(const unsigned long long int n)
 {
     return static_cast<std::byte>(n);
 }
 
 [[nodiscard]]
-inline HMODULE get_current_module() noexcept
+static HMODULE get_current_module() noexcept
 {
     return reinterpret_cast<HINSTANCE>(&__ImageBase);
 }
 
-[[nodiscard]]
-inline std::wstring get_module_path()
+export [[nodiscard]]
+std::wstring get_module_path()
 {
     std::wstring path(100, L'?');
     size_t path_size;
@@ -51,8 +54,8 @@ inline std::wstring get_module_path()
     return path;
 }
 
-[[nodiscard]]
-inline std::wstring guid_to_string(const GUID& guid)
+export [[nodiscard]]
+std::wstring guid_to_string(const GUID& guid)
 {
     std::wstring guid_text;
 
@@ -65,38 +68,37 @@ inline std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-[[nodiscard]]
-inline const char* pixel_format_to_string(const GUID& guid) noexcept
-{
-    if (guid == GUID_WICPixelFormat2bppGray)
-        return "GUID_WICPixelFormat2bppGray";
-
-    if (guid == GUID_WICPixelFormat4bppGray)
-        return "GUID_WICPixelFormat4bppGray";
-
-    if (guid == GUID_WICPixelFormat8bppGray)
-        return "GUID_WICPixelFormat8bppGray";
-
-    if (guid == GUID_WICPixelFormat16bppGray)
-        return "GUID_WICPixelFormat16bppGray";
-
-    if (guid == GUID_WICPixelFormat24bppRGB)
-        return "GUID_WICPixelFormat24bppRGB";
-
-    if (guid == GUID_WICPixelFormat48bppRGB)
-        return "GUID_WICPixelFormat48bppRGB";
-
-    return "Unknown";
-}
-
-
-[[nodiscard]]
+export [[nodiscard]]
 constexpr bool failed(winrt::hresult const result) noexcept
 {
     return result < 0;
 }
 
-namespace fmt {
+export template<typename T>
+T* check_in_pointer(_In_ T* pointer)
+{
+    if (!pointer)
+        winrt::throw_hresult(error_invalid_argument);
+
+    return pointer;
+}
+
+export template<typename T>
+T* check_out_pointer(T* pointer)
+{
+    if (!pointer)
+        winrt::throw_hresult(error_pointer);
+
+    return pointer;
+}
+
+export inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
+{
+    if (!condition)
+        throw_hresult(result_to_throw);
+}
+
+export namespace fmt {
 
 // Copied from fmtlib as P2510 (Formatting Pointers) is not yet accepted.
 template<typename T>
@@ -123,56 +125,55 @@ namespace registry {
 SUPPRESS_WARNING_NEXT_LINE(26493)                  // Don't use C-style casts (used by HKEY_LOCAL_MACHINE macro)
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                        _Null_terminated_ const wchar_t* value)
+export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     const auto length{wcslen(value) + 1};
     winrt::check_win32(
         RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
-                        static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
+                       static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
-                        _Null_terminated_ const wchar_t* value)
+export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                        const uint32_t value)
+export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      const uint32_t value)
 {
     winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
+export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                        const void* value, const DWORD value_size_in_bytes)
+export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      std::span<const std::byte> values)
 {
-    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, value, value_size_in_bytes));
+    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, values.data(),
+                                       static_cast<DWORD>(values.size())));
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value,
-                        const DWORD value_size_in_bytes)
+export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      const std::span<const std::byte> values)
 {
-    set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
+    set_value(sub_key.c_str(), value_name, values);
 }
 
 
-[[nodiscard]]
-inline HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
+export [[nodiscard]]
+HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
 {
     if (const LSTATUS result{RegDeleteTreeW(hkey_local_machine, sub_key)}; result != ERROR_SUCCESS)
     {
         return HRESULT_FROM_WIN32(result);
     }
 
-    return error_ok;
+    return success_ok;
 }
 
 } // namespace registry
-
-}

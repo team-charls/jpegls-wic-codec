@@ -16,10 +16,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="std.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="win.h">
+    <ClInclude Include="win.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
