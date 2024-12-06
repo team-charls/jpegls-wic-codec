@@ -3,18 +3,19 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 module jpegls_bitmap_encoder;
 
-import "win.h";
-import "std.h";
-import class_factory;
-import guids;
-import errors;
-import jpegls_bitmap_frame_encode;
+import std;
+import <win.hpp>;
 import winrt;
 import charls;
+
+import class_factory;
+import guids;
+import hresults;
+import jpegls_bitmap_frame_encode;
 import util;
 
 using charls::interleave_mode;
@@ -49,8 +50,8 @@ void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encod
 struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncoder>
 {
     // IWICBitmapEncoder
-    HRESULT __stdcall Initialize(_In_ IStream* destination,
-                                 [[maybe_unused]] const WICBitmapEncoderCacheOption cache_option) noexcept override
+    HRESULT __stdcall Initialize(_In_ IStream* destination, [[maybe_unused]]
+                                                            const WICBitmapEncoderCacheOption cache_option) noexcept override
     try
     {
         TRACE("{} jpegls_bitmap_encoder::Initialize, stream={}, cache_option={}\n", fmt::ptr(this), fmt::ptr(destination),
@@ -58,7 +59,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
 
         check_condition(!static_cast<bool>(destination_), wincodec::error_wrong_state);
         destination_.copy_from(check_in_pointer(destination));
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -72,7 +73,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
               fmt::ptr(container_format));
 
         *check_out_pointer(container_format) = id::container_format_jpegls;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -88,7 +89,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
         check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_encoder, component_info.put()));
         check_hresult(component_info->QueryInterface(IID_PPV_ARGS(encoder_info)));
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -115,7 +116,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
             *encoder_options = nullptr;
         }
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -152,7 +153,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
         destination_ = nullptr;
 
         committed_ = true;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -160,20 +161,23 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
     }
 
     // Optional methods
-    HRESULT __stdcall SetPreview([[maybe_unused]] _In_ IWICBitmapSource* preview) noexcept override
+    HRESULT __stdcall SetPreview([[maybe_unused]]
+                                 _In_ IWICBitmapSource* preview) noexcept override
     {
         TRACE("{} jpegls_bitmap_encoder::SetPreview, preview={}\n", fmt::ptr(this), fmt::ptr(preview));
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall SetThumbnail([[maybe_unused]] _In_ IWICBitmapSource* thumbnail) noexcept override
+    HRESULT __stdcall SetThumbnail([[maybe_unused]]
+                                   _In_ IWICBitmapSource* thumbnail) noexcept override
     {
         TRACE("{} jpegls_bitmap_encoder::SetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall SetColorContexts([[maybe_unused]] const uint32_t count,
-                                       [[maybe_unused]] IWICColorContext** color_context) noexcept override
+                                       [[maybe_unused]]
+                                       IWICColorContext** color_context) noexcept override
     {
         TRACE("{} jpegls_bitmap_encoder::SetColorContexts, count={}, color_context={}\n", fmt::ptr(this), count,
               fmt::ptr(color_context));
@@ -183,8 +187,8 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetMetadataQueryWriter(
-        [[maybe_unused]] _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
+    HRESULT __stdcall GetMetadataQueryWriter([[maybe_unused]]
+                                             _Outptr_ IWICMetadataQueryWriter** metadata_query_writer) noexcept override
     {
         TRACE("{} jpegls_bitmap_encoder::GetMetadataQueryWriter, metadata_query_writer={}\n", fmt::ptr(this),
               fmt::ptr(metadata_query_writer));

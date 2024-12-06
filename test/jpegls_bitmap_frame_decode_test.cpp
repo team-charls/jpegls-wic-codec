@@ -1,17 +1,18 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.h"
+#include "macros.hpp"
 #include <CppUnitTest.h>
 
-import errors;
+import std;
+import <win.hpp>;
+import winrt;
+
+import hresults;
 import factory;
 import portable_anymap_file;
 import util;
 import charls;
-import winrt;
-import "std.h";
-import "win.h";
 
 using std::array;
 using std::vector;
@@ -30,7 +31,7 @@ public:
         uint32_t height;
 
         const HRESULT result{bitmap_frame_decoder->GetSize(&width, &height)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(512U, width);
         Assert::AreEqual(512U, height);
     }
@@ -61,7 +62,7 @@ public:
 
         GUID pixel_format;
         const HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
@@ -81,7 +82,7 @@ public:
         double dpi_x;
         double dpi_y;
         const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(96., dpi_x);
         Assert::AreEqual(96., dpi_y);
     }
@@ -104,7 +105,7 @@ public:
         double dpi_x;
         double dpi_y;
         const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(100., dpi_x);
         Assert::AreEqual(100., dpi_y);
     }
@@ -127,7 +128,7 @@ public:
         double dpi_x;
         double dpi_y;
         const HRESULT result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(254., dpi_x);
         Assert::AreEqual(254., dpi_y);
     }
@@ -147,13 +148,13 @@ public:
 
         uint32_t actual_count;
         HRESULT result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0U, actual_count);
 
         array<IWICColorContext*, 1> color_contexts{};
         result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(),
                                                         &actual_count);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
 
@@ -187,11 +188,11 @@ public:
 
         HRESULT result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
                                                         reinterpret_cast<BYTE*>(buffer.data()))};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()),
                                                   reinterpret_cast<BYTE*>(buffer.data()));
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT
@@ -308,7 +309,7 @@ private:
 
         const uint32_t stride{(width + 15) / 16 * 4};
         const HRESULT result{copy_pixels<std::byte>(*bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         const vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
@@ -321,7 +322,7 @@ private:
 
         GUID pixel_format;
         HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat4bppGray == pixel_format);
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
@@ -329,7 +330,7 @@ private:
 
         const uint32_t stride{(width + 7) / 8 * 4};
         result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), stride, buffer);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         const vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
@@ -342,14 +343,14 @@ private:
 
         GUID pixel_format;
         HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), width, buffer);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
     }
@@ -361,14 +362,14 @@ private:
 
         GUID pixel_format;
         HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat16bppGray == pixel_format);
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::uint16_t> buffer(static_cast<size_t>(width) * height);
 
         result = copy_pixels<uint16_t>(*bitmap_frame_decoder.get(), width, buffer);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
     }
@@ -380,14 +381,14 @@ private:
 
         GUID pixel_format;
         HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat24bppRGB == pixel_format);
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::byte> buffer(static_cast<size_t>(width) * height * 3);
 
         result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), width * 3, buffer);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
     }
@@ -399,14 +400,14 @@ private:
 
         GUID pixel_format;
         HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat48bppRGB == pixel_format);
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::uint16_t> buffer(static_cast<size_t>(width) * height * 3);
 
         result = copy_pixels<std::uint16_t>(*bitmap_frame_decoder.get(), width * 3, buffer);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
     }

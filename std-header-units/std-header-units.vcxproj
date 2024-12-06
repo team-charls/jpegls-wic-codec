@@ -118,8 +118,7 @@
     <ClCompile Include="std-header-units.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="std.h" />
-    <ClInclude Include="win.h" />
+    <ClInclude Include="win.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

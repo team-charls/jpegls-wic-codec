@@ -3,19 +3,21 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 module jpegls_bitmap_frame_decode;
 
-import "win.h";
-import "std.h";
-import util;
-import errors;
-import storage_buffer;
+import std;
+import <win.hpp>;
 import winrt;
 import charls;
 
+import util;
+import hresults;
+import storage_buffer;
+
 using namespace charls;
+using std::uint16_t;
 using std::make_pair;
 using std::vector;
 using winrt::check_hresult;
@@ -195,7 +197,7 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
 
             case spiff_resolution_units::dots_per_centimeter: {
                 constexpr double dpc_to_dpi{2.54};
-                check_hresult(bitmap.SetResolution(round(spiff_header.horizontal_resolution * dpc_to_dpi),
+                check_hresult(bitmap.SetResolution(std::round(spiff_header.horizontal_resolution * dpc_to_dpi),
                                                    round(spiff_header.vertical_resolution * dpc_to_dpi)));
                 return;
             }
@@ -350,7 +352,7 @@ try
     // Keep the initial design simple: no support for color profiles.
     // The JPEG-LS standard does support embedded color profiles.
     *check_out_pointer(actual_count) = 0;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {

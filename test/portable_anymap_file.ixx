@@ -3,7 +3,9 @@
 
 export module portable_anymap_file;
 
-import "std.h";
+import std;
+
+using std::int32_t;
 
 
 [[nodiscard]]

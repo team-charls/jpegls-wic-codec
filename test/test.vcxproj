@@ -115,12 +115,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="macros.h" />
+    <ClInclude Include="macros.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\charls\include\charls\charls.ixx" />
-    <ClCompile Include="dllmain_test.cpp" />
-    <ClCompile Include="errors.ixx" />
+    <ClCompile Include="dll_main_test.cpp" />
+    <ClCompile Include="hresults.ixx" />
     <ClCompile Include="factory.ixx" />
     <ClCompile Include="guids.ixx" />
     <ClCompile Include="jpegls_bitmap_encoder_test.cpp" />

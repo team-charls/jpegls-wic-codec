@@ -1,16 +1,17 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2021 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.h"
-#include <rpcsal.h>
+#include "intellisense.hpp"
 
 export module test_stream;
 
-import errors;
 import winrt;
-import "win.h";
+import <win.hpp>;
+
+import hresults;
+
 
 export struct test_stream : winrt::implements<test_stream, IStream>
 {
@@ -27,7 +28,7 @@ export struct test_stream : winrt::implements<test_stream, IStream>
             *pcbRead = 0;
         }
 
-        return fail_on_read_ ? error_fail : error_ok;
+        return fail_on_read_ ? error_fail : success_ok;
     }
 
     HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, _In_ [[maybe_unused]] ULONG cb,
@@ -45,7 +46,7 @@ export struct test_stream : winrt::implements<test_stream, IStream>
             new_position->QuadPart = 0;
         }
 
-        return fail_on_seek_counter_ <= 0 ? error_fail : error_ok;
+        return fail_on_seek_counter_ <= 0 ? error_fail : success_ok;
     }
 
     HRESULT __stdcall SetSize(ULARGE_INTEGER /*libNewSize*/) noexcept override

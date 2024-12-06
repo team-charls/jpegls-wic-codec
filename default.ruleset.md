@@ -1,4 +1,9 @@
-﻿# Comments on disabled Microsoft C++ Code Analysis Rules
+﻿<!--
+  SPDX-FileCopyrightText: © 2020 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+# Comments on disabled Microsoft C++ Code Analysis Rules
 
 This document contains the rationales why Microsoft
 C++ warnings are disabled in the file default.ruleset

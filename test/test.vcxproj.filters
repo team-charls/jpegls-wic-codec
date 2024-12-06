@@ -14,7 +14,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="macros.h">
+    <ClInclude Include="macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -31,10 +31,10 @@
     <ClCompile Include="jpegls_bitmap_frame_encode_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain_test.cpp">
+    <ClCompile Include="dll_main_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="errors.ixx">
+    <ClCompile Include="hresults.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="guids.ixx">

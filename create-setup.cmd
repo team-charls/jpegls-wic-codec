@@ -1,3 +1,5 @@
+:: SPDX-FileCopyrightText: © 2020 Team CharLS
+:: SPDX-License-Identifier: BSD-3-Clause
 
 REM a WixProj cannot access Visual Studio C++ environment variables: copy merge modules:
 copy "%VCINSTALLDIR%Redist\MSVC\v142\MergeModules\Microsoft_VC142_CRT_x86.msm" bin\x64\Release\

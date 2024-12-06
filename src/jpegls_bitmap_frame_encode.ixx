@@ -3,12 +3,12 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 export module jpegls_bitmap_frame_encode;
 
-import "std.h";
-import "win.h";
+import std;
+import <win.hpp>;
 import winrt;
 import charls;
 

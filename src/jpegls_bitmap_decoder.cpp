@@ -3,23 +3,26 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
+#include "intellisense.hpp"
 
 module jpegls_bitmap_decoder;
 
-import "win.h";
-import "std.h";
+import std;
+import <win.hpp>;
+import winrt;
+import charls;
+
 import class_factory;
 import guids;
 import util;
-import errors;
+import hresults;
 import jpegls_bitmap_frame_decode;
-import winrt;
-import charls;
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;
 using charls::jpegls_error;
+using std::int64_t;
 using std::array;
 using std::error_code;
 using std::scoped_lock;
@@ -63,7 +66,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         {
             TRACE("{} jpegls_bitmap_decoder::QueryCapability.2, capability=0, ec={}, (reason={})\n", fmt::ptr(this),
                   error.value(), jpegls_category().message(error.value()));
-            return error_ok;
+            return success_ok;
         }
 
         if (const auto& [width, height, bits_per_sample, component_count]{decoder.frame_info()};
@@ -74,7 +77,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
 
         TRACE("{} jpegls_bitmap_decoder::QueryCapability.3, stream={}, *capability={}\n", fmt::ptr(this), fmt::ptr(stream),
               *capability);
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -93,7 +96,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         source_stream_.copy_from(check_in_pointer(stream));
         bitmap_frame_decode_.attach(nullptr);
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -107,7 +110,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
               fmt::ptr(container_format));
 
         *check_out_pointer(container_format) = id::container_format_jpegls;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -123,7 +126,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         check_hresult(imaging_factory()->CreateComponentInfo(id::jpegls_decoder, component_info.put()));
         check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -180,7 +183,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         TRACE("{} jpegls_bitmap_decoder::GetFrameCount, count={}\n", fmt::ptr(this), fmt::ptr(count));
 
         *check_out_pointer(count) = 1; // The JPEG-LS format can only store 1 frame.
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -205,7 +208,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         }
 
         bitmap_frame_decode_.copy_to(check_out_pointer(bitmap_frame_decode));
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {

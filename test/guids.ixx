@@ -1,9 +1,9 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module guids;
 
-import "win.h";
+import <win.hpp>;
 
 export namespace id {
 

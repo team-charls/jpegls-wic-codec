@@ -1,4 +1,9 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+﻿<!--
+  SPDX-FileCopyrightText: © 2020 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="CharLS JPEG-LS WIC Codec" Language="1033" Version="0.1.0.0" Manufacturer="Team CharLS" UpgradeCode="c713c1c4-ab72-4546-b96c-68c89236291b">
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />

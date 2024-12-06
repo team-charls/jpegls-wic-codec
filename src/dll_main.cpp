@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.h"
-#include "version.h"
+#include "macros.hpp"
+#include "intellisense.hpp"
+#include "version.hpp"
 
-import "std.h";
-import "win.h";
+import std;
+import <win.hpp>;
 
 import guids;
 import util;
-import errors;
+import hresults;
 import jpegls_bitmap_decoder;
 import jpegls_bitmap_encoder;
 
@@ -71,9 +72,9 @@ void register_decoder()
     registry::set_value(patterns_sub_key, L"Position", 0U);
 
     constexpr array mask{0xFF_byte, 0xFF_byte, 0xFF_byte};
-    registry::set_value(patterns_sub_key, L"Mask", mask.data(), static_cast<DWORD>(mask.size()));
+    registry::set_value(patterns_sub_key, L"Mask", mask);
     constexpr array pattern{0xFF_byte, 0xD8_byte, 0xFF_byte};
-    registry::set_value(patterns_sub_key, L"Pattern", pattern.data(), static_cast<DWORD>(pattern.size()));
+    registry::set_value(patterns_sub_key, L"Pattern", pattern);
 
     registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"", L"jlsfile");
     registry::set_value(LR"(SOFTWARE\Classes\.jls\)", L"Content Type", L"image/jls");
@@ -120,12 +121,12 @@ HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 // ReSharper disable CppInconsistentNaming
 // ReSharper disable CppParameterNamesMismatch
 
-BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
+BOOL __stdcall DllMain(const HMODULE dll_module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
     switch (reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        VERIFY(DisableThreadLibraryCalls(module));
+        VERIFY(DisableThreadLibraryCalls(dll_module));
         break;
 
     case DLL_THREAD_ATTACH:
@@ -174,7 +175,7 @@ try
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {

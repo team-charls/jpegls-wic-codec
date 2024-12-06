@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2019 Team CharLS
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Hint files help the Visual Studio IDE interpret Visual C++ identifiers
 // such as names of functions and macros.
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984

@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.h"
+#include "macros.hpp"
 #include <CppUnitTest.h>
 
-import errors;
+import std;
+import <win.hpp>;
+import winrt;
+
+import hresults;
 import factory;
 import guids;
 import util;
-import winrt;
-import "win.h";
-import "std.h";
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -24,10 +25,10 @@ public:
         const auto class_factory{factory_.get_class_factory(id::jpegls_decoder)};
 
         HRESULT result{class_factory->LockServer(true)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = class_factory->LockServer(false);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(class_factory_jpegls_encoder_lock_server) // NOLINT
@@ -35,10 +36,10 @@ public:
         const auto class_factory{factory_.get_class_factory(id::jpegls_encoder)};
 
         HRESULT result{class_factory->LockServer(true)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = class_factory->LockServer(false);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(class_factory_unknown_id) // NOLINT

@@ -1,17 +1,17 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
-export module errors;
+export module hresults;
 
-import "win.h";
+import <win.hpp>;
 
 export {
 
-inline constexpr HRESULT error_ok{S_OK};
+inline constexpr HRESULT success_ok{S_OK};
 inline constexpr HRESULT error_fail{E_FAIL};
 inline constexpr HRESULT error_pointer{E_POINTER};
 inline constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
