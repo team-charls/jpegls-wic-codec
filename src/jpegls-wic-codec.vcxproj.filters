@@ -71,6 +71,15 @@
     <ClCompile Include="..\charls\include\charls\charls.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="property_store.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="property_store.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="property_variant.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="jpegls-wic-codec.def">

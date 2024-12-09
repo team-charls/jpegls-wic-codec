@@ -17,6 +17,9 @@
     <ClInclude Include="macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="intellisense.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jpegls_bitmap_decoder_test.cpp">
@@ -34,28 +37,25 @@
     <ClCompile Include="dll_main_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hresults.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="guids.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="test_stream.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="winrt.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="factory.ixx">
+    <ClCompile Include="com_factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="portable_anymap_file.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util.ixx">
+    <ClCompile Include="test_util.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\charls\include\charls\charls.ixx">
+    <ClCompile Include="property_store_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="property_variant_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_winrt.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module guids;
@@ -18,5 +18,8 @@ inline constexpr GUID jpegls_encoder{0x70a823ea, 0x9f, 0x402f, {0x9b, 0xda, 0xe9
 
 // {8adbe21c-a720-424e-b238-45ad1052b98c}
 inline constexpr GUID vendor_team_charls{0x8adbe21c, 0xa720, 0x424e, {0xb2, 0x38, 0x45, 0xad, 0x10, 0x52, 0xb9, 0x8c}};
+
+// {9505939A-CDB9-4090-AAD4-7DA7032101BD}
+inline constexpr GUID property_store_class{0x9505939a, 0xcdb9, 0x4090, {0xaa, 0xd4, 0x7d, 0xa7, 0x3, 0x21, 0x1, 0xbd}};
 
 } // namespace id

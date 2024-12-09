@@ -3,17 +3,17 @@
 
 module;
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 
 export module util;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
 
+import "macros.hpp";
 
 using std::uint32_t;
 
@@ -96,6 +96,22 @@ export inline void check_condition(const bool condition, const winrt::hresult re
 {
     if (!condition)
         throw_hresult(result_to_throw);
+}
+
+export __declspec(noinline) HRESULT to_hresult() noexcept
+{
+    try
+    {
+        throw;
+    }
+    catch (winrt::hresult_error const& e)
+    {
+        return e.code();
+    }
+    catch (std::bad_alloc const&)
+    {
+        return error_out_of_memory;
+    }
 }
 
 export namespace fmt {

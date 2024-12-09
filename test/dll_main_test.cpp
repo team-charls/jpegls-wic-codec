@@ -1,17 +1,17 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include <CppUnitTest.h>
 
 import std;
 import <win.hpp>;
-import winrt;
+import test.winrt;
 
 import hresults;
-import factory;
+import com_factory;
 import guids;
-import util;
+
+import "macros.hpp";
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -22,7 +22,7 @@ TEST_CLASS(dllmain_test)
 public:
     TEST_METHOD(class_factory_jpegls_decoder_lock_server) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_decoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_decoder)};
 
         HRESULT result{class_factory->LockServer(true)};
         Assert::AreEqual(success_ok, result);
@@ -33,7 +33,7 @@ public:
 
     TEST_METHOD(class_factory_jpegls_encoder_lock_server) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_encoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_encoder)};
 
         HRESULT result{class_factory->LockServer(true)};
         Assert::AreEqual(success_ok, result);
@@ -45,14 +45,14 @@ public:
     TEST_METHOD(class_factory_unknown_id) // NOLINT
     {
         com_ptr<IClassFactory> class_factory;
-        const HRESULT result{factory_.get_class_factory(id::vendor_team_charls, class_factory)};
+        const HRESULT result{com_factory_.get_class_factory(id::vendor_team_charls, class_factory)};
 
         Assert::AreEqual(error_class_not_available, result);
     }
 
     TEST_METHOD(class_factory_jpegls_encoder_create_instance_bad_result) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_encoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_encoder)};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const HRESULT result{class_factory->CreateInstance(nullptr, id::vendor_team_charls, nullptr)};
@@ -62,7 +62,7 @@ public:
 
     TEST_METHOD(class_factory_jpegls_encoder_create_instance_no_aggregation) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_encoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_encoder)};
 
         auto* outer{reinterpret_cast<IUnknown*>(1)};
         com_ptr<IWICBitmapDecoder> decoder;
@@ -73,7 +73,7 @@ public:
 
     TEST_METHOD(class_factory_jpegls_decoder_create_instance_bad_result) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_decoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_decoder)};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const HRESULT result{class_factory->CreateInstance(nullptr, id::vendor_team_charls, nullptr)};
@@ -83,7 +83,7 @@ public:
 
     TEST_METHOD(class_factory_jpegls_decoder_create_instance_no_aggregation) // NOLINT
     {
-        const auto class_factory{factory_.get_class_factory(id::jpegls_decoder)};
+        const auto class_factory{com_factory_.get_class_factory(id::jpegls_decoder)};
 
         auto* outer{reinterpret_cast<IUnknown*>(1)};
         com_ptr<IWICBitmapDecoder> decoder;
@@ -110,5 +110,5 @@ public:
     }
 
 private:
-    factory factory_;
+    com_factory com_factory_;
 };

@@ -13,10 +13,11 @@ module;
 #pragma warning(disable : 4946) // reinterpret_cast used between related classes
 #pragma warning(disable : 5204) // class has virtual functions, but its trivial destructor is not virtual
 #pragma warning(disable : 5260) // the constant variable has external\internal linkage
+#pragma warning(disable : 26432) // If you define or delete any default operation in the type define or delete them.
 #include <winrt/base.h>
 #pragma warning(pop)
 
-export module winrt;
+export module test.winrt;
 
 export namespace winrt {
 

@@ -1,9 +1,5 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
-
-module;
-
-#include "macros.hpp"
 
 export module jpegls_bitmap_frame_encode;
 
@@ -11,6 +7,11 @@ import std;
 import <win.hpp>;
 import winrt;
 import charls;
+
+import "macros.hpp";
+
+using std::int32_t;
+using std::uint32_t;
 
 export struct jpegls_bitmap_frame_encode : winrt::implements<jpegls_bitmap_frame_encode, IWICBitmapFrameEncode>
 {

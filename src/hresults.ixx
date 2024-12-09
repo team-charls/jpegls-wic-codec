@@ -8,16 +8,20 @@ module;
 export module hresults;
 
 import <win.hpp>;
-import winrt;
 
 export {
 
 inline constexpr HRESULT success_ok{S_OK};
+inline constexpr HRESULT success_false{S_FALSE};
 inline constexpr HRESULT error_fail{E_FAIL};
 inline constexpr HRESULT error_pointer{E_POINTER};
+inline constexpr HRESULT error_already_initialized{HRESULT_FROM_WIN32(ERROR_ALREADY_INITIALIZED)};
 inline constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
 inline constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
+inline constexpr HRESULT error_out_of_memory{E_OUTOFMEMORY};
 inline constexpr HRESULT error_invalid_argument{E_INVALIDARG};
+inline constexpr HRESULT error_access_denied{STG_E_ACCESSDENIED};
+inline constexpr HRESULT error_not_valid_state{E_NOT_VALID_STATE};
 
 namespace wincodec {
 

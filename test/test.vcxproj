@@ -39,9 +39,12 @@
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>$(IntDir)../jpegls-wic-codec/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>windowscodecs.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <SDLCheck>true</SDLCheck>
@@ -115,22 +118,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="intellisense.hpp" />
     <ClInclude Include="macros.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\charls\include\charls\charls.ixx" />
-    <ClCompile Include="dll_main_test.cpp" />
-    <ClCompile Include="hresults.ixx" />
-    <ClCompile Include="factory.ixx" />
-    <ClCompile Include="guids.ixx" />
+    <ClCompile Include="dll_main_test.cpp">
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="com_factory.ixx" />
     <ClCompile Include="jpegls_bitmap_encoder_test.cpp" />
     <ClCompile Include="jpegls_bitmap_frame_decode_test.cpp" />
     <ClCompile Include="jpegls_bitmap_frame_encode_test.cpp" />
     <ClCompile Include="jpegls_bitmap_decoder_test.cpp" />
     <ClCompile Include="portable_anymap_file.ixx" />
+    <ClCompile Include="property_store_test.cpp" />
+    <ClCompile Include="property_variant_test.cpp" />
     <ClCompile Include="test_stream.ixx" />
-    <ClCompile Include="util.ixx" />
-    <ClCompile Include="winrt.ixx" />
+    <ClCompile Include="test_util.ixx" />
+    <ClCompile Include="test_winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\charls\src\CharLS.vcxproj">

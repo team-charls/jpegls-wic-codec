@@ -1,11 +1,11 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2018 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 #include "version.hpp"
 
 import std;
+import winrt;
 import <win.hpp>;
 
 import guids;
@@ -13,6 +13,8 @@ import util;
 import hresults;
 import jpegls_bitmap_decoder;
 import jpegls_bitmap_encoder;
+import property_store;
+import "macros.hpp";
 
 using std::array;
 using std::wstring;
@@ -104,6 +106,38 @@ void register_encoder()
     register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"JPEG-LS Encoder", formats);
 }
 
+void register_property_store_file_extension(const wchar_t* file_extension)
+{
+    registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\PropertySystem\PropertyHandlers\)"s + file_extension,
+                        L"", guid_to_string(id::property_store_class).c_str());
+
+    const auto sub_key = LR"(SOFTWARE\Classes\SystemFileAssociations\)"s + file_extension;
+    registry::set_value(sub_key, L"ExtendedTileInfo", L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions");
+    registry::set_value(
+        sub_key, L"FullDetails",
+        L"prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System."
+        L"Image.BitDepth;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;"
+        L"System.DateCreated;System.DateModified;System.Size;System.FileAttributes;System.OfflineAvailability;System."
+        L"OfflineStatus;System.SharedWith;System.FileOwner;System.ComputerName");
+    registry::set_value(sub_key, L"InfoTip",
+                        L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size");
+    registry::set_value(sub_key, L"PreviewDetails",
+                        L"prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;"
+                        "*System.OfflineStatus;*System.DateCreated;*System.SharedWith");
+}
+
+void register_property_store()
+{
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::property_store_class)};
+
+    // COM co-create registration.
+    const wstring inproc_server_sub_key{sub_key + LR"(\InprocServer32\)"};
+    registry::set_value(inproc_server_sub_key, L"", get_module_path().c_str());
+    registry::set_value(inproc_server_sub_key, L"ThreadingModel", L"Both");
+
+    register_property_store_file_extension(L".jls");
+}
+
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 {
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
@@ -160,11 +194,14 @@ try
     if (class_id == id::jpegls_encoder)
         return create_jpegls_bitmap_encoder_factory(interface_id, result);
 
-    return CLASS_E_CLASSNOTAVAILABLE;
+    if (class_id == id::property_store_class)
+        return create_property_store_class_factory(interface_id, result);
+
+    return error_class_not_available;
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall DllRegisterServer()
@@ -172,6 +209,7 @@ try
 {
     register_decoder();
     register_encoder();
+    register_property_store();
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
@@ -194,7 +232,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 // ReSharper restore CppParameterNamesMismatch

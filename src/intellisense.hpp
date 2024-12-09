@@ -14,4 +14,5 @@
 #include <wincodec.h>
 #include <winreg.h>
 #include <propkey.h>
+#include "macros.hpp"
 #endif

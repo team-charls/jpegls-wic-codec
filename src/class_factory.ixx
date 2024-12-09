@@ -3,10 +3,11 @@
 
 export module class_factory;
 
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
+import util;
 
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
@@ -27,7 +28,7 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
         }
         catch (...)
         {
-            return winrt::to_hresult();
+            return to_hresult();
         }
     }
 

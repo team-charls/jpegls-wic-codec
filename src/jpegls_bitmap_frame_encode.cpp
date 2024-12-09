@@ -1,19 +1,19 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2023 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 
 module jpegls_bitmap_frame_encode;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
 import util;
+import "macros.hpp";
 
 using std::uint32_t;
 
@@ -28,7 +28,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::SetSize(const uint32_t width, const uint32_t height) noexcept
@@ -45,7 +45,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::SetResolution(const double dpi_x, const double dpi_y) noexcept
@@ -64,7 +64,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::SetPixelFormat(GUID* pixel_format) noexcept
@@ -125,7 +125,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::SetColorContexts([[maybe_unused]] const uint32_t count,
@@ -169,7 +169,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::WriteSource(_In_ IWICBitmapSource* bitmap_source,
@@ -206,7 +206,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::Commit() noexcept
@@ -234,7 +234,7 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_encode::SetPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept

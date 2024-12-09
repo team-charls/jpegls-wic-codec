@@ -35,15 +35,13 @@
     <ProjectGuid>{E3900AE2-AE06-4E77-9055-BC4D23AE4F36}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>../std-header-units;%(AdditionalIncludeDirectories);$(GeneratedFilesDir)</AdditionalIncludeDirectories>
@@ -91,6 +89,9 @@
     <ClCompile Include="jpegls_bitmap_frame_decode.ixx" />
     <ClCompile Include="jpegls_bitmap_frame_encode.cpp" />
     <ClCompile Include="jpegls_bitmap_frame_encode.ixx" />
+    <ClCompile Include="property_store.cpp" />
+    <ClCompile Include="property_store.ixx" />
+    <ClCompile Include="property_variant.ixx" />
     <ClCompile Include="storage_buffer.ixx" />
     <ClCompile Include="util.ixx" />
     <ClCompile Include="winrt.ixx" />

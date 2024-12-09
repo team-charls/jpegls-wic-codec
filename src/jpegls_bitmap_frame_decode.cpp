@@ -1,24 +1,27 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2023 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module jpegls_bitmap_frame_decode;
 
 import std;
-import <win.hpp>;
 import winrt;
 import charls;
+import <win.hpp>;
 
 import util;
 import hresults;
 import storage_buffer;
+import "macros.hpp";
 
 using namespace charls;
-using std::uint16_t;
+using std::int32_t;
 using std::make_pair;
+using std::uint16_t;
+using std::uint32_t;
 using std::vector;
 using winrt::check_hresult;
 using winrt::throw_hresult;
@@ -198,7 +201,7 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
             case spiff_resolution_units::dots_per_centimeter: {
                 constexpr double dpc_to_dpi{2.54};
                 check_hresult(bitmap.SetResolution(std::round(spiff_header.horizontal_resolution * dpc_to_dpi),
-                                                   round(spiff_header.vertical_resolution * dpc_to_dpi)));
+                                                   std::round(spiff_header.vertical_resolution * dpc_to_dpi)));
                 return;
             }
 
@@ -356,11 +359,12 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 HRESULT __stdcall jpegls_bitmap_frame_decode::GetMetadataQueryReader(
-    [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
+    [[maybe_unused]]
+    IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
     TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader={}\n", fmt::ptr(this),
           fmt::ptr(metadata_query_reader));
