@@ -1,9 +1,9 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module jpegls_bitmap_encoder;
 
@@ -17,6 +17,7 @@ import guids;
 import hresults;
 import jpegls_bitmap_frame_encode;
 import util;
+import "macros.hpp";
 
 using charls::interleave_mode;
 using charls::jpegls_encoder;
@@ -27,7 +28,6 @@ using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::implements;
 using winrt::make;
-using winrt::to_hresult;
 
 namespace {
 

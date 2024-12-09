@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include <CppUnitTest.h>
 
 import std;
 import <win.hpp>;
-import winrt;
+import test.winrt;
 
 import hresults;
-import factory;
+import com_factory;
 import portable_anymap_file;
-import util;
 import charls;
+
+import "macros.hpp";
 
 using std::array;
 using std::vector;
@@ -442,7 +442,7 @@ private:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        const com_ptr wic_bitmap_decoder{com_factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
@@ -458,7 +458,7 @@ private:
             SHCreateMemStream(reinterpret_cast<const BYTE*>(jpegls_buffer.data()), static_cast<UINT>(jpegls_buffer.size())),
             take_ownership_from_abi};
 
-        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        const com_ptr wic_bitmap_decoder{com_factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
@@ -579,5 +579,5 @@ private:
         }
     }
 
-    factory factory_;
+    com_factory com_factory_;
 };

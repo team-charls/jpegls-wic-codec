@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include <CppUnitTest.h>
 
 import std;
+import test.winrt;
 import <win.hpp>;
-import winrt;
 
 import hresults;
-import factory;
+
+import com_factory;
+import "macros.hpp";
 
 using std::array;
 using std::vector;
@@ -280,7 +281,7 @@ private:
             stream.attach(SHCreateMemStream(nullptr, 0));
         }
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
@@ -323,5 +324,5 @@ private:
     }
 
     com_ptr<IWICImagingFactory> imaging_factory_;
-    factory factory_;
+    com_factory com_factory_;
 };

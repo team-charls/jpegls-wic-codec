@@ -7,7 +7,7 @@ module;
 
 export module test_stream;
 
-import winrt;
+import test.winrt;
 import <win.hpp>;
 
 import hresults;

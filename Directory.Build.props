@@ -8,10 +8,8 @@
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
     <OutDir>$(MSBuildThisFileDirectory)build\bin\$(Platform)\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\bin\x86\$(Configuration)\</OutDir>
-
-    <!-- C++ temp files can be redirected. -->
-    <IntDir>$(MSBuildThisFileDirectory)build\intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\intermediate\$(MSBuildProjectName)\x86\$(Configuration)\</IntDir>
+    <IntDir>$(MSBuildThisFileDirectory)build\intermediate\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <IntDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\intermediate\x86\$(Configuration)\$(MSBuildProjectName)\</IntDir>
 
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
 
@@ -178,6 +176,7 @@
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>true</EnablePREfast> <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

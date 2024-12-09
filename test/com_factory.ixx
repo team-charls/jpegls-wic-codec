@@ -1,27 +1,23 @@
 ﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include "macros.hpp"
-
-export module factory;
+export module com_factory;
 
 import <win.hpp>;
-import winrt;
+import test.winrt;
 
 import guids;
 
-export class factory final
+export class com_factory final
 {
 public:
-    factory() noexcept(false) : library_{LoadLibrary(L"jpegls-wic-codec.dll")}
+    com_factory() noexcept(false) : library_{LoadLibrary(L"jpegls-wic-codec.dll")}
     {
         if (!library_)
             winrt::throw_last_error();
     }
 
-    ~factory()
+    ~com_factory()
     {
         if (library_)
         {
@@ -29,10 +25,10 @@ public:
         }
     }
 
-    factory(const factory&) = delete;
-    factory(factory&&) = delete;
-    factory& operator=(const factory&) = delete;
-    factory& operator=(factory&&) = delete;
+    com_factory(const com_factory&) = delete;
+    com_factory(com_factory&&) = delete;
+    com_factory& operator=(const com_factory&) = delete;
+    com_factory& operator=(com_factory&&) = delete;
 
     [[nodiscard]]
     winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
@@ -50,6 +46,16 @@ public:
         winrt::check_hresult(get_class_factory(id::jpegls_encoder)->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
 
         return encoder;
+    }
+
+    [[nodiscard]]
+    winrt::com_ptr<IPropertyStore> create_property_store() const
+    {
+        winrt::com_ptr<IPropertyStore> property_store;
+        winrt::check_hresult(
+            get_class_factory(id::property_store_class)->CreateInstance(nullptr, IID_PPV_ARGS(property_store.put())));
+
+        return property_store;
     }
 
     [[nodiscard]]

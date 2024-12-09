@@ -1,35 +1,36 @@
-﻿// Copyright (c) Team CharLS.
+﻿// SPDX-FileCopyrightText: © 2018 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 
 module jpegls_bitmap_decoder;
 
 import std;
-import <win.hpp>;
 import winrt;
 import charls;
+import <win.hpp>;
 
 import class_factory;
 import guids;
 import util;
 import hresults;
 import jpegls_bitmap_frame_decode;
+import "macros.hpp";
 
 using charls::jpegls_category;
 using charls::jpegls_decoder;
 using charls::jpegls_error;
-using std::int64_t;
 using std::array;
 using std::error_code;
+using std::int64_t;
 using std::scoped_lock;
+using std::uint32_t;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::make;
-using winrt::to_hresult;
+
 
 namespace {
 
@@ -84,8 +85,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         return to_hresult();
     }
 
-    HRESULT __stdcall Initialize(_In_ IStream* stream,
-                                 [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
+    HRESULT __stdcall Initialize(_In_ IStream* stream, [[maybe_unused]]
+                                                       const WICDecodeOptions cache_options) noexcept override
     try
     {
         TRACE("{} jpegls_bitmap_decoder::Initialize, stream={}, cache_options={}\n", fmt::ptr(this), fmt::ptr(stream),
@@ -133,7 +134,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         return to_hresult();
     }
 
-    HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
+    HRESULT __stdcall CopyPalette([[maybe_unused]]
+                                  _In_ IWICPalette* palette) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::CopyPalette, palette={}\n", fmt::ptr(this), fmt::ptr(palette));
 
@@ -141,8 +143,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         return wincodec::error_palette_unavailable;
     }
 
-    HRESULT __stdcall GetMetadataQueryReader(
-        [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]]
+                                             _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", fmt::ptr(this),
               fmt::ptr(metadata_query_reader));
@@ -151,7 +153,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
+    HRESULT __stdcall GetPreview([[maybe_unused]]
+                                 _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetPreview, bitmap_source={}\n", fmt::ptr(this), fmt::ptr(bitmap_source));
 
@@ -161,7 +164,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_contexts,
-                                       [[maybe_unused]] uint32_t* actual_count) noexcept override
+                                       [[maybe_unused]]
+                                       uint32_t* actual_count) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetColorContexts, count={}, color_contexts={}, actual_count={}\n", fmt::ptr(this),
               count, fmt::ptr(color_contexts), fmt::ptr(actual_count));
@@ -170,7 +174,8 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
+    HRESULT __stdcall GetThumbnail([[maybe_unused]]
+                                   _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("{} jpegls_bitmap_decoder::GetThumbnail, thumbnail={}\n", fmt::ptr(this), fmt::ptr(thumbnail));
 

@@ -1,19 +1,20 @@
 ﻿// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include <CppUnitTest.h>
 
 import std;
 import <win.hpp>;
-import winrt;
+import test.winrt;
 
 import hresults;
-import factory;
 import guids;
-import portable_anymap_file;
-import util;
 import charls;
+
+import com_factory;
+import portable_anymap_file;
+import test.util;
+import "macros.hpp";
 
 using charls::jpegls_decoder;
 using std::ifstream;
@@ -227,7 +228,7 @@ TEST_CLASS(jpegls_bitmap_encoder_test)
 public:
     TEST_METHOD(GetContainerFormat) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         GUID container_format;
         const HRESULT result{encoder->GetContainerFormat(&container_format)};
@@ -237,7 +238,7 @@ public:
 
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{encoder->GetContainerFormat(nullptr)};
@@ -247,7 +248,7 @@ public:
 
     TEST_METHOD(GetEncoderInfo) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         com_ptr<IWICBitmapEncoderInfo> encoder_info;
         const HRESULT result{encoder->GetEncoderInfo(encoder_info.put())};
@@ -265,7 +266,7 @@ public:
 
     TEST_METHOD(GetEncoderInfo_with_nullptr) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
         const hresult result{encoder->GetEncoderInfo(nullptr)};
@@ -275,7 +276,7 @@ public:
 
     TEST_METHOD(SetPreview) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->SetPreview(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
@@ -283,7 +284,7 @@ public:
 
     TEST_METHOD(SetThumbnail) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->SetThumbnail(nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
@@ -291,7 +292,7 @@ public:
 
     TEST_METHOD(SetColorContexts) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->SetColorContexts(0, nullptr)};
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
@@ -299,7 +300,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryWriter_is_not_supported) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         com_ptr<IWICMetadataQueryWriter> metadata_query_writer;
         const HRESULT result{encoder->GetMetadataQueryWriter(metadata_query_writer.put())};
@@ -309,7 +310,7 @@ public:
 
     TEST_METHOD(SetPalette) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
@@ -323,7 +324,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -331,7 +332,7 @@ public:
 
     TEST_METHOD(Initialize_with_nullptr) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->Initialize(nullptr, WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(error_invalid_argument, result);
@@ -342,7 +343,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -356,7 +357,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr<IWICBitmapEncoder> encoder = com_factory_.create_encoder();
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -372,7 +373,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr<IWICBitmapEncoder> encoder = factory_.create_encoder();
+        const com_ptr<IWICBitmapEncoder> encoder = com_factory_.create_encoder();
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -391,7 +392,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -404,7 +405,7 @@ public:
 
     TEST_METHOD(CreateNewFrame_while_not_initialized) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         com_ptr<IWICBitmapFrameEncode> frame_encode;
         const HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
@@ -416,7 +417,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -433,7 +434,7 @@ public:
 
     TEST_METHOD(Commit_while_not_initialized) // NOLINT
     {
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         const HRESULT result{encoder->Commit()};
         Assert::AreEqual(wincodec::error_not_initialized, result);
@@ -444,7 +445,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
 
         HRESULT result{encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory)};
         Assert::AreEqual(success_ok, result);
@@ -462,7 +463,7 @@ public:
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                              nullptr, stream.put()));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
         check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
         const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -503,7 +504,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                                  nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -544,7 +545,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                                  nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count(), true)};
@@ -628,7 +629,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
                                                  0, false, nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -681,7 +682,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
                                                  0, false, nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(16, component_count)};
@@ -735,7 +736,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
                                                  0, false, nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(16, component_count)};
@@ -778,7 +779,7 @@ public:
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                              nullptr, stream.put()));
 
-        const com_ptr encoder{factory_.create_encoder()};
+        const com_ptr encoder{com_factory_.create_encoder()};
         check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
         vector<std::byte> input_data(4);
@@ -811,7 +812,7 @@ public:
             check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
                                                  nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -862,7 +863,7 @@ private:
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
                                                  0, false, nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -907,7 +908,7 @@ private:
             check_hresult(SHCreateStreamOnFileEx(destination_filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE,
                                                  0, false, nullptr, stream.put()));
 
-            const com_ptr encoder{factory_.create_encoder()};
+            const com_ptr encoder{com_factory_.create_encoder()};
             check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
 
             const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
@@ -958,7 +959,7 @@ private:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        const com_ptr wic_bitmap_decoder{com_factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
@@ -988,5 +989,5 @@ private:
         }
     }
 
-    factory factory_;
+    com_factory com_factory_;
 };

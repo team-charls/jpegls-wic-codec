@@ -1,20 +1,21 @@
 ﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 #include <CppUnitTest.h>
 
 import std;
-import winrt;
+import test.winrt;
 import <win.hpp>;
 
-import test_stream;
 import hresults;
-import factory;
 import guids;
-import util;
 import charls;
+
+import com_factory;
+import test_stream;
+import test.util;
+import "macros.hpp";
 
 template<>
 inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<winrt::hresult>(const winrt::hresult& q)
@@ -33,7 +34,7 @@ public:
     TEST_METHOD(GetContainerFormat) // NOLINT
     {
         GUID container_format;
-        const HRESULT result{factory_.create_decoder()->GetContainerFormat(&container_format)};
+        const HRESULT result{com_factory_.create_decoder()->GetContainerFormat(&container_format)};
 
         Assert::AreEqual(success_ok, result);
         Assert::IsTrue(id::container_format_jpegls == container_format);
@@ -42,14 +43,14 @@ public:
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const HRESULT result{factory_.create_decoder()->GetContainerFormat(nullptr)};
+        const HRESULT result{com_factory_.create_decoder()->GetContainerFormat(nullptr)};
 
         Assert::IsTrue(failed(result));
     }
 
     TEST_METHOD(GetDecoderInfo) // NOLINT
     {
-        const com_ptr decoder{factory_.create_decoder()};
+        const com_ptr decoder{com_factory_.create_decoder()};
 
         com_ptr<IWICBitmapDecoderInfo> decoder_info;
         const HRESULT result{decoder->GetDecoderInfo(decoder_info.put())};
@@ -68,7 +69,7 @@ public:
     TEST_METHOD(GetDecoderInfo_with_nullptr) // NOLINT
     {
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const HRESULT result{factory_.create_decoder()->GetDecoderInfo(nullptr)};
+        const HRESULT result{com_factory_.create_decoder()->GetDecoderInfo(nullptr)};
 
         Assert::IsTrue(failed(result));
     }
@@ -76,7 +77,7 @@ public:
     TEST_METHOD(CopyPalette) // NOLINT
     {
         const com_ptr<IWICPalette> palette;
-        const HRESULT result{factory_.create_decoder()->CopyPalette(palette.get())};
+        const HRESULT result{com_factory_.create_decoder()->CopyPalette(palette.get())};
 
         Assert::AreEqual(wincodec::error_palette_unavailable, result);
     }
@@ -84,7 +85,7 @@ public:
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
-        const HRESULT result{factory_.create_decoder()->GetMetadataQueryReader(metadata_query_reader.put())};
+        const HRESULT result{com_factory_.create_decoder()->GetMetadataQueryReader(metadata_query_reader.put())};
 
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -92,7 +93,7 @@ public:
     TEST_METHOD(GetPreview) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
-        const HRESULT result{factory_.create_decoder()->GetPreview(bitmap_source.put())};
+        const HRESULT result{com_factory_.create_decoder()->GetPreview(bitmap_source.put())};
 
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -101,7 +102,7 @@ public:
     {
         com_ptr<IWICColorContext> color_contexts;
         uint32_t actual_count;
-        const HRESULT result{factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count)};
+        const HRESULT result{com_factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count)};
 
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -109,7 +110,7 @@ public:
     TEST_METHOD(GetThumbnail) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
-        const HRESULT result{factory_.create_decoder()->GetThumbnail(bitmap_source.put())};
+        const HRESULT result{com_factory_.create_decoder()->GetThumbnail(bitmap_source.put())};
 
         Assert::AreEqual(wincodec::error_codec_no_thumbnail, result);
     }
@@ -117,7 +118,7 @@ public:
     TEST_METHOD(GetFrameCount) // NOLINT
     {
         uint32_t frame_count;
-        const HRESULT result{factory_.create_decoder()->GetFrameCount(&frame_count)};
+        const HRESULT result{com_factory_.create_decoder()->GetFrameCount(&frame_count)};
 
         Assert::AreEqual(success_ok, result);
         Assert::AreEqual(1U, frame_count);
@@ -126,7 +127,7 @@ public:
     TEST_METHOD(GetFrameCount_count_parameter_is_null) // NOLINT
     {
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const HRESULT result{factory_.create_decoder()->GetFrameCount(nullptr)};
+        const HRESULT result{com_factory_.create_decoder()->GetFrameCount(nullptr)};
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -137,7 +138,7 @@ public:
         stream.attach(SHCreateMemStream(nullptr, 0));
 
         DWORD capability;
-        const HRESULT result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
+        const HRESULT result{com_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0UL, capability);
@@ -149,7 +150,7 @@ public:
         check_hresult(
             SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
         DWORD capability;
-        const HRESULT result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
+        const HRESULT result{com_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::AreEqual(success_ok, result);
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
@@ -164,7 +165,7 @@ public:
     TEST_METHOD(QueryCapability_stream_argument_null) // NOLINT
     {
         DWORD capability;
-        const HRESULT result{factory_.create_decoder()->QueryCapability(nullptr, &capability)};
+        const HRESULT result{com_factory_.create_decoder()->QueryCapability(nullptr, &capability)};
 
         Assert::AreEqual(error_invalid_argument, result);
     }
@@ -175,7 +176,7 @@ public:
         stream.attach(SHCreateMemStream(nullptr, 0));
 
         WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const HRESULT result{factory_.create_decoder()->QueryCapability(stream.get(), nullptr)};
+        const HRESULT result{com_factory_.create_decoder()->QueryCapability(stream.get(), nullptr)};
 
         Assert::AreEqual(error_pointer, result);
     }
@@ -185,7 +186,7 @@ public:
         const com_ptr stream{make<test_stream>(true, 2)};
 
         DWORD capability;
-        const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
+        const hresult result{com_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::IsTrue(failed(result));
     }
@@ -195,7 +196,7 @@ public:
         const com_ptr stream{winrt::make<test_stream>(false, 1)};
 
         DWORD capability;
-        const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
+        const hresult result{com_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::IsTrue(failed(result));
     }
@@ -205,7 +206,7 @@ public:
         const com_ptr stream{winrt::make<test_stream>(false, 1)};
 
         DWORD capability;
-        const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
+        const hresult result{com_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::IsTrue(failed(result));
     }
@@ -215,7 +216,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const HRESULT result{factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        const HRESULT result{com_factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(success_ok, result);
     }
 
@@ -224,7 +225,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const HRESULT result{factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad)};
+        const HRESULT result{com_factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad)};
         Assert::AreEqual(success_ok, result);
     }
 
@@ -233,7 +234,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const com_ptr decoder{factory_.create_decoder()};
+        const com_ptr decoder{com_factory_.create_decoder()};
         HRESULT result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(success_ok, result);
 
@@ -246,7 +247,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        const HRESULT result{factory_.create_decoder()->Initialize(stream.get(), static_cast<WICDecodeOptions>(4))};
+        const HRESULT result{com_factory_.create_decoder()->Initialize(stream.get(), static_cast<WICDecodeOptions>(4))};
 
         // Cache options is not used by decoder and by design not validated.
         Assert::AreEqual(success_ok, result);
@@ -254,7 +255,7 @@ public:
 
     TEST_METHOD(Initialize_null_stream) // NOLINT
     {
-        const HRESULT result{factory_.create_decoder()->Initialize(nullptr, WICDecodeMetadataCacheOnDemand)};
+        const HRESULT result{com_factory_.create_decoder()->Initialize(nullptr, WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
@@ -264,7 +265,7 @@ public:
         check_hresult(
             SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        const com_ptr decoder{factory_.create_decoder()};
+        const com_ptr decoder{com_factory_.create_decoder()};
         HRESULT result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(success_ok, result);
 
@@ -285,7 +286,7 @@ public:
         check_hresult(
             SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        const com_ptr decoder{factory_.create_decoder()};
+        const com_ptr decoder{com_factory_.create_decoder()};
         HRESULT result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(success_ok, result);
 
@@ -298,7 +299,7 @@ public:
     TEST_METHOD(GetFrame_with_bad_index) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
-        const HRESULT result{factory_.create_decoder()->GetFrame(1, bitmap_frame_decode.put())};
+        const HRESULT result{com_factory_.create_decoder()->GetFrame(1, bitmap_frame_decode.put())};
 
         Assert::AreEqual(wincodec::error_frame_missing, result);
     }
@@ -306,7 +307,7 @@ public:
     TEST_METHOD(GetFrame_not_initialized) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
-        const HRESULT result{factory_.create_decoder()->GetFrame(0, bitmap_frame_decode.put())};
+        const HRESULT result{com_factory_.create_decoder()->GetFrame(0, bitmap_frame_decode.put())};
 
         Assert::AreEqual(wincodec::error_not_initialized, result);
     }
@@ -379,11 +380,11 @@ private:
             SHCreateMemStream(reinterpret_cast<const BYTE*>(buffer.data()), static_cast<UINT>(buffer.size())),
             take_ownership_from_abi};
 
-        const com_ptr bitmap_decoder{factory_.create_decoder()};
+        const com_ptr bitmap_decoder{com_factory_.create_decoder()};
         check_hresult(bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         return bitmap_decoder;
     }
 
-    factory factory_;
+    com_factory com_factory_;
 };
