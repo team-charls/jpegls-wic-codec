@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2024 Team CharLS
+// SPDX-FileCopyrightText: © 2024 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -19,6 +19,7 @@ import property_variant;
 import storage_buffer;
 import "macros.hpp";
 
+using std::array;
 using std::pair;
 using std::span;
 using std::to_wstring;
@@ -28,17 +29,18 @@ using winrt::check_hresult;
 
 namespace {
 
-template<typename K, typename V, std::size_t Extent>
+template<typename Key, typename Value, size_t Extent>
 [[nodiscard]]
-const V* find(span<pair<K, V>, Extent> values, const K& key)
+const Value* find(span<const Key, Extent> keys, span<Value, Extent> values, const Key& key)
 {
-    for (const auto& pair : values)
+    for (size_t i{}; i < keys.size(); ++i)
     {
-        if (pair.first == key)
+        if (keys[i] == key)
         {
-            return &pair.second;
+            return &values[i];
         }
     }
+
     return nullptr;
 }
 
@@ -69,16 +71,12 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
 
         const auto& [width, height, bits_per_sample, component_count]{decoder.frame_info()};
 
-        properties_[0].first = PKEY_Image_HorizontalSize;
-        properties_[0].second = property_variant{width};
-        properties_[1].first = PKEY_Image_VerticalSize;
-        properties_[1].second = property_variant{height};
-        properties_[2].first = PKEY_Image_BitDepth;
-        properties_[2].second = property_variant{static_cast<uint32_t>(bits_per_sample * component_count)};
-        properties_[3].first = PKEY_Image_Dimensions;
-        properties_[3].second = property_variant{(to_wstring(width) + L"x" + to_wstring(height)).c_str()};
-        properties_[4].first = PKEY_Image_Compression;
-        properties_[4].second = property_variant{static_cast<uint16_t>(IMAGE_COMPRESSION_JPEG)};
+        property_values_[0] = property_variant{width};
+        property_values_[1] = property_variant{height};
+        property_values_[2] = property_variant{static_cast<uint32_t>(bits_per_sample * component_count)};
+        property_values_[3] = property_variant{(to_wstring(width) + L" x " + to_wstring(height)).c_str()};
+        property_values_[4] = property_variant{static_cast<uint16_t>(IMAGE_COMPRESSION_JPEG)};
+
         initialized_ = true;
 
         return success_ok;
@@ -102,7 +100,7 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
         TRACE("{} property_store::GetCount\n", fmt::ptr(this));
 
         // Implementation recommendation is to set count to zero (when possible) in an error condition.
-        *check_out_pointer(count) = static_cast<DWORD>(initialized_ ? properties_.size() : 0U);
+        *check_out_pointer(count) = static_cast<DWORD>(initialized_ ? property_keys.size() : 0U);
         check_state();
 
         return success_ok;
@@ -118,10 +116,10 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
         TRACE("{} property_store::GetAt\n", fmt::ptr(this));
         check_state();
 
-        if (index >= properties_.size())
+        if (index >= property_keys.size())
             return error_invalid_argument;
 
-        *check_out_pointer(key) = properties_[index].first;
+        *check_out_pointer(key) = property_keys[index];
         return success_ok;
     }
     catch (...)
@@ -135,7 +133,7 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
         TRACE("{} property_store::GetValue\n", fmt::ptr(this));
         check_state();
 
-        if (const auto* property_value{find(span{properties_}, key)}; property_value)
+        if (const auto* property_value{find(span{property_keys}, span{property_values_}, key)}; property_value)
         {
             property_value->copy(value);
         }
@@ -170,7 +168,9 @@ private:
             winrt::throw_hresult(error_not_valid_state);
     }
 
-    std::array<pair<PROPERTYKEY, property_variant>, 5> properties_; // Use std::array as a small map.
+    inline const static array property_keys{PKEY_Image_HorizontalSize, PKEY_Image_VerticalSize, PKEY_Image_BitDepth,
+                                            PKEY_Image_Dimensions, PKEY_Image_Compression};
+    array<property_variant, property_keys.size()> property_values_;
     std::atomic<bool> initialized_{};
 };
 

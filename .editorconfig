@@ -1,34 +1,31 @@
-# Copyright (c) Team CharLS.
+# SPDX-FileCopyrightText: © 2018 Team CharLS
 # SPDX-License-Identifier: BSD-3-Clause
 
 root = true
 
 [*]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
 
 # Spell checker configuration
 spelling_exclusion_path = spelling.dic
 
-[*.{h,cpp}]
+[*.{hpp,cpp,ixx}]
 end_of_line = crlf
-charset = utf-8-bom
-trim_trailing_whitespace = true
 insert_final_newline = true
-indent_style = space
 indent_size = 4
 cpp_space_pointer_reference_alignment = left
 
 [*.props]
-trim_trailing_whitespace = true
-indent_style = space
 indent_size = 2
 
 [*.{wxs,wxi}]
-trim_trailing_whitespace = true
-indent_style = space
 indent_size = 2
 
 [*.{vcxproj,wixproj}]
-trim_trailing_whitespace = true
-indent_style = space
 indent_size = 2
 
+[*.md]
+trim_trailing_whitespace = false # Ending with 2 spaces is used for layout in Markdown
+indent_size = 2

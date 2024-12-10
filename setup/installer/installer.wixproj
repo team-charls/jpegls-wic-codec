@@ -1,0 +1,21 @@
+﻿<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Project Sdk="WixToolset.Sdk">
+  <ItemGroup>
+    <Content Include="wic_file_type_registration.wxi" />
+    <Content Include="wic_registration.wxi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\jpegls-wic-codec.vcxproj" />
+    <ProjectReference Include="..\shell-change-notify-custom-action\shell-change-notify-custom-action.vcxproj" />
+  </ItemGroup>
+
+  <Target Name="SignMsi">
+    <Message Importance="high" Text="SignMsi: @(SignMsi)" />
+    <Exec Command="signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) &quot;%(SignMsi.FullPath)&quot; " />
+  </Target>
+</Project>

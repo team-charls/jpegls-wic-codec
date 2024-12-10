@@ -17,8 +17,7 @@ path = [
     "spelling.dic",
     "default.ruleset",
     "jpegls-wic-codec.sln",
-    "setup/global.json",
-    "setup/setup.sln",
+    "global.json",
     "jpegls-wic-codec.sln.DotSettings",
     "restore-windows-photo-viewer.reg",
     "test/CodeCoverage.runsettings"

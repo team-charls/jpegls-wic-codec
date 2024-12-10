@@ -1,0 +1,45 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- File type registration -->
+  <RegistryKey Root="HKCR" Key="$(FileExtension)">
+    <RegistryValue Type="string" Name="Content Type" Value="$(ContentType)" />
+    <RegistryValue Type="string" Name="PerceivedType" Value="image" />
+  </RegistryKey>
+
+  <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap">
+    <RegistryValue Type="string" Name="$(FileExtension)" Value="picture" />
+  </RegistryKey>
+
+  <!-- Register with the Windows Thumbnail Cache
+             Use the Microsoft Windows provided PhotoThumbnailProvider module to generate the thumbnail -->
+  <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\$(FileExtension)\ShellEx\$(CLSID_ThumbnailProvider)">
+    <RegistryValue Type="string" Value="$(CLSID_PhotoThumbnailProvider)" />
+  </RegistryKey>
+  <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\$(FileExtension)\ShellEx\$(CLSID_ThumbnailProvider)">
+    <RegistryValue Type="string" Value="$(CLSID_PhotoThumbnailProvider)" />
+  </RegistryKey>
+
+  <!-- Register with the legacy Windows Photo Viewer (still installed on Windows 10/11), just forward to the TIFF registration.-->
+  <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations">
+    <RegistryValue Type="string" Name="$(FileExtension)" Value="PhotoViewer.FileAssoc.Tiff" />
+  </RegistryKey>
+
+  <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\PropertySystem\PropertyHandlers\$(FileExtension)">
+    <RegistryValue Type="string" Value="$(CLSID_PropertyStore)" />
+  </RegistryKey>
+
+  <RegistryKey Root="HKCR" Key="SystemFileAssociations\$(FileExtension)">
+    <RegistryValue Type="string" Name="ExtendedTileInfo" Value="prop:System.ItemType;*System.DateModified;*System.Image.Dimensions" />
+
+    <RegistryValue Type="string" Name="FullDetails" Value=
+      "prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System.Image.BitDepth;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.DateCreated;System.DateModified;System.Size;System.FileAttributes;System.OfflineAvailability;System.OfflineStatus;System.SharedWith;System.FileOwner;System.ComputerName" />
+
+    <RegistryValue Type="string" Name="InfoTip" Value="prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size" />
+    <RegistryValue Type="string" Name="PreviewDetails"
+                   Value="prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;*System.OfflineStatus;*System.DateCreated;*System.SharedWith" />
+  </RegistryKey>
+</Include>

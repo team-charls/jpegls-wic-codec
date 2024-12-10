@@ -1,0 +1,35 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <!-- Use a different upgrade code for x86 to allow x86 and x64 versions to be installed side by side -->
+  <?if $(sys.BUILDARCHSHORT) = "X86" ?>
+  <?define UpgradeCode = "{1a31866d-6148-4443-80c2-2407f89c77a8}" ?>
+  <?else?>
+  <?define UpgradeCode = "{1a31866d-6148-4443-80c2-2407f89c77a9}" ?>
+  <?endif?>
+
+  <Package
+    Name="JPEG-LS WIC Codec"
+    Manufacturer="Team CharLS"
+    Version="$(FourPartsVersion)"
+    UpgradeCode="$(var.UpgradeCode)">
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="CodecComponents" />
+    </Feature>
+
+    <InstallExecuteSequence>
+      <Custom Action="SHChangeNotifyCustomAction" Before="InstallFinalize" />
+    </InstallExecuteSequence>
+
+    <Binary Id="SHChangeNotifyCustomActionDll" SourceFile="shell-change-notify-custom-action.dll" />
+    <CustomAction Id="SHChangeNotifyCustomAction" BinaryRef="SHChangeNotifyCustomActionDll"
+                  DllEntry="SHChangeNotifyCustomAction" Execute="commit" HideTarget="no" Impersonate="yes" />
+  </Package>
+</Wix>

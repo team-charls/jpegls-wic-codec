@@ -1,0 +1,83 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- Register COM objects -->
+  <Class Id="$(var.CLSID_JpegLSEncoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+  <Class Id="$(var.CLSID_JpegLSDecoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+  <Class Id="$(var.CLSID_PropertyStore)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+
+  <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_JpegLSEncoder)">
+    <RegistryValue Type="integer" Name="ArbitrationPriority" Value="10" />
+    <RegistryValue Type="string" Name="Author" Value="Team CharLS" />
+    <RegistryValue Type="string" Name="ColorManagementVersion" Value="1.0.0.0" />
+    <RegistryValue Type="string" Name="ContainerFormat" Value="$(GUID_ContainerFormatJpegLS)" />
+    <RegistryValue Type="string" Name="Description" Value="JPEG-LS Codec" />
+    <RegistryValue Type="string" Name="FileExtensions" Value=".jls" />
+    <RegistryValue Type="string" Name="FriendlyName" Value="$(EncoderFriendlyName)" />
+    <RegistryValue Type="string" Name="MimeTypes" Value="image/jls" />
+    <RegistryValue Type="string" Name="SpecVersion" Value="1.0.0.0" />
+    <RegistryValue Type="string" Name="Vendor" Value="$(GUID_VendorTeamCharLS)" />
+    <RegistryValue Type="string" Name="Version" Value="0.1.0.0" />
+    <RegistryValue Type="integer" Name="SupportAnimation" Value="0" />
+    <RegistryValue Type="integer" Name="SupportChromaKey" Value="0" />
+    <RegistryValue Type="integer" Name="SupportLossless" Value="1" />
+    <RegistryValue Type="integer" Name="SupportMultiframe" Value="1" />
+
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat2bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat4bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat8bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat16bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppBGR)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat48bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+  </RegistryKey>
+
+  <!-- WIC category registration -->
+  <RegistryKey Root="HKCR" Key="CLSID\$(CATID_WICBitmapEncoders)\Instance\$(CLSID_JpegLSEncoder)">
+    <RegistryValue Type="string" Name="CLSID" Value="$(CLSID_JpegLSEncoder)" />
+    <RegistryValue Type="string" Name="FriendlyName" Value="$(EncoderFriendlyName)" />
+  </RegistryKey>
+
+  <!-- Register WIC configuration -->
+  <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_JpegLSDecoder)">
+        <RegistryValue Type="integer" Name="ArbitrationPriority" Value="10" />
+        <RegistryValue Type="string" Name="Author" Value="Team CharLS" />
+        <RegistryValue Type="string" Name="ColorManagementVersion" Value="1.0.0.0" />
+        <RegistryValue Type="string" Name="ContainerFormat" Value="$(var.GUID_ContainerFormatJpegLS)" />
+        <RegistryValue Type="string" Name="Description" Value="JPEG-LS Codec" />
+        <RegistryValue Type="string" Name="FileExtensions" Value=".jls" />
+        <RegistryValue Type="string" Name="FriendlyName" Value="$(DecoderFriendlyName)" />
+        <RegistryValue Type="string" Name="MimeTypes" Value="image/jls" />
+        <RegistryValue Type="string" Name="SpecVersion" Value="1.0.0.0" />
+        <RegistryValue Type="string" Name="Vendor" Value="$(GUID_VendorTeamCharLS)" />
+        <RegistryValue Type="string" Name="Version" Value="$(FourPartsVersion)" />
+        <RegistryValue Type="integer" Name="SupportAnimation" Value="0" />
+        <RegistryValue Type="integer" Name="SupportChromaKey" Value="0" />
+        <RegistryValue Type="integer" Name="SupportLossless" Value="1" />
+        <RegistryValue Type="integer" Name="SupportMultiframe" Value="0" />
+
+        <!-- Decoding pattern registration -->
+        <RegistryKey Key="Patterns\0">
+          <RegistryValue Type="integer" Name="Position" Value="0" />
+          <RegistryValue Type="integer" Name="Length" Value="3" />
+          <RegistryValue Type="binary" Name="Pattern" Value="ffd8ff" />
+          <RegistryValue Type="binary" Name="Mask" Value="ffffff" />
+        </RegistryKey>
+
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat2bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat4bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat8bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat16bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat48bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    </RegistryKey>
+
+    <!-- WIC category registration -->
+    <RegistryKey Root="HKCR" Key="CLSID\$(CATID_WICBitmapDecoders)\Instance\$(CLSID_JpegLSDecoder)">
+        <RegistryValue Type="string" Name="CLSID" Value="$(CLSID_JpegLSDecoder)" />
+        <RegistryValue Type="string" Name="FriendlyName" Value="$(DecoderFriendlyName)" />
+    </RegistryKey>
+</Include>

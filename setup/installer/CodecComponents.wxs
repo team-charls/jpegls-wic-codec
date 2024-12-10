@@ -1,0 +1,60 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="CodecComponents" Directory="INSTALLFOLDER">
+
+      <?define GUID_WICPixelFormat2bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc906}" ?>
+      <?define GUID_WICPixelFormat4bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc907}" ?>
+      <?define GUID_WICPixelFormat8bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc908}" ?>
+      <?define GUID_WICPixelFormat16bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc90b}" ?>
+      <?define GUID_WICPixelFormat24bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc90d}" ?>
+      <?define GUID_WICPixelFormat24bppBGR = "{6fddc324-4e03-4bfe-b185-3d77768dc90c}" ?>
+      <?define GUID_WICPixelFormat48bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc915}" ?>
+
+      <?define CATID_WICBitmapEncoders = "{ac757296-3522-4e11-9862-c17be5a1767e}" ?>
+      <?define CATID_WICBitmapDecoders = "{7ed96837-96f0-4812-b211-f13c24117ed3}" ?>
+
+      <?define CLSID_ThumbnailProvider = "{e357fccd-a995-4576-b01f-234630154e96}" ?>
+      <?define CLSID_PhotoThumbnailProvider = "{c7657c4a-9f68-40fa-a4df-96bc08eb3551}" ?>
+
+      <?define GUID_ContainerFormatJpegLS = "{52c25458-282d-4ef4-a69f-021bb2984543}" ?>
+      <?define CLSID_JpegLSDecoder = "{e57dc18b-019c-47f2-8ed0-bf587be4ff1b}" ?>
+      <?define CLSID_JpegLSEncoder = "{70a823ea-009f-402f-9bda-e9b8f6332d61}" ?>
+      <?define CLSID_PropertyStore = "{9505939a-cdb9-4090-aad4-7da7032101bd}" ?>
+      <?define GUID_VendorTeamCharLS = "{8adbe21c-a720-424e-b238-45ad1052b98c}" ?>
+
+      <?define EncoderFriendlyName = "Team CharLS JPEG-LS Encoder" ?>
+      <?define DecoderFriendlyName = "Team CharLS JPEG-LS Decoder" ?>
+
+      <Component>
+        <File Id="F_jpegls_wic_codec.dll" Source="jpegls-wic-codec.dll" KeyPath="yes" />
+
+        <?define var.ComServerFileId = "F_jpegls_wic_codec.dll" ?>
+        <?include wic_registration.wxi ?>
+        <?undef var.ComServerFileId?>
+
+        <?define var.FileExtension = ".jls" ?>
+        <?define var.ContentType = "image/jls" ?>
+        <?include wic_file_type_registration.wxi ?>
+        <?undef var.FileExtension?>
+        <?undef var.ContentType?>
+      </Component>
+
+      <Component>
+          <?if $(sys.BUILDARCHSHORT) = "X86" ?>
+          <File Id="F_charls_3.dll" Source="charls-3-x86.dll" KeyPath="yes" />
+          <?endif?>
+          <?if $(sys.BUILDARCHSHORT) = "X64" ?>
+          <File Id="F_charls_3.dll" Source="charls-3-x64.dll" KeyPath="yes" />
+          <?endif?>
+          <?if $(sys.BUILDARCHSHORT) = "A64" ?>
+          <File Id="F_charls_3.dll" Source="charls-3-arm64.dll" KeyPath="yes" />
+          <?endif?>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

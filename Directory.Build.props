@@ -23,6 +23,20 @@
 
     <!-- WinRT is needed for the COM support, disable generation of Windows Metadata (is slow) -->
     <CppWinRTGenerateWindowsMetadata>false</CppWinRTGenerateWindowsMetadata>
+
+    <Version>0.3.0</Version>
+
+    <!-- Define properties for WIX projects -->
+    <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>
+    <Pedantic>true</Pedantic>
+
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' != ''">$(CertificateThumbprint)</_CertificateThumbprint>
+    <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' == ''">b834c6c1d7e0ae8e76cadcf9e2e7a273133a5df6</_CertificateThumbprint>
+    <_TimestampUrl Condition="'$(_TimestampUrl)' != ''"> $(TimestampUrl)</_TimestampUrl>
+    <_TimestampUrl Condition="'$(_TimestampUrl)' == ''">http://time.certum.pl/</_TimestampUrl>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -177,6 +191,11 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>true</EnablePREfast> <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <AdditionalOptions>%(AdditionalOptions) /Brepro</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -184,7 +203,7 @@
       <LinkIncremental>false</LinkIncremental>
 
       <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds. -->
-      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/PDBALTPATH:%_PDB% /Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
 </Project>

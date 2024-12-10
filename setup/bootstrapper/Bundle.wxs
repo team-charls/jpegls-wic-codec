@@ -1,0 +1,150 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+    <!-- Use a different upgrade code for x86 to allow x86 and x64 versions to be installed side by side -->
+  <?if $(sys.BUILDARCHSHORT) = "X86" ?>
+  <?define UpgradeCode = "8b7ad629-eeba-43eb-9a2d-c7d47a1a8688" ?>
+  <?else?>
+  <?define UpgradeCode = "8b7ad629-eeba-43eb-9a2d-c7d47a1a8689" ?>
+  <?endif?>
+
+  <Bundle Name="JPEG-LS WIC Codec ($(sys.BUILDARCH))"
+          Manufacturer="Team CharLS"
+          Version="$(FourPartsVersion)"
+          UpgradeCode="$(UpgradeCode)">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+        LicenseUrl=""
+        Theme="hyperlinkLicense"
+        SuppressOptionsUI="yes"
+        SuppressRepair="yes" />
+    </BootstrapperApplication>
+
+    <!-- processor architecture -->
+    <util:RegistrySearch
+        Id="REG_ARCH"
+        Root="HKLM"
+        Key="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+        Value="PROCESSOR_ARCHITECTURE"
+        Result="value"
+        Variable="ARCH_NAME" />
+
+    <!-- Visual C++ 2015-2022 Redistributable (x86) runtime minimum msi package version -->
+    <util:ProductSearch
+        Id="VCRUNTIME_X86"
+        Result="version"
+        Variable="VCRUNTIME_X86_VER"
+        UpgradeCode="65E5BD06-6392-3027-8C26-853107D3CF1A"
+        Condition="VersionNT" />
+
+    <!-- Visual C++ 2015-2022 Redistributable (x64) runtime minimum msi package version -->
+    <util:ProductSearch
+        Id="VCRUNTIME_X64"
+        Result="version"
+        Variable="VCRUNTIME_X64_VER"
+        UpgradeCode="36F68A90-239C-34DF-B58C-64B30153CE35"
+        Condition="VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
+        After="REG_ARCH" />
+
+    <!-- Visual C++ 2015-2022 Redistributable (Arm64) runtime msi package version -->
+    <util:ProductSearch
+        Id="VCRUNTIME_ARM64"
+        Result="version"
+        Variable="VCRUNTIME_ARM64_VER"
+        UpgradeCode="DC9BAE42-810B-423A-9E25-E4073F1C7B00"
+        Condition="(ARCH_NAME = &quot;ARM64&quot;)"
+        After="REG_ARCH" />
+
+    <!-- Visual C++ 2015-2022 Redistributable runtime msi package version -->
+    <Variable Name="VCRUNTIME_VER" Type="version" Value="14.42.34433.0" />
+
+    <Chain>
+      <!-- Visual C++ 2015-2022 Redistributable (x86) -->
+      <?if $(sys.BUILDARCHSHORT) = "X86" ?>
+      <ExePackage
+          Id="VC_REDIST_X86"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
+          Cache="remove"
+          PerMachine="yes"
+          Permanent="yes"
+          Protocol="burn"
+          InstallCondition="VersionNT"
+          DetectCondition="(VCRUNTIME_X86_VER &gt;= VCRUNTIME_VER) AND VersionNT"
+          InstallArguments="/install /quiet /norestart"
+          RepairArguments="/repair /quiet /norestart"
+          UninstallArguments="/uninstall /quiet /norestart">
+        <ExePackagePayload
+            Name="VC_redist.x86.exe"
+            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
+            Description="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
+            Hash="2C1FACB8567A052B4FA65D173B0BDA64FA5FDED2CDDB9073B7C28507ED95414C17D2839D06D5E961617C754CDA54D6134964B1AFF5C9E9CDFBACE71F1DE2AC3A"
+            Size="13957544"
+            Version="14.42.34433.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/84c7705c-37c2-44cb-9454-c0aadea5661b/DD1A8BE03398367745A87A5E35BEBDAB00FDAD080CF42AF0C3F20802D08C25D4/VC_redist.x86.exe" />
+      </ExePackage>
+      <?endif?>
+
+      <!-- Visual C++ 2015-2022 Redistributable (x64) -->
+      <?if $(sys.BUILDARCHSHORT) = "X64" ?>
+      <ExePackage
+          Id="VC_REDIST_X64"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
+          Cache="remove"
+          PerMachine="yes"
+          Permanent="yes"
+          Protocol="burn"
+          InstallCondition="VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
+          DetectCondition="(VCRUNTIME_X64_VER &gt;= VCRUNTIME_VER) AND VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
+          InstallArguments="/install /quiet /norestart"
+          RepairArguments="/repair /quiet /norestart"
+          UninstallArguments="/uninstall /quiet /norestart">
+        <ExePackagePayload
+            Name="VC_redist.x64.exe"
+            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
+            Description="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
+            Hash="20E2D7437367CB262CE45184EB4D809249FE654AA450D226E376D4057C00B58ECFD8834A8B5153EB148960FFC845BED1F0943D5FF9A6FC1355B1503138562D8D"
+            Size="25640112"
+            Version="14.42.34433.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/c7dac50a-e3e8-40f6-bbb2-9cc4e3dfcabe/1821577409C35B2B9505AC833E246376CC68A8262972100444010B57226F0940/VC_redist.x64.exe" />
+      </ExePackage>
+      <?endif?>
+
+      <!-- Visual C++ 2015-2022 Redistributable (Arm64) -->
+      <?if $(sys.BUILDARCHSHORT) = "A64" ?>
+      <ExePackage
+          Id="VC_REDIST_ARM64"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (Arm64) - 14.42.34433"
+          Cache="remove"
+          PerMachine="yes"
+          Permanent="yes"
+          Protocol="burn"
+          InstallCondition="(ARCH_NAME = &quot;ARM64&quot;)"
+          DetectCondition="(VCRUNTIME_ARM64_VER &gt;= VCRUNTIME_VER) AND (ARCH_NAME = &quot;ARM64&quot;)"
+          InstallArguments="/install /quiet /norestart"
+          RepairArguments="/repair /quiet /norestart"
+          UninstallArguments="/uninstall /quiet /norestart">
+        <ExePackagePayload
+            Name="VC_redist.arm64.exe"
+            ProductName="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.42.34433"
+            Description="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.42.34433"
+            Hash="81876E6E42183A71CFCCFEC4FCDD0AD7FC1379A08DDB0DC791DFDB2BA95ABAA7F5CB0BC1DB3B706E3147620ED47E9345238385F94AD1990158C910E9314EE429"
+            Size="11723056"
+            Version="14.42.34433.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/5319f718-2a84-4aff-86be-8dbdefd92ca1/C176B30681576B86068F8B55FAE512391EE4217511494B24393C1C9476BC2169/VC_redist.arm64.exe" />
+      </ExePackage>
+      <?endif?>
+
+      <MsiPackage
+        Id="CodecInstaller"
+        SourceFile="installer.msi"
+        Visible="no" />
+    </Chain>
+  </Bundle>
+</Wix>
