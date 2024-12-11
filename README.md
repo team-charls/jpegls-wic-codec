@@ -5,22 +5,27 @@
 
 # JPEG-LS Windows Imaging Component Codec
 
-This Windows Imaging Component (WIC) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can leverage WIC codecs. It makes it possible to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
-
 [![Build Status](https://dev.azure.com/team-charls/jpegls-wic-codec/_apis/build/status/team-charls.jpegls-wic-codec?branchName=main)](https://dev.azure.com/team-charls/jpegls-wic-codec/_build/latest?definitionId=1&branchName=main)
 [![REUSE status](https://api.reuse.software/badge/github.com/team-charls/jpegls-wic-codec)](https://api.reuse.software/info/github.com/team-charls/jpegls-wic-codec)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=team-charls_jpegls-wic-codec&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=team-charls_jpegls-wic-codec)
 
 ## Introduction
 
-The Windows Imaging Component (WIC) is a built-in codec framework of Windows that makes it possible to create independent native image codecs that can be used by a large set of applications. WIC is implemented using COM technology. Image codecs for many popular formats are already pre-installed on Windows.
+This WIC (Windows Imaging Component) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can use WIC codecs. It allows to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
+
+It is a C++ 23 implementation that uses the CharLS JPEG-LS codec.
+The C++/WinRT framework is used to implement the classic COM components required for a WIC codec and it uses Wix v5 for the installer.
+
+### Windows Imaging Component Background
+
+Windows Imaging Component (WIC) is a built-in codec framework of Windows that makes it possible to create independent native image codecs that can be used by a large set of applications. WIC is implemented using COM technology. Many image codecs for popular formats are standard pre-installed on Windows.
 
 ## Installing
 
 ### Requirements
 
-- Windows 11 or Windows 10 (version 22H2).
-- x86, x64 or ARM64 processor
+- Windows 11 or Windows 10 version 22H2.
+- x86, x64 or ARM64 processor.
 
 ### Via GitHub with EXE
 
@@ -72,7 +77,7 @@ The following table provides the codec identification information:
 | MIME type             | image/jls                                                 |
 | Specification Support | JPEG-LS (ISO/IEC 14495-1), SPIFF header (ISO/IEC 10918-3) |
 
-The following table lists the GUIDs used to identify the native JPEG-LS codec components:
+The following table lists the GUIDs used to identify the Team CharLS JPEG-LS codec component:
 
 | Component        | GUID                                 |
 |------------------|--------------------------------------|
@@ -82,7 +87,7 @@ The following table lists the GUIDs used to identify the native JPEG-LS codec co
 
 The following table lists the pixel formats that can be decoded:
 
-| GUID                         | Component Count | Bits per Sample |
+| WIC Format GUID              | Component Count | Bits per Sample |
 |------------------------------|-----------------|-----------------|
 | GUID_WICPixelFormat2bppGray  | 1               | 2               |
 | GUID_WICPixelFormat4bppGray  | 1               | 4               |
@@ -95,7 +100,7 @@ Note \*: monochrome JPEG-LS images with 10 or 12 pixels will be upscaled to 16 t
 
 The following table lists the pixel formats that can be encoded:
 
-| GUID                            | Component Count | Bits per Sample |
+| WIC Format GUID                 | Component Count | Bits per Sample |
 |---------------------------------|-----------------|-----------------|
 | GUID_WICPixelFormat2bppGray     | 1               | 2               |
 | GUID_WICPixelFormat4bppGray     | 1               | 4               |
@@ -112,10 +117,10 @@ Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no su
 Remark: to build this reprository Visual Studio 2022 17.12 or newer with the extension HeatWave for VS2022 installed is needed.
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-2. Use Visual Studio open the jpegls-wic-codec.sln. Batch build all projects.
+2. Use Visual Studio to open the jpegls-wic-codec.sln. Batch build all projects.
 3. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
-## Installation
+### Installation
 
 1. Open a command prompt with elevated rights
 2. Navigate to folder with the jpegls-wic-codec.dll
@@ -125,7 +130,7 @@ Remark: to build this reprository Visual Studio 2022 17.12 or newer with the ext
 regsvr32 jpegls-wic-codec.dll
 ```
 
-## Uninstall
+### Uninstall
 
 1. Open a command prompt with elevated rights
 2. Navigate to folder with the jpegls-wic-codec.dll
@@ -134,3 +139,16 @@ regsvr32 jpegls-wic-codec.dll
 ```shell
 regsvr32 -u jpegls-wic-codec.dll
 ```
+
+### Building and code signing
+
+A command file is available to build and sign the WIC DLL, CharLS coded DLL and the setup application.  
+Instructions:
+
+- Open a Visual Studio Developer Command Prompt
+- Go the root of the cloned repository
+- Ensure a code signing certificate is available
+- Execute the command `create-signed-builds.cmd certificate-thumb-print time-stamp-url`  
+ Note: the certificate thumbprint and time stamp URL arguments are depending on the used code signing certificate.
+
+ The WIC DLL, CharLS codec DLL and the installer will be signed for the release builds of x86, x64 and ARM64.
