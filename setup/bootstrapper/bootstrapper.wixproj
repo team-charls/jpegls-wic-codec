@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   SPDX-FileCopyrightText: © 2024 Team CharLS
   SPDX-License-Identifier: BSD-3-Clause
 -->
@@ -6,7 +6,7 @@
 <Project Sdk="WixToolset.Sdk">
   <PropertyGroup>
     <OutputType>Bundle</OutputType>
-    <OutputName>NetpbmWicCodecSetup-$(Version)-$(Platform)</OutputName>
+    <OutputName>JpegLSWicCodecSetup-$(Version)-$(Platform)</OutputName>
   </PropertyGroup>
 
   <ItemGroup>
