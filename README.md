@@ -15,22 +15,24 @@ This Windows Imaging Component (WIC) codec makes it possible to decode and encod
 
 The Windows Imaging Component (WIC) is a built-in codec framework of Windows that makes it possible to create independent native image codecs that can be used by a large set of applications. WIC is implemented using COM technology. Image codecs for many popular formats are already pre-installed on Windows.
 
-### Status
+## Installing
 
-This project is the development phase:
+### Requirements
 
-- No installer with pre-built binaries is available, manually building and registering is required.
+- Windows 11 or Windows 10 (version 22H2).
+- x86, x64 or ARM64 processor
 
-### Supported Operation Systems
+### Via GitHub with EXE
 
-The JPEG-LS WIC codec supports the following Windows operating systems:
+Go to the [releases](https://github.com/team-charls/jpegls-wic-codec/releases) page and click on
+Assets at the bottom to show the files available in the release.
+Please use the appropriate installer that matches your machine's architecture.
 
-- Windows 11 and 10 (x86, x64, ARM64)
-- Windows Server 2022 and 2019 (x86, x64)
+> [!NOTE]
+> Microsoft Defender SmartScreen may show a warning about an unrecognised app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
+The installer and the DLL are signed, but Defender SmartScreen requires an EV code signing certificate, which is only available to commercial organisations.
 
-Note: on Windows 10 "N" the Media Feature Pack needs to be installed.
-
-### Applications that can use the JPEG-LS WIC codec
+## Applications that can use the JPEG-LS WIC codec
 
 The following application have been validated to work with the JPEG-LS WIC codec:
 
@@ -41,7 +43,7 @@ The following application have been validated to work with the JPEG-LS WIC codec
 - ZackViewer <https://github.com/peirick/ZackViewer>. This viewer can also be used to convert from one image encoding format to another.
 - Microsoft Office applications like Word, Excel, PowerPoint. These applications can, when the JPEG-LS codec is installed, import JPEG-LS images in their documents.
 
-#### Windows 10 Microsoft Photos Application not supported
+### Windows 10 Microsoft Photos Application not supported
 
 The standard Windows 10 Microsoft Photos application cannot be used at this moment as it is limited to the WIC codecs that are pre-installed on Windows or are provided by Microsoft in the Microsoft Store.
 Microsoft currently does not make it possible to create WIC codecs that can be uploaded to the Microsoft Store.
@@ -72,11 +74,11 @@ The following table provides the codec identification information:
 
 The following table lists the GUIDs used to identify the native JPEG-LS codec components:
 
-| Component        | Friendly Name               | GUID                                 |
-|------------------|-----------------------------|--------------------------------------|
-| Container Format | id::container_format_jpegls | 52c25458-282d-4ef4-a69f-021bb2984543 |
-| Decoder          | id::jpegls_decoder          | e57dc18b-019c-47f2-8ed0-bf587be4ff1b |
-| Encoder          | id::jpegls_encoder          | 70a823ea-009f-402f-9bda-e9b8f6332d61 |
+| Component        | GUID                                 |
+|------------------|--------------------------------------|
+| Container Format | 52c25458-282d-4ef4-a69f-021bb2984543 |
+| Decoder          | e57dc18b-019c-47f2-8ed0-bf587be4ff1b |
+| Encoder          | 70a823ea-009f-402f-9bda-e9b8f6332d61 |
 
 The following table lists the pixel formats that can be decoded:
 
@@ -105,10 +107,12 @@ The following table lists the pixel formats that can be encoded:
 
 Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set a BGR color space in the SPIFF header.
 
-## Build Instructions
+## Manual Build Instructions
+
+Remark: to build this reprository Visual Studio 2022 17.12 or newer with the extension HeatWave for VS2022 installed is needed.
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-2. Open Visual Studio 2022 17.8.0 or newer and open the jpeg-wic-codec.sln. Batch build all projects.  
+2. Use Visual Studio open the jpegls-wic-codec.sln. Batch build all projects.
 3. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
 ## Installation

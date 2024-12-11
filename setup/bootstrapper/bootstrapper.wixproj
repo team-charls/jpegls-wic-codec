@@ -1,0 +1,30 @@
+﻿<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Project Sdk="WixToolset.Sdk">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>NetpbmWicCodecSetup-$(Version)-$(Platform)</OutputName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" />
+    <PackageReference Include="WixToolset.Util.wixext" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\installer\installer.wixproj" />
+  </ItemGroup>
+
+  <Target Name="SignBundleEngine">
+    <Message Importance="high" Text="SignBundleEngine: @(SignBundleEngine)" />
+    <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignBundleEngine.FullPath)" ' />
+  </Target>
+
+  <Target Name="SignBundle">
+    <Message Importance="high" Text="SignBundle: @(SignBundle)" />
+    <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignBundle.FullPath)" ' />
+  </Target>
+</Project>
