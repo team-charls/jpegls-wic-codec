@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2018 Team CharLS
+// SPDX-FileCopyrightText: © 2018 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -90,7 +90,7 @@ struct jpegls_bitmap_decoder : winrt::implements<jpegls_bitmap_decoder, IWICBitm
     try
     {
         TRACE("{} jpegls_bitmap_decoder::Initialize, stream={}, cache_options={}\n", fmt::ptr(this), fmt::ptr(stream),
-              fmt::underlying(cache_options));
+              std::to_underlying(cache_options));
 
         scoped_lock lock{mutex_};
 

@@ -30,7 +30,6 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{154ad843-e510-4271-a1dc-8eb291482c38}</ProjectGuid>
-    <RootNamespace>stdheaderunits</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>

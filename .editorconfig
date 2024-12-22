@@ -25,6 +25,7 @@ indent_size = 2
 
 [*.{vcxproj,wixproj}]
 indent_size = 2
+build_check.BC0101.severity=none
 
 [*.md]
 trim_trailing_whitespace = false # Ending with 2 spaces is used for layout in Markdown

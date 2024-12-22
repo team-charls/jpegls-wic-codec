@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2023 Team CharLS
+// SPDX-FileCopyrightText: © 2023 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -190,8 +190,8 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
 {
     if (decoder.spiff_header_has_value())
     {
-        const auto& spiff_header{decoder.spiff_header()};
-        if (spiff_header.vertical_resolution != 0 && spiff_header.horizontal_resolution != 0)
+        if (const auto& spiff_header{decoder.spiff_header()};
+            spiff_header.vertical_resolution != 0 && spiff_header.horizontal_resolution != 0)
         {
             switch (spiff_header.resolution_units)
             {
@@ -262,7 +262,7 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(IStream* stream, IWICImag
         check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
-        if (frame_info.component_count != 1 && decoder.get_interleave_mode() == charls::interleave_mode::none)
+        if (frame_info.component_count != 1 && decoder.get_interleave_mode() == interleave_mode::none)
         {
             const auto planar{decoder.decode<vector<std::byte>>()};
             if (frame_info.bits_per_sample > 8)

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
+// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -8,9 +8,9 @@ module;
 module jpegls_bitmap_encoder;
 
 import std;
-import <win.hpp>;
 import winrt;
 import charls;
+import <win.hpp>;
 
 import class_factory;
 import guids;
@@ -23,6 +23,7 @@ using charls::interleave_mode;
 using charls::jpegls_encoder;
 using charls::spiff_color_space;
 using charls::spiff_resolution_units;
+using std::uint32_t;
 using std::vector;
 using winrt::check_hresult;
 using winrt::com_ptr;
@@ -55,7 +56,7 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
     try
     {
         TRACE("{} jpegls_bitmap_encoder::Initialize, stream={}, cache_option={}\n", fmt::ptr(this), fmt::ptr(destination),
-              fmt::underlying(cache_option));
+              std::to_underlying(cache_option));
 
         check_condition(!static_cast<bool>(destination_), wincodec::error_wrong_state);
         destination_.copy_from(check_in_pointer(destination));
