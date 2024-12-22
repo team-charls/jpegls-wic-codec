@@ -33,6 +33,8 @@
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
+    <SignOutput Condition="'$(SignOutput)'==''">false</SignOutput>
+
     <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' != ''">$(CertificateThumbprint)</_CertificateThumbprint>
     <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' == ''">b834c6c1d7e0ae8e76cadcf9e2e7a273133a5df6</_CertificateThumbprint>
     <_TimestampUrl Condition="'$(_TimestampUrl)' != ''"> $(TimestampUrl)</_TimestampUrl>

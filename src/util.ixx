@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
+// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -12,10 +12,12 @@ import winrt;
 import <win.hpp>;
 
 import hresults;
-
 import "macros.hpp";
 
 using std::uint32_t;
+using std::wstring;
+using std::span;
+using winrt::check_win32;
 
 extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
@@ -32,9 +34,9 @@ static HMODULE get_current_module() noexcept
 }
 
 export [[nodiscard]]
-std::wstring get_module_path()
+wstring get_module_path()
 {
-    std::wstring path(100, L'?');
+    wstring path(100, L'?');
     size_t path_size;
     size_t actual_size;
 
@@ -55,9 +57,9 @@ std::wstring get_module_path()
 }
 
 export [[nodiscard]]
-std::wstring guid_to_string(const GUID& guid)
+wstring guid_to_string(const GUID& guid)
 {
-    std::wstring guid_text;
+    wstring guid_text;
 
     guid_text.resize(39);
     VERIFY(StringFromGUID2(guid, guid_text.data(), static_cast<int>(guid_text.size())) != 0);
@@ -69,7 +71,7 @@ std::wstring guid_to_string(const GUID& guid)
 }
 
 export [[nodiscard]]
-constexpr bool failed(winrt::hresult const result) noexcept
+constexpr bool failed(const winrt::hresult result) noexcept
 {
     return result < 0;
 }
@@ -112,6 +114,8 @@ export __declspec(noinline) HRESULT to_hresult() noexcept
     {
         return error_out_of_memory;
     }
+
+    // Explicit don't catch unexpected exceptions to enforce terminate with a stack trace.
 }
 
 export namespace fmt {
@@ -123,14 +127,6 @@ auto ptr(T p) noexcept -> const void*
 {
     static_assert(std::is_pointer_v<T>);
     return std::bit_cast<const void*>(p);
-}
-
-// Copied from fmtlib as replacement for std::to_underlying (C++23)
-template<typename Enum>
-[[nodiscard]]
-constexpr auto underlying(Enum e) noexcept -> std::underlying_type_t<Enum>
-{
-    return static_cast<std::underlying_type_t<Enum>>(e);
 }
 
 } // namespace fmt
@@ -145,12 +141,11 @@ export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated
                       _Null_terminated_ const wchar_t* value)
 {
     const auto length{wcslen(value) + 1};
-    winrt::check_win32(
-        RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
-                       static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
+    check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
+                               static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+export void set_value(const wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
                       _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
@@ -159,27 +154,26 @@ export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
 export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
                       const uint32_t value)
 {
-    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
+    check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
 
-export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
+export void set_value(const wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
 
 export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
-                      std::span<const std::byte> values)
+                      const span<const std::byte> values)
 {
-    winrt::check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, values.data(),
-                                       static_cast<DWORD>(values.size())));
+    check_win32(RegSetKeyValueW(hkey_local_machine, sub_key, value_name, REG_BINARY, values.data(),
+                                static_cast<DWORD>(values.size())));
 }
 
-export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
-                      const std::span<const std::byte> values)
+export void set_value(const wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      const span<const std::byte> values)
 {
     set_value(sub_key.c_str(), value_name, values);
 }
-
 
 export [[nodiscard]]
 HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
