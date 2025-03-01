@@ -22,7 +22,7 @@ using winrt::check_win32;
 extern "C" IMAGE_DOS_HEADER __ImageBase; // NOLINT(bugprone-reserved-identifier)
 
 export [[nodiscard]]
-constexpr std::byte operator"" _byte(const unsigned long long int n)
+consteval std::byte operator"" _byte(const unsigned long long int n)
 {
     return static_cast<std::byte>(n);
 }
