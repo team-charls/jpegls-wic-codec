@@ -18,4 +18,7 @@
     <Message Importance="high" Text="SignMsi: @(SignMsi)" />
     <Exec Command="signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) &quot;%(SignMsi.FullPath)&quot; " />
   </Target>
+
+  <!-- Workaround for https://github.com/firegiant/HeatWaveSupport/issues/73 -->
+  <Target Name="CollectSuggestedVisualStudioComponentIds" />
 </Project>
