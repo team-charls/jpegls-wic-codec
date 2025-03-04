@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: © 2021 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
+module;
+
+#include "intellisense.hpp"
+
 export module property_variant;
 
 import std;
