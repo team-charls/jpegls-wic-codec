@@ -72,6 +72,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="intellisense.hpp" />
     <ClInclude Include="macros.hpp" />
     <ClInclude Include="version.hpp" />
   </ItemGroup>

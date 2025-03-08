@@ -156,8 +156,9 @@ uint32_t compute_minimal_stride(const frame_info& frame_info) noexcept
 void shift_samples(void* buffer, const size_t pixel_count, const uint32_t sample_shift)
 {
     auto* const pixels{static_cast<uint16_t*>(buffer)};
-    std::transform(pixels, pixels + pixel_count, pixels,
-                   [sample_shift](const uint16_t pixel) -> uint16_t { return pixel << sample_shift; });
+    std::transform(pixels, pixels + pixel_count, pixels, [sample_shift](const uint16_t pixel) {
+        return static_cast<uint16_t>(pixel << sample_shift);
+    });
 }
 
 template<typename SizeType>
@@ -195,17 +196,18 @@ void set_resolution(const jpegls_decoder& decoder, IWICBitmap& bitmap)
         {
             switch (spiff_header.resolution_units)
             {
-            case spiff_resolution_units::aspect_ratio:
+                using enum spiff_resolution_units;
+            case aspect_ratio:
                 break;
 
-            case spiff_resolution_units::dots_per_centimeter: {
+            case dots_per_centimeter: {
                 constexpr double dpc_to_dpi{2.54};
                 check_hresult(bitmap.SetResolution(std::round(spiff_header.horizontal_resolution * dpc_to_dpi),
                                                    std::round(spiff_header.vertical_resolution * dpc_to_dpi)));
                 return;
             }
 
-            case spiff_resolution_units::dots_per_inch:
+            case dots_per_inch:
                 check_hresult(bitmap.SetResolution(spiff_header.horizontal_resolution, spiff_header.vertical_resolution));
                 return;
             }

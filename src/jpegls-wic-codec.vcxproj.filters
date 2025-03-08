@@ -21,6 +21,9 @@
     <ClInclude Include="macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="intellisense.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dll_main.cpp">

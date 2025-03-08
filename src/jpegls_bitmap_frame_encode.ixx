@@ -1,5 +1,9 @@
-﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
+// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
+
+module;
+
+#include "intellisense.hpp"
 
 export module jpegls_bitmap_frame_encode;
 
