@@ -123,7 +123,7 @@ void register_property_store_file_extension(const wchar_t* file_extension)
                         L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size");
     registry::set_value(sub_key, L"PreviewDetails",
                         L"prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;"
-                        "*System.OfflineStatus;*System.DateCreated;*System.SharedWith");
+                        L"*System.OfflineStatus;*System.DateCreated;*System.SharedWith");
 }
 
 void register_property_store()

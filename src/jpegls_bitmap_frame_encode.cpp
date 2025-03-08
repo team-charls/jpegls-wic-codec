@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2023 Team CharLS
+// SPDX-FileCopyrightText: © 2023 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -199,7 +199,7 @@ try
 
     allocate_pixel_buffer();
 
-    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, static_cast<uint32_t>(source_stride_), static_cast<uint32_t>(source_.size()),
+    winrt::check_hresult(bitmap_source->CopyPixels(nullptr, source_stride_, static_cast<uint32_t>(source_.size()),
                                                    reinterpret_cast<BYTE*>(source_.data())));
     state_ = state::received_pixels;
     return success_ok;
