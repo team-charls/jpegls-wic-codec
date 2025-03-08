@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   SPDX-FileCopyrightText: © 2019 Team CharLS
   SPDX-License-Identifier: BSD-3-Clause
 -->
@@ -47,8 +47,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
       <!-- Explicit define that all projects are compiled according the draft C++23 standard -->
-      <LanguageStandard>stdcpp23</LanguageStandard>
-      <UseStandardPreprocessor>true</UseStandardPreprocessor> <!-- Needed as stdcpp20 doesn't enable it by default. -->
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor> <!-- Needed as stdcpplatest doesn't enable it by default. -->
 
       <!-- To ensure high quality C++ code use Warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
       <WarningLevel>Level4</WarningLevel>
@@ -179,8 +179,6 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <UseDebugLibraries>false</UseDebugLibraries>
     <LinkIncremental>false</LinkIncremental>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
@@ -198,6 +196,10 @@
       <UseFullPaths>false</UseFullPaths>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+
+      <!-- Enable Optimize Global Data (/Gw). off by default -->
+      <AdditionalOptions>/Gw /Zc:checkGwOdr %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
