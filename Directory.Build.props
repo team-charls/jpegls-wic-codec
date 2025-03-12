@@ -69,17 +69,15 @@
 
       <!--
         Disable level All warnings that are not useful:
-        C4061 = enumerator 'identifier' in switch of enum 'enumeration' is not explicitly handled by a case label
         C4265 = class has virtual functions, but its non-trivial destructor is not virtual; instances of this class may not be destructed correctly
         C4365 = action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
-        C4464 = A #include directive has a path that includes a '..' parent directory specifier. [Just informational]
         C4514 = function' : unreferenced inline function has been removed [Just informational]
         C4571 = Informational: catch(...) semantics changed since Visual C++ 7.1; structured exceptions (SEH) are no longer caught [Just informational]
         C4623 = derived class' : default constructor was implicitly defined as deleted because a base class default constructor is inaccessible or deleted [Just informational]
         C4625 = derived class' : copy constructor was implicitly defined as deleted because a base class copy constructor is inaccessible or deleted [Just informational]
         C4626 = derived class' : assignment operator was implicitly defined as deleted because a base class assignment operator is inaccessible or deleted [Just informational]
         C4668 = symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives' [Just informational]
-        C4686 = 'std::_Decode_utf': possible change in behavior, change in UDT return calling convention [problem in format in Visual Studio 2022 17.8.0]
+        C4686 = 'std::_Decode_utf': possible change in behavior, change in UDT return calling convention [problem in format in Visual Studio 2022 17.8.0 (Debug build)]
         C4710 = function '' function not inlined [Just informational]
         C4711 = function '' selected for automatic inline expansion [Just informational]
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
@@ -93,12 +91,7 @@
         C5204 = '': class has virtual functions, but its trivial destructor is not virtual; instances of objects derived from this class may not be destructed correctly
         C5246 = the initialization of a subobject should be wrapped in braces [prevents simple usage of std::byte]
       -->
-      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4005;4061;4265;4365;4464;4514;4571;4623;4625;4626;4668;4686;4710;4711;4738;4774;4820;4946;5026;5027;5039;5045;5204;5246</DisableSpecificWarnings>
-      <!--
-        C4005 = macro redefinition [Caused by the use of header units]
-        C4744 = '' has different type [caused by using named module]
-      -->
-      <DisableSpecificWarnings>4005;4744;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4265;4365;4514;4571;4623;4625;4626;4668;4686;4710;4711;4738;4774;4820;4946;5026;5027;5039;5045;5204;5246</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
