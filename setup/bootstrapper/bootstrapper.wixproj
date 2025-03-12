@@ -27,7 +27,4 @@
     <Message Importance="high" Text="SignBundle: @(SignBundle)" />
     <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignBundle.FullPath)" ' />
   </Target>
-
-  <!-- Workaround for https://github.com/firegiant/HeatWaveSupport/issues/73 -->
-  <Target Name="CollectSuggestedVisualStudioComponentIds" />
 </Project>
