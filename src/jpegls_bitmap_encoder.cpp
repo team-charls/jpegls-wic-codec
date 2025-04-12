@@ -199,7 +199,8 @@ struct jpegls_bitmap_encoder : implements<jpegls_bitmap_encoder, IWICBitmapEncod
         return wincodec::error_unsupported_operation;
     }
 
-    HRESULT __stdcall SetPalette(_In_ IWICPalette* palette) noexcept override
+    HRESULT __stdcall SetPalette([[maybe_unused]]
+                                 _In_ IWICPalette* palette) noexcept override
     {
         TRACE("{} jpegls_bitmap_encoder::SetPalette, palette={}\n", fmt::ptr(this), fmt::ptr(palette));
 
