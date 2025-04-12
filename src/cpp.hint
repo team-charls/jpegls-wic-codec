@@ -7,6 +7,6 @@
 
 #define SUPPRESS_WARNING_NEXT_LINE(x)
 #define _CRT_MEMCPY_S_INLINE inline
-#define TRACE __noop
+#define TRACE(fmt, ...) __noop
 #define ASSERT(expression)
 #define VERIFY(expression) static_cast<void>(expression)

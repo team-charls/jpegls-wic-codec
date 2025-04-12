@@ -3,8 +3,8 @@
 
 #pragma once
 
-// Include explicit headers as workaround that IntelliSense (VS 2022 17.12)
-// and ReSharper (2024.2.5) fail to parse #import <win.hpp>
+// Include explicit headers as workaround that IntelliSense (VS 2022 17.13)
+// and ReSharper (2025.1) fail to parse #import <win.hpp>
 #if defined(__INTELLISENSE__) || defined(__RESHARPER__)
 // ReSharper disable once CppInconsistentNaming
 #define _AMD64_
