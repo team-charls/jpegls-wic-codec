@@ -63,14 +63,14 @@
         After="REG_ARCH" />
 
     <!-- Visual C++ 2015-2022 Redistributable runtime msi package version -->
-    <Variable Name="VCRUNTIME_VER" Type="version" Value="14.42.34433.0" />
+    <Variable Name="VCRUNTIME_VER" Type="version" Value="14.44.35026.0" />
 
     <Chain>
       <!-- Visual C++ 2015-2022 Redistributable (x86) -->
       <?if $(sys.BUILDARCHSHORT) = "X86" ?>
       <ExePackage
           Id="VC_REDIST_X86"
-          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.44.35026"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -82,12 +82,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.x86.exe"
-            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
-            Description="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.42.34433"
-            Hash="2C1FACB8567A052B4FA65D173B0BDA64FA5FDED2CDDB9073B7C28507ED95414C17D2839D06D5E961617C754CDA54D6134964B1AFF5C9E9CDFBACE71F1DE2AC3A"
-            Size="13957544"
-            Version="14.42.34433.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/84c7705c-37c2-44cb-9454-c0aadea5661b/DD1A8BE03398367745A87A5E35BEBDAB00FDAD080CF42AF0C3F20802D08C25D4/VC_redist.x86.exe" />
+            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.44.35026"
+            Description="Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.44.35026"
+            Hash="B2F2F591B9F152E22BCCE7AEDA8692404F05C703EAA12C39A8CE8B7D21615F6C7E18F5C6C92047A33C49BF6C15E8172D6723E31A97B0C0BD89B02A74798766A2"
+            Size="13955160"
+            Version="14.44.35026.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/e4a579e3-91ed-4372-b9bb-f8d821421292/777C541479C07A375DB0DCCEB027C3AE561E77D82F3551127E1032EC0732E6BE/VC_redist.x86.exe" />
       </ExePackage>
       <?endif?>
 
@@ -95,7 +95,7 @@
       <?if $(sys.BUILDARCHSHORT) = "X64" ?>
       <ExePackage
           Id="VC_REDIST_X64"
-          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.44.35026"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -107,12 +107,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.x64.exe"
-            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
-            Description="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433"
-            Hash="20E2D7437367CB262CE45184EB4D809249FE654AA450D226E376D4057C00B58ECFD8834A8B5153EB148960FFC845BED1F0943D5FF9A6FC1355B1503138562D8D"
-            Size="25640112"
-            Version="14.42.34433.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/c7dac50a-e3e8-40f6-bbb2-9cc4e3dfcabe/1821577409C35B2B9505AC833E246376CC68A8262972100444010B57226F0940/VC_redist.x64.exe" />
+            ProductName="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.44.35026"
+            Description="Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.44.35026"
+            Hash="DCF69C56C33EFF62E53991D8CA101B9DF6BE63C071109BFB820753495C31DB4F3441568133BDC10E017BB7816B6EA408419EB283BFE05027DB3B1DEE65C98094"
+            Size="25621584"
+            Version="14.44.35026.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/8b4a3005-316e-40c9-a12c-945109ada384/A8166D0EDCC808B2582C692AB0068BDE695D1398D2012AF708A876CB91A015F4/VC_redist.x64.exe" />
       </ExePackage>
       <?endif?>
 
@@ -120,7 +120,7 @@
       <?if $(sys.BUILDARCHSHORT) = "A64" ?>
       <ExePackage
           Id="VC_REDIST_ARM64"
-          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (Arm64) - 14.42.34433"
+          DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (Arm64) - 14.44.35026"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -132,12 +132,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.arm64.exe"
-            ProductName="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.42.34433"
-            Description="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.42.34433"
-            Hash="81876E6E42183A71CFCCFEC4FCDD0AD7FC1379A08DDB0DC791DFDB2BA95ABAA7F5CB0BC1DB3B706E3147620ED47E9345238385F94AD1990158C910E9314EE429"
-            Size="11723056"
-            Version="14.42.34433.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/5319f718-2a84-4aff-86be-8dbdefd92ca1/C176B30681576B86068F8B55FAE512391EE4217511494B24393C1C9476BC2169/VC_redist.arm64.exe" />
+            ProductName="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.44.35026"
+            Description="Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.44.35026"
+            Hash="8F8AD7F38F1F84343D2912867AF21FF1498A5028796EB07BC5EDD3A933A43CD333537A5F6ABC7CBC1F6255CA80A44FEBA5A9A16FD78EE3131C34660D2AD11138"
+            Size="11703312"
+            Version="14.44.35026.0"
+            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/8b4a3005-316e-40c9-a12c-945109ada384/8DC1E6629A9AEA5723791858E2A9127EBB549648D88C3E7AFB224EA09C3D173B/VC_redist.arm64.exe" />
       </ExePackage>
       <?endif?>
 

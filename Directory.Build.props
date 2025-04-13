@@ -24,7 +24,7 @@
     <!-- WinRT is needed for the COM support, disable generation of Windows Metadata (is slow) -->
     <CppWinRTGenerateWindowsMetadata>false</CppWinRTGenerateWindowsMetadata>
 
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
 
     <!-- Define properties for WIX projects -->
     <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>
@@ -36,7 +36,7 @@
     <SignOutput Condition="'$(SignOutput)'==''">false</SignOutput>
 
     <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' != ''">$(CertificateThumbprint)</_CertificateThumbprint>
-    <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' == ''">b834c6c1d7e0ae8e76cadcf9e2e7a273133a5df6</_CertificateThumbprint>
+    <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' == ''">6aa8d11bf7a1f5dfc85ac785a9dfd067770f0b93</_CertificateThumbprint>
     <_TimestampUrl Condition="'$(_TimestampUrl)' != ''"> $(TimestampUrl)</_TimestampUrl>
     <_TimestampUrl Condition="'$(_TimestampUrl)' == ''">http://time.certum.pl/</_TimestampUrl>
   </PropertyGroup>

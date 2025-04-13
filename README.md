@@ -34,8 +34,8 @@ Assets at the bottom to show the files available in the release.
 Please use the appropriate installer that matches your machine's architecture.
 
 > [!NOTE]
-> Microsoft Defender SmartScreen may show a warning about an unrecognised app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
-The installer and the DLL are signed, but Defender SmartScreen requires an EV code signing certificate, which is only available to commercial organisations.
+> Microsoft Defender SmartScreen may show a warning about an unrecognized app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
+The installer and the DLL are signed, but Defender SmartScreen requires an EV code signing certificate, which is only available to commercial organizations.
 
 ## Applications that can use the JPEG-LS WIC codec
 
@@ -114,7 +114,7 @@ Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no su
 
 ## Manual Build Instructions
 
-Remark: to build this reprository Visual Studio 2022 17.12 or newer with the extension HeatWave for VS2022 installed is needed.
+Remark: to build this repository Visual Studio 2022 17.13 or newer with the extension HeatWave for VS2022 installed is needed.
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
 2. Use Visual Studio to open the jpegls-wic-codec.sln. Batch build all projects.
