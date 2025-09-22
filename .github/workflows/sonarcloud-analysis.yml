@@ -25,7 +25,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v5
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6
 
       - name: Restore NuGet packages
         working-directory: ${{ env.GITHUB_WORKSPACE }}
@@ -36,7 +36,7 @@ jobs:
           build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild jpegls-wic-codec.sln /t:jpegls-wic-codec:rebuild /p:Configuration="Release" /p:Platform="x64" /nodeReuse:false
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
