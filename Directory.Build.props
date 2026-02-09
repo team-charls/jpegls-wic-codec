@@ -29,6 +29,7 @@
     <!-- Define properties for WIX projects -->
     <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>
     <Pedantic>true</Pedantic>
+    <AcceptEula>wix7</AcceptEula>
 
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
