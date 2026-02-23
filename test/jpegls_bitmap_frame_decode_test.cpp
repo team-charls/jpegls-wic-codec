@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include <CppUnitTest.h>
@@ -296,6 +296,20 @@ public:
     TEST_METHOD(decode_16_bit_rgb_interleave_sample) // NOLINT
     {
         decode_16_bit_rgb(L"16bit_3x2_rgb_interleave_line.jls", "16bit_3x2_rgb.ppm");
+    }
+
+    TEST_METHOD(decode_bad_image) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512-bad.jls", STGM_READ | STGM_SHARE_DENY_WRITE, 0,
+                                             false, nullptr, stream.put()));
+
+        const com_ptr wic_bitmap_decoder{com_factory_.create_decoder()};
+        check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const HRESULT result{wic_bitmap_decoder->GetFrame(0, bitmap_frame_decode.put())};
+        Assert::AreEqual(wincodec::error_bad_image, result);
     }
 
 private:

@@ -253,6 +253,9 @@
     <CopyFileToFolders Include="data-files\16bit_3x2_rgb_interleave_sample.jls">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512-bad.jls">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

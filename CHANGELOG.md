@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Updated Microsoft Visual C++ 2015-2022 Redistributable to version 14.44.35026
 
+### Fixed
+
+- Decoding failure should be reported as WINCODEC_ERR_BADIMAGE, not as unhandled exception.
+
 ## [0.3.0 - 2024-12-11]
 
 ### Added
