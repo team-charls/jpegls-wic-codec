@@ -165,5 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="data-files\tulips-gray-8bit-512-512-bad.jls">
+      <Filter>Data Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

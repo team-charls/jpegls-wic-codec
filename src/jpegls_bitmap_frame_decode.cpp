@@ -264,38 +264,46 @@ jpegls_bitmap_frame_decode::jpegls_bitmap_frame_decode(IStream* stream, IWICImag
         check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
-        if (frame_info.component_count != 1 && decoder.get_interleave_mode() == interleave_mode::none)
+        try
         {
-            const auto planar{decoder.decode<vector<std::byte>>()};
-            if (frame_info.bits_per_sample > 8)
+            if (frame_info.component_count != 1 && decoder.get_interleave_mode() == interleave_mode::none)
             {
-                convert_planar_to_rgb<uint16_t>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+                const auto planar{decoder.decode<vector<std::byte>>()};
+                if (frame_info.bits_per_sample > 8)
+                {
+                    convert_planar_to_rgb<uint16_t>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
+                }
+                else
+                {
+                    convert_planar_to_rgb<std::byte>(frame_info.width, frame_info.height, planar.data(), data_buffer,
+                                                     stride);
+                }
+            }
+            else if (frame_info.bits_per_sample == 2)
+            {
+                vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+                decoder.decode(byte_pixels);
+                pack_to_crumbs(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
+            }
+            else if (frame_info.bits_per_sample == 4)
+            {
+                vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
+                decoder.decode(byte_pixels);
+                pack_to_nibbles(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
             }
             else
             {
-                convert_planar_to_rgb<std::byte>(frame_info.width, frame_info.height, planar.data(), data_buffer, stride);
-            }
-        }
-        else if (frame_info.bits_per_sample == 2)
-        {
-            vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
-            decoder.decode(byte_pixels);
-            pack_to_crumbs(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
-        }
-        else if (frame_info.bits_per_sample == 4)
-        {
-            vector<std::byte> byte_pixels(static_cast<size_t>(frame_info.width) * frame_info.height);
-            decoder.decode(byte_pixels);
-            pack_to_nibbles(byte_pixels, data_buffer, frame_info.width, frame_info.height, stride);
-        }
-        else
-        {
-            decoder.decode(data_buffer, data_buffer_size, stride);
+                decoder.decode(data_buffer, data_buffer_size, stride);
 
-            if (sample_shift != 0)
-            {
-                shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+                if (sample_shift != 0)
+                {
+                    shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+                }
             }
+        }
+        catch (const jpegls_error&)
+        {
+            throw_hresult(wincodec::error_bad_image);
         }
     }
 
