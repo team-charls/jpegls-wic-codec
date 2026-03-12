@@ -10,12 +10,14 @@ import test.winrt;
 import hresults;
 import com_factory;
 import portable_anymap_file;
+import portable_arbitrary_map;
 import charls;
 
 import "macros.hpp";
 
 using std::array;
 using std::vector;
+using std::span;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -298,6 +300,11 @@ public:
         decode_16_bit_rgb(L"16bit_3x2_rgb_interleave_line.jls", "16bit_3x2_rgb.ppm");
     }
 
+    TEST_METHOD(decode_8_bit_rgba_interleave_line) // NOLINT
+    {
+        decode_8_bit_rgba(L"8bit_120x120_rgba_interleave_line.jls", "8bit_120x120_rgba.pam");
+    }
+
     TEST_METHOD(decode_bad_image) // NOLINT
     {
         com_ptr<IStream> stream;
@@ -424,6 +431,24 @@ private:
         Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
+    }
+
+    void decode_8_bit_rgba(_Null_terminated_ const wchar_t* filename_actual, _Null_terminated_ const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        GUID pixel_format;
+        HRESULT result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
+        Assert::AreEqual(success_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat32bppRGBA == pixel_format);
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::byte> buffer(static_cast<size_t>(width) * height * 4);
+
+        result = copy_pixels<std::byte>(*bitmap_frame_decoder.get(), width * 4, buffer);
+        Assert::AreEqual(success_ok, result);
+
+        compare_pam(filename_expected, buffer);
     }
 
     [[nodiscard]]
@@ -555,11 +580,28 @@ private:
                                   static_cast<uint32_t>(buffer.size() * sizeof(SampleType)), static_cast<BYTE*>(data));
     }
 
-    static void compare(const char* filename, const vector<std::byte>& pixels)
+    static void compare(std::string_view filename, const span<const std::byte> pixels)
     {
         portable_anymap_file anymap_file{filename};
         const auto& expected_pixels{anymap_file.image_data()};
 
+        Assert::AreEqual(expected_pixels.size(), pixels.size());
+        for (size_t i{}; i < pixels.size(); ++i)
+        {
+            if (expected_pixels[i] != pixels[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
+    }
+
+    static void compare_pam(std::string_view filename, const span<const std::byte> pixels)
+    {
+        portable_arbitrary_map pam_file{filename};
+        const auto expected_pixels{pam_file.image_data()};
+
+        Assert::AreEqual(expected_pixels.size(), pixels.size());
         for (size_t i{}; i < pixels.size(); ++i)
         {
             if (expected_pixels[i] != pixels[i])

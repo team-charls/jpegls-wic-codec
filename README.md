@@ -14,7 +14,7 @@
 This WIC (Windows Imaging Component) codec makes it possible to decode and encode JPEG-LS (.jls) files with Windows applications that can use WIC codecs. It allows to view JPEG-LS encoded images in Windows PhotoViewer, Windows Explorer and import JPEG-LS images in Microsoft Office documents.
 
 It is a C++ 23 implementation that uses the CharLS JPEG-LS codec.
-The C++/WinRT framework is used to implement the classic COM components required for a WIC codec and it uses Wix v5 for the installer.
+The C++/WinRT framework is used to implement the classic COM components required for a WIC codec and it uses Wix for the installer.
 
 ### Windows Imaging Component Background
 
@@ -95,6 +95,7 @@ The following table lists the pixel formats that can be decoded:
 | GUID_WICPixelFormat16bppGray | 1               | 16,12,10*       |
 | GUID_WICPixelFormat24bppRGB  | 3               | 8               |
 | GUID_WICPixelFormat48bppRGB  | 3               | 16              |
+| GUID_WICPixelFormat32bppRGBA | 4               | 8               |
 
 Note \*: monochrome JPEG-LS images with 10 or 12 pixels will be upscaled to 16 to match a defined WIC pixel format.
 
@@ -114,7 +115,7 @@ Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no su
 
 ## Manual Build Instructions
 
-Remark: to build this repository Visual Studio 2022 17.13 or newer with the extension HeatWave for VS2022 installed is needed.
+Remark: to build this repository Visual Studio 2022 17.14 or newer with the extension HeatWave for VS2022 installed is needed.
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
 2. Use Visual Studio to open the jpegls-wic-codec.sln. Batch build all projects.

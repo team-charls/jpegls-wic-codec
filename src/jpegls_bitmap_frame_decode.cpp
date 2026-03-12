@@ -70,6 +70,17 @@ std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per
         }
         break;
 
+    case 4:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return make_pair(GUID_WICPixelFormat32bppRGBA, 0);
+
+        default:
+            break;
+        }
+        break;
+
     default:
         break;
     }

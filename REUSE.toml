@@ -8,6 +8,7 @@ version = 1
 
 [[annotations]]
 path = [
+    "**.pam",
     "**.pgm",
     "**.ppm",
     "**.jls",

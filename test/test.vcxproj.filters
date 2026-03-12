@@ -58,6 +58,9 @@
     <ClCompile Include="test_winrt.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="portable_arbitrary_map.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.jls">
@@ -162,11 +165,17 @@
     <CopyFileToFolders Include="data-files\16bit_3x2_rgb_interleave_sample.jls">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512-bad.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba.pam">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba_interleave_line.jls">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="data-files\tulips-gray-8bit-512-512-bad.jls">
-      <Filter>Data Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
