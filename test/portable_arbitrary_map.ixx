@@ -79,7 +79,7 @@ public:
     }
 
     [[nodiscard]]
-    const std::span<const std::byte> image_data() const noexcept
+    std::span<const std::byte> image_data() const noexcept
     {
         return image_data_;
     }
