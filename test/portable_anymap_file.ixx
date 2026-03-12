@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module portable_anymap_file;
@@ -7,6 +7,7 @@ import std;
 
 using std::int32_t;
 
+namespace {
 
 [[nodiscard]]
 constexpr int32_t log_2(const int32_t n) noexcept
@@ -19,6 +20,8 @@ constexpr int32_t log_2(const int32_t n) noexcept
     return x;
 }
 
+}
+
 
 // Purpose: this class can read an image stored in the Portable Anymap Format (PNM).
 //          The 2 binary formats P5 and P6 are supported:
@@ -28,7 +31,7 @@ export class portable_anymap_file final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>
-    explicit portable_anymap_file(const char* filename)
+    explicit portable_anymap_file(std::string_view filename)
     {
         std::ifstream pnm_file;
         pnm_file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);

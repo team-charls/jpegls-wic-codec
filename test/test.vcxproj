@@ -132,6 +132,7 @@
     <ClCompile Include="jpegls_bitmap_frame_encode_test.cpp" />
     <ClCompile Include="jpegls_bitmap_decoder_test.cpp" />
     <ClCompile Include="portable_anymap_file.ixx" />
+    <ClCompile Include="portable_arbitrary_map.ixx" />
     <ClCompile Include="property_store_test.cpp" />
     <ClCompile Include="property_variant_test.cpp" />
     <ClCompile Include="test_stream.ixx" />
@@ -230,6 +231,12 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\16bit_3x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba.pam">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba_interleave_line.jls">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\8bit_rgb_interleave_none.jls">
