@@ -63,9 +63,11 @@ void register_general_decoder_encoder_settings(const GUID& class_id, const GUID&
 void register_decoder()
 {
     constexpr array formats{&GUID_WICPixelFormat2bppGray,  &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
-                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB, &GUID_WICPixelFormat48bppRGB};
+                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB, &GUID_WICPixelFormat32bppRGBA,
+                            &GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(id::jpegls_decoder, CATID_WICBitmapDecoders, L"Team CharLS JPEG-LS Decoder", formats);
+    register_general_decoder_encoder_settings(id::jpegls_decoder, CATID_WICBitmapDecoders, L"Team CharLS JPEG-LS Decoder",
+                                              formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::jpegls_decoder)};
 
@@ -99,11 +101,12 @@ void register_decoder()
 
 void register_encoder()
 {
-    constexpr array formats{&GUID_WICPixelFormat2bppGray,  &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
-                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppBGR, &GUID_WICPixelFormat24bppRGB,
-                            &GUID_WICPixelFormat48bppRGB};
+    constexpr array formats{&GUID_WICPixelFormat2bppGray,  &GUID_WICPixelFormat4bppGray,  &GUID_WICPixelFormat8bppGray,
+                            &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppBGR,  &GUID_WICPixelFormat24bppRGB,
+                            &GUID_WICPixelFormat32bppBGRA, &GUID_WICPixelFormat32bppRGBA, &GUID_WICPixelFormat48bppRGB};
 
-    register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"Team CharLS JPEG-LS Encoder", formats);
+    register_general_decoder_encoder_settings(id::jpegls_encoder, CATID_WICBitmapEncoders, L"Team CharLS JPEG-LS Encoder",
+                                              formats);
 }
 
 void register_property_store_file_extension(const wchar_t* file_extension)

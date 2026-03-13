@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include <CppUnitTest.h>
@@ -13,11 +13,14 @@ import charls;
 
 import com_factory;
 import portable_anymap_file;
+import portable_arbitrary_map;
 import test.util;
 import "macros.hpp";
 
 using charls::jpegls_decoder;
+using charls::spiff_color_space;
 using std::ifstream;
+using std::span;
 using std::vector;
 using winrt::check_hresult;
 using winrt::com_ptr;
@@ -59,6 +62,17 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
             Assert::Fail();
         }
 
+    case 4:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return bgr_input ? GUID_WICPixelFormat32bppBGRA : GUID_WICPixelFormat32bppRGBA;
+        case 16:
+            return GUID_WICPixelFormat64bppRGBA;
+        default:
+            Assert::Fail();
+        }
+
     default:
         break;
     }
@@ -67,7 +81,7 @@ GUID get_pixel_format(const int32_t bits_per_sample, const int32_t component_cou
 }
 
 [[nodiscard]]
-vector<std::byte> read_file(const wchar_t* filename)
+vector<std::byte> read_file(std::wstring_view filename)
 {
     ifstream input;
     input.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
@@ -109,7 +123,7 @@ uint32_t compute_stride(const charls::frame_info& frame_info) noexcept
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, const size_t width, const size_t height,
+vector<std::byte> pack_to_crumbs(const span<const std::byte> byte_pixels, const size_t width, const size_t height,
                                  const size_t stride) noexcept
 {
     vector<std::byte> crumb_pixels(stride * height);
@@ -151,7 +165,7 @@ vector<std::byte> pack_to_crumbs(const std::span<const std::byte> byte_pixels, c
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, const size_t width, const size_t height,
+vector<std::byte> pack_to_nibbles(const span<const std::byte> byte_pixels, const size_t width, const size_t height,
                                   const size_t stride) noexcept
 {
     vector<std::byte> nibble_pixels(stride * height);
@@ -175,7 +189,7 @@ vector<std::byte> pack_to_nibbles(const std::span<const std::byte> byte_pixels, 
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_bytes_correct_stride(const std::span<const std::byte> byte_pixels, const size_t width,
+vector<std::byte> pack_to_bytes_correct_stride(const span<const std::byte> byte_pixels, const size_t width,
                                                const size_t height, const size_t stride) noexcept
 {
     vector<std::byte> pixels(stride * height);
@@ -193,8 +207,9 @@ vector<std::byte> pack_to_bytes_correct_stride(const std::span<const std::byte> 
 }
 
 [[nodiscard]]
-vector<std::byte> pack_to_bytes_correct_stride_16_bit(const std::span<const std::byte> word_pixels, const size_t width,
-                                                      const size_t height, const size_t stride, const size_t component_count) noexcept
+vector<std::byte> pack_to_bytes_correct_stride_16_bit(const span<const std::byte> word_pixels, const size_t width,
+                                                      const size_t height, const size_t stride,
+                                                      const size_t component_count) noexcept
 {
     vector<std::byte> pixels(stride * height);
 
@@ -212,9 +227,9 @@ vector<std::byte> pack_to_bytes_correct_stride_16_bit(const std::span<const std:
 }
 
 
-constexpr void convert_rgb_to_bgr_in_place(const std::span<std::byte> pixels) noexcept
+constexpr void convert_rgb_to_bgr_in_place(const span<std::byte> pixels, const size_t component_count) noexcept
 {
-    for (size_t i{}; i < pixels.size(); i += 3)
+    for (size_t i{}; i < pixels.size(); i += component_count)
     {
         std::swap(pixels[i], pixels[i + 2]);
     }
@@ -496,86 +511,22 @@ public:
 
     TEST_METHOD(encode_conformance_color_lossless) // NOLINT
     {
-        const wchar_t* filename{L"encode_conformance_color_lossless.jls"};
-        portable_anymap_file anymap_file{"test8.ppm"};
-
-        {
-            com_ptr<IStream> stream;
-            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
-                                                 nullptr, stream.put()));
-
-            const com_ptr encoder{com_factory_.create_encoder()};
-            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
-
-            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count())};
-
-            com_ptr<IWICBitmap> bitmap;
-            check_hresult(imaging_factory()->CreateBitmapFromMemory(
-                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
-                static_cast<uint32_t>(anymap_file.image_data().size()),
-                reinterpret_cast<BYTE*>(anymap_file.image_data().data()), bitmap.put()));
-
-            com_ptr<IWICBitmapFrameEncode> frame_encode;
-            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->Initialize(nullptr);
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->WriteSource(bitmap.get(), nullptr);
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->Commit();
-            Assert::AreEqual(success_ok, result);
-
-            result = encoder->Commit();
-            Assert::AreEqual(success_ok, result);
-        }
-
-        compare(filename, anymap_file.image_data());
+        encode_conformance_color_lossless(L"encode_conformance_color_lossless.jls", false);
     }
 
     TEST_METHOD(encode_conformance_color_lossless_bgr) // NOLINT
     {
-        const wchar_t* filename{L"encode_conformance_color_lossless_bgr_input.jls"};
-        portable_anymap_file anymap_file{"test8.ppm"};
+        encode_conformance_color_lossless(L"encode_conformance_color_lossless_bgr.jls", true);
+    }
 
-        {
-            com_ptr<IStream> stream;
-            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
-                                                 nullptr, stream.put()));
+    TEST_METHOD(encode_rgba_lossless)
+    {
+        encode_4_component_lossless_8_bit(L"encode_rgba_lossless.jls", false);
+    }
 
-            const com_ptr encoder{com_factory_.create_encoder()};
-            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
-
-            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count(), true)};
-
-            auto input_data{anymap_file.image_data()};
-            convert_rgb_to_bgr_in_place(input_data);
-
-            com_ptr<IWICBitmap> bitmap;
-            check_hresult(imaging_factory()->CreateBitmapFromMemory(
-                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
-                static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
-
-            com_ptr<IWICBitmapFrameEncode> frame_encode;
-            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->Initialize(nullptr);
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->WriteSource(bitmap.get(), nullptr);
-            Assert::AreEqual(success_ok, result);
-
-            result = frame_encode->Commit();
-            Assert::AreEqual(success_ok, result);
-
-            result = encoder->Commit();
-            Assert::AreEqual(success_ok, result);
-        }
-
-        compare(filename, anymap_file.image_data());
+    TEST_METHOD(encode_bgra_lossless)
+    {
+        encode_4_component_lossless_8_bit(L"encode_bgra_lossless.jls", true);
     }
 
     TEST_METHOD(encode_monochrome_2_bit_4x1) // NOLINT
@@ -944,6 +895,107 @@ private:
         compare(destination_filename, anymap_file.image_data());
     }
 
+    void encode_conformance_color_lossless(const wchar_t* filename, const bool br_swap)
+    {
+        portable_anymap_file anymap_file{"test8.ppm"};
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
+
+            const com_ptr encoder{com_factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(anymap_file.bits_per_sample(), anymap_file.component_count(), br_swap)};
+
+            vector<std::byte> input_data{anymap_file.image_data().cbegin(), anymap_file.image_data().cend()};
+            if (br_swap)
+            {
+                convert_rgb_to_bgr_in_place(input_data, 3);
+            }
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                anymap_file.width(), anymap_file.height(), pixel_format, anymap_file.width() * anymap_file.component_count(),
+                static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(success_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(success_ok, result);
+        }
+
+        compare(filename, anymap_file.image_data());
+        check_spiff_color_space(filename, spiff_color_space::rgb);
+    }
+
+    void encode_4_component_lossless_8_bit(const wchar_t* filename, const bool br_swap)
+    {
+        portable_arbitrary_map pam_file{"8bit_120x120_rgba.pam"};
+
+        {
+            com_ptr<IStream> stream;
+            check_hresult(SHCreateStreamOnFileEx(filename, STGM_READWRITE | STGM_CREATE | STGM_SHARE_DENY_WRITE, 0, false,
+                                                 nullptr, stream.put()));
+
+            const com_ptr encoder{com_factory_.create_encoder()};
+            check_hresult(encoder->Initialize(stream.get(), WICBitmapEncoderCacheInMemory));
+
+            const GUID pixel_format{get_pixel_format(pam_file.bits_per_sample(), pam_file.component_count(), br_swap)};
+
+            vector<std::byte> input_data{pam_file.image_data().cbegin(), pam_file.image_data().cend()};
+            if (br_swap)
+            {
+                convert_rgb_to_bgr_in_place(input_data, 4);
+            }
+
+            com_ptr<IWICBitmap> bitmap;
+            check_hresult(imaging_factory()->CreateBitmapFromMemory(
+                pam_file.width(), pam_file.height(), pixel_format, pam_file.width() * pam_file.component_count(),
+                static_cast<uint32_t>(input_data.size()), reinterpret_cast<BYTE*>(input_data.data()), bitmap.put()));
+
+            com_ptr<IWICBitmapFrameEncode> frame_encode;
+            HRESULT result{encoder->CreateNewFrame(frame_encode.put(), nullptr)};
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->Initialize(nullptr);
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->WriteSource(bitmap.get(), nullptr);
+            Assert::AreEqual(success_ok, result);
+
+            result = frame_encode->Commit();
+            Assert::AreEqual(success_ok, result);
+
+            result = encoder->Commit();
+            Assert::AreEqual(success_ok, result);
+        }
+
+        compare(filename, pam_file.image_data());
+        check_spiff_color_space(filename, spiff_color_space::none);
+    }
+
+    void check_spiff_color_space(std::wstring_view filename, const spiff_color_space expected_color_space)
+    {
+        const auto encoded_source{read_file(filename)};
+        jpegls_decoder decoder;
+        decoder.source(encoded_source);
+        Assert::IsTrue(decoder.read_spiff_header());
+        Assert::IsTrue(decoder.spiff_header().color_space == expected_color_space);
+    }
+
     [[nodiscard]]
     static com_ptr<IWICImagingFactory> imaging_factory()
     {
@@ -953,6 +1005,7 @@ private:
 
         return imaging_factory;
     }
+
     [[nodiscard]]
     com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
     {
@@ -968,7 +1021,7 @@ private:
         return bitmap_frame_decode;
     }
 
-    static void compare(const wchar_t* filename, const std::span<std::byte> decoded_source)
+    static void compare(const wchar_t* filename, const span<const std::byte> decoded_source)
     {
         const auto encoded_source{read_file(filename)};
 

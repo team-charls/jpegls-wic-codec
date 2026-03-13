@@ -13,6 +13,8 @@
       <?define GUID_WICPixelFormat16bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc90b}" ?>
       <?define GUID_WICPixelFormat24bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc90d}" ?>
       <?define GUID_WICPixelFormat24bppBGR = "{6fddc324-4e03-4bfe-b185-3d77768dc90c}" ?>
+      <?define GUID_WICPixelFormat32bppRGBA = "{f5c7ad2d-6a8d-43dd-a7a8-a29935261ae9}" ?>
+      <?define GUID_WICPixelFormat32bppBGRA = "{6fddc324-4e03-4bfe-b185-3d77768dc90f}" ?>
       <?define GUID_WICPixelFormat48bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc915}" ?>
 
       <?define CATID_WICBitmapEncoders = "{ac757296-3522-4e11-9862-c17be5a1767e}" ?>

@@ -120,6 +120,19 @@ try
         return success_ok;
     }
 
+    if (*pixel_format == GUID_WICPixelFormat32bppRGBA)
+    {
+        set_pixel_format(8, 4);
+        return success_ok;
+    }
+
+    if (*pixel_format == GUID_WICPixelFormat32bppBGRA)
+    {
+        set_pixel_format(8, 4);
+        swap_pixels_ = true;
+        return success_ok;
+    }
+
     *pixel_format = GUID_WICPixelFormatUndefined;
     return wincodec::error_unsupported_pixel_format;
 }
@@ -218,7 +231,7 @@ try
 
     if (swap_pixels_)
     {
-        convert_bgr_to_rgb();
+        convert_bgr_to_rgb(frame_info_.component_count);
     }
     else if (frame_info_.bits_per_sample == 2)
     {

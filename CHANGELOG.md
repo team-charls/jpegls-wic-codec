@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Support to decode 4 component JPEG-LS images (GUID_WICPixelFormat32bppRGBA format).
+- Support to encode 4 component JPEG-LS images (GUID_WICPixelFormat32bppRGBA/BGRA format).
 
 ### Changed
 

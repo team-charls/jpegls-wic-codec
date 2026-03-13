@@ -32,10 +32,27 @@ using winrt::make;
 
 namespace {
 
+[[nodiscard]]
+spiff_color_space determine_spiff_color_space(const uint32_t component_count) noexcept
+{
+    using enum spiff_color_space;
+    switch (component_count)
+    {
+    case 1:
+        return grayscale;
+    case 3:
+        return rgb;
+    case 4:
+        return none; // SPIFF has no defined color space for RGBA.
+
+    default:
+        std::unreachable();
+    }
+}
+
 void write_spiff_header(jpegls_encoder& encoder, const jpegls_bitmap_frame_encode& bitmap_frame_encode)
 {
-    const auto color_space{bitmap_frame_encode.frame_info().component_count == 1 ? spiff_color_space::grayscale
-                                                                                 : spiff_color_space::rgb};
+    const auto color_space{determine_spiff_color_space(bitmap_frame_encode.frame_info().component_count)};
 
     if (const auto& resolution{bitmap_frame_encode.resolution()}; resolution.has_value())
     {
