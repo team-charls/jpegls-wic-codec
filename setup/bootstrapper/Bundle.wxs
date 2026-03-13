@@ -70,7 +70,7 @@
       <?if $(sys.BUILDARCHSHORT) = "X86" ?>
       <ExePackage
           Id="VC_REDIST_X86"
-          DisplayName="Microsoft Visual C+ v14 Redistributable (x86) - 14.50.35719"
+          DisplayName="Microsoft Visual C++ v14 Redistributable (x86) - 14.50.35719"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
