@@ -104,9 +104,11 @@ private:
         return ((stride + (alignment - 1)) / alignment) * alignment;
     }
 
-    void convert_bgr_to_rgb() noexcept
+    void convert_bgr_to_rgb(const size_t component_count) noexcept
     {
-        for (size_t i{}; i < source_.size(); i += 3)
+        ASSERT(component_count == 3 || component_count == 4);
+
+        for (size_t i{}; i < source_.size(); i += component_count)
         {
             std::swap(source_[i], source_[i + 2]);
         }

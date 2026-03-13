@@ -32,6 +32,8 @@
     <RegistryKey Key="Formats\$(GUID_WICPixelFormat16bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
     <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppBGR)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
     <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat32bppBGRA)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+    <RegistryKey Key="Formats\$(GUID_WICPixelFormat32bppRGBA)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
     <RegistryKey Key="Formats\$(GUID_WICPixelFormat48bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
   </RegistryKey>
 
@@ -43,35 +45,36 @@
 
   <!-- Register WIC configuration -->
   <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_JpegLSDecoder)">
-        <RegistryValue Type="integer" Name="ArbitrationPriority" Value="10" />
-        <RegistryValue Type="string" Name="Author" Value="Team CharLS" />
-        <RegistryValue Type="string" Name="ColorManagementVersion" Value="1.0.0.0" />
-        <RegistryValue Type="string" Name="ContainerFormat" Value="$(var.GUID_ContainerFormatJpegLS)" />
-        <RegistryValue Type="string" Name="Description" Value="JPEG-LS Codec" />
-        <RegistryValue Type="string" Name="FileExtensions" Value=".jls" />
-        <RegistryValue Type="string" Name="FriendlyName" Value="$(DecoderFriendlyName)" />
-        <RegistryValue Type="string" Name="MimeTypes" Value="image/jls" />
-        <RegistryValue Type="string" Name="SpecVersion" Value="1.0.0.0" />
-        <RegistryValue Type="string" Name="Vendor" Value="$(GUID_VendorTeamCharLS)" />
-        <RegistryValue Type="string" Name="Version" Value="$(FourPartsVersion)" />
-        <RegistryValue Type="integer" Name="SupportAnimation" Value="0" />
-        <RegistryValue Type="integer" Name="SupportChromaKey" Value="0" />
-        <RegistryValue Type="integer" Name="SupportLossless" Value="1" />
-        <RegistryValue Type="integer" Name="SupportMultiframe" Value="0" />
+    <RegistryValue Type="integer" Name="ArbitrationPriority" Value="10" />
+    <RegistryValue Type="string" Name="Author" Value="Team CharLS" />
+    <RegistryValue Type="string" Name="ColorManagementVersion" Value="1.0.0.0" />
+    <RegistryValue Type="string" Name="ContainerFormat" Value="$(var.GUID_ContainerFormatJpegLS)" />
+    <RegistryValue Type="string" Name="Description" Value="JPEG-LS Codec" />
+    <RegistryValue Type="string" Name="FileExtensions" Value=".jls" />
+    <RegistryValue Type="string" Name="FriendlyName" Value="$(DecoderFriendlyName)" />
+    <RegistryValue Type="string" Name="MimeTypes" Value="image/jls" />
+    <RegistryValue Type="string" Name="SpecVersion" Value="1.0.0.0" />
+    <RegistryValue Type="string" Name="Vendor" Value="$(GUID_VendorTeamCharLS)" />
+    <RegistryValue Type="string" Name="Version" Value="$(FourPartsVersion)" />
+    <RegistryValue Type="integer" Name="SupportAnimation" Value="0" />
+    <RegistryValue Type="integer" Name="SupportChromaKey" Value="0" />
+    <RegistryValue Type="integer" Name="SupportLossless" Value="1" />
+    <RegistryValue Type="integer" Name="SupportMultiframe" Value="0" />
 
-        <!-- Decoding pattern registration -->
-        <RegistryKey Key="Patterns\0">
-          <RegistryValue Type="integer" Name="Position" Value="0" />
-          <RegistryValue Type="integer" Name="Length" Value="3" />
-          <RegistryValue Type="binary" Name="Pattern" Value="ffd8ff" />
-          <RegistryValue Type="binary" Name="Mask" Value="ffffff" />
-        </RegistryKey>
+    <!-- Decoding pattern registration -->
+    <RegistryKey Key="Patterns\0">
+      <RegistryValue Type="integer" Name="Position" Value="0" />
+      <RegistryValue Type="integer" Name="Length" Value="3" />
+      <RegistryValue Type="binary" Name="Pattern" Value="ffd8ff" />
+      <RegistryValue Type="binary" Name="Mask" Value="ffffff" />
+    </RegistryKey>
 
     <RegistryKey Key="Formats\$(GUID_WICPixelFormat2bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
         <RegistryKey Key="Formats\$(GUID_WICPixelFormat4bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
         <RegistryKey Key="Formats\$(GUID_WICPixelFormat8bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
         <RegistryKey Key="Formats\$(GUID_WICPixelFormat16bppGray)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
         <RegistryKey Key="Formats\$(GUID_WICPixelFormat24bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+        <RegistryKey Key="Formats\$(GUID_WICPixelFormat32bppRGBA)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
         <RegistryKey Key="Formats\$(GUID_WICPixelFormat48bppRGB)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
     </RegistryKey>
 

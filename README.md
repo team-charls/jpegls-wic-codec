@@ -101,17 +101,19 @@ Note \*: monochrome JPEG-LS images with 10 or 12 pixels will be upscaled to 16 t
 
 The following table lists the pixel formats that can be encoded:
 
-| WIC Format GUID                 | Component Count | Bits per Sample |
-|---------------------------------|-----------------|-----------------|
-| GUID_WICPixelFormat2bppGray     | 1               | 2               |
-| GUID_WICPixelFormat4bppGray     | 1               | 4               |
-| GUID_WICPixelFormat8bppGray     | 1               | 8               |
-| GUID_WICPixelFormat16bppGray    | 1               | 16              |
-| GUID_WICPixelFormat24bppBGR\*\* | 3               | 8               |
-| GUID_WICPixelFormat24bppRGB     | 3               | 8               |
-| GUID_WICPixelFormat48bppRGB     | 3               | 16              |
+| WIC Format GUID                  | Component Count | Bits per Sample |
+|----------------------------------|-----------------|-----------------|
+| GUID_WICPixelFormat2bppGray      | 1               | 2               |
+| GUID_WICPixelFormat4bppGray      | 1               | 4               |
+| GUID_WICPixelFormat8bppGray      | 1               | 8               |
+| GUID_WICPixelFormat16bppGray     | 1               | 16              |
+| GUID_WICPixelFormat24bppBGR\*\*  | 3               | 8               |
+| GUID_WICPixelFormat24bppRGB      | 3               | 8               |
+| GUID_WICPixelFormat32bppBGRA\*\* | 4               | 8               |
+| GUID_WICPixelFormat32bppRGBA     | 4               | 8               |
+| GUID_WICPixelFormat48bppRGB      | 3               | 16              |
 
-Note \*\*: BGR images will be converted and saved as RGB. JPEG-LS provides no support to set a BGR color space in the SPIFF header.
+Note \*\*: BGR(A) images will be converted and saved as RGB(A). JPEG-LS provides no support to set a BGR color space in the SPIFF header.
 
 ## Manual Build Instructions
 
