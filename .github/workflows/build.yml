@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: © 2026 Team CharLS
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: ${{ matrix.platform }}-${{ matrix.configuration }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Win32
+            configuration: Debug
+            runner: windows-latest
+            bin_dir: x86
+          - platform: Win32
+            configuration: Release
+            runner: windows-latest
+            bin_dir: x86
+          - platform: x64
+            configuration: Debug
+            runner: windows-latest
+            bin_dir: x64
+          - platform: x64
+            configuration: Release
+            runner: windows-latest
+            bin_dir: x64
+          - platform: ARM64
+            configuration: Debug
+            runner: windows-11-arm
+            bin_dir: ARM64
+          - platform: ARM64
+            configuration: Release
+            runner: windows-11-arm
+            bin_dir: ARM64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore jpegls-wic-codec.sln
+
+      - name: Build
+        run: >
+          msbuild jpegls-wic-codec.sln
+          /p:Configuration=${{ matrix.configuration }}
+          /p:Platform=${{ matrix.platform }}
+          /p:JPEGLS_WIC_CODEC_PROFILE=true
+          /p:JPEGLS_WIC_CODEC_ALL_WARNINGS=true
+          /maxcpucount
+
+      - name: Run tests
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          if (-not (Test-Path $vswhere)) {
+            $vswhere = "${env:ProgramFiles}\Microsoft Visual Studio\Installer\vswhere.exe"
+          }
+          $vstest = & $vswhere -latest -products * -find "Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
+          & $vstest "build\bin\${{ matrix.bin_dir }}\${{ matrix.configuration }}\test.dll" /Settings:"test\CodeCoverage.runsettings" /Parallel
