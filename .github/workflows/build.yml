@@ -24,26 +24,32 @@ jobs:
             configuration: Debug
             runner: windows-latest
             bin_dir: x86
+            vstest_exe: vstest.console.exe
           - platform: Win32
             configuration: Release
             runner: windows-latest
             bin_dir: x86
+            vstest_exe: vstest.console.exe
           - platform: x64
             configuration: Debug
             runner: windows-latest
             bin_dir: x64
+            vstest_exe: vstest.console.exe
           - platform: x64
             configuration: Release
             runner: windows-latest
             bin_dir: x64
+            vstest_exe: vstest.console.exe
           - platform: ARM64
             configuration: Debug
             runner: windows-11-arm
             bin_dir: ARM64
+            vstest_exe: vstest.console.arm64.exe
           - platform: ARM64
             configuration: Release
             runner: windows-11-arm
             bin_dir: ARM64
+            vstest_exe: vstest.console.arm64.exe
 
     steps:
       - name: Checkout
@@ -72,5 +78,5 @@ jobs:
           if (-not (Test-Path $vswhere)) {
             $vswhere = "${env:ProgramFiles}\Microsoft Visual Studio\Installer\vswhere.exe"
           }
-          $vstest = & $vswhere -latest -products * -find "Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
+          $vstest = & $vswhere -latest -products * -find "Common7\IDE\Extensions\TestPlatform\${{ matrix.vstest_exe }}"
           & $vstest "build\bin\${{ matrix.bin_dir }}\${{ matrix.configuration }}\test.dll" /Settings:"test\CodeCoverage.runsettings" /Parallel
