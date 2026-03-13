@@ -5,7 +5,7 @@
 
 # JPEG-LS Windows Imaging Component Codec
 
-[![Build Status](https://dev.azure.com/team-charls/jpegls-wic-codec/_apis/build/status/team-charls.jpegls-wic-codec?branchName=main)](https://dev.azure.com/team-charls/jpegls-wic-codec/_build/latest?definitionId=1&branchName=main)
+[![Build Status](https://github.com/team-charls/jpegls-wic-codec/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/team-charls/jpegls-wic-codec/actions/workflows/build.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/team-charls/jpegls-wic-codec)](https://api.reuse.software/info/github.com/team-charls/jpegls-wic-codec)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=team-charls_jpegls-wic-codec&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=team-charls_jpegls-wic-codec)
 
