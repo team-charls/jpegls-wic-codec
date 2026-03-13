@@ -158,11 +158,11 @@
         In debug builds, "fast" info is the default but the VS code coverage tool requires full info. -->
     <Link Condition="'$(VS_DEBUG_FULL_INFO)'!=''">
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
-      <Profile Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">true</Profile>
+      <Profile Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!='' And '$(Platform)' != 'ARM64'">true</Profile>
     </Link>
     <Link Condition="'$(JPEGLS_WIC_CODEC_PROFILE)'!=''">
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
-      <Profile>true</Profile>
+      <Profile Condition="'$(Platform)' != 'ARM64'">true</Profile>
     </Link>
 
     <ResourceCompile>
