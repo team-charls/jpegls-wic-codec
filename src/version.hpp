@@ -4,7 +4,7 @@
 #pragma once
 
 #define VERSION_MAJOR 0  // NOLINT(modernize-macro-to-enum)
-#define VERSION_MINOR 3 // NOLINT(modernize-macro-to-enum)
+#define VERSION_MINOR 4  // NOLINT(modernize-macro-to-enum)
 #define VERSION_PATCH 0  // NOLINT(modernize-macro-to-enum)
 
 // Turn A into a string literal without expanding macro definitions
