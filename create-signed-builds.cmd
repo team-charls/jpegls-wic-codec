@@ -1,6 +1,8 @@
 :: SPDX-FileCopyrightText: © 2024 Team CharLS
 :: SPDX-License-Identifier: BSD-3-Clause
 
+nuget restore
+
 :: Build signed x86
 msbuild -t:clean -p:Configuration=Release -p:Platform=Win32
 msbuild -t:restore -p:Configuration=Release -p:Platform=Win32
