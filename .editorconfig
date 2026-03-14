@@ -28,6 +28,6 @@ indent_size = 2
 build_check.BC0101.severity=none
 
 [*.md]
- # Ending with 2 spaces is used for layout in Markdown, don't trim
+# Ending with 2 spaces is used for layout in Markdown, don't trim
 trim_trailing_whitespace = false
 indent_size = 2
