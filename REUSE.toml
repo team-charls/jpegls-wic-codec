@@ -14,6 +14,7 @@ path = [
     "**.jls",
     "**.vcxproj",
     "**.filters",
+    "**.json",
     "**/packages.config",
     "spelling.dic",
     "default.ruleset",
