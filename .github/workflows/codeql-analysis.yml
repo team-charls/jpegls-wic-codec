@@ -45,6 +45,9 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v3
 
+    - name: Restore NuGet packages
+      run: nuget restore jpegls-wic-codec.slnx
+
     # Build jpegls-wic-codec
     - name: Build
       run: |
