@@ -9,7 +9,7 @@ export module jpegls_bitmap_frame_encode;
 
 import std;
 import <win.hpp>;
-import winrt;
+import winrt_base;
 import charls;
 
 import "macros.hpp";

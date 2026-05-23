@@ -55,9 +55,6 @@
     <ClCompile Include="property_variant_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_winrt.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="portable_arbitrary_map.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>

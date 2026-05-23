@@ -1,10 +1,10 @@
-﻿// SPDX-FileCopyrightText: © 2024 Team CharLS
+// SPDX-FileCopyrightText: © 2024 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include <CppUnitTest.h>
 
 import std;
-import test.winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

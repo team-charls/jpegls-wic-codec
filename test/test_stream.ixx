@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2021 Team CharLS
+// SPDX-FileCopyrightText: © 2021 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 module;
@@ -7,7 +7,7 @@ module;
 
 export module test_stream;
 
-import test.winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

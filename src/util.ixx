@@ -8,7 +8,7 @@ module;
 export module util;
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

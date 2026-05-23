@@ -1,10 +1,10 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include <CppUnitTest.h>
 
 import std;
-import test.winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

@@ -14,5 +14,15 @@
     <Rule Id="C26491" Action="None" />
     <Rule Id="C26494" Action="None" />
     <Rule Id="C26821" Action="None" />
+    <Rule Id="C26436" Action="None" />
+    <Rule Id="C26432" Action="None" />
+    <Rule Id="C26466" Action="None" />
+    <Rule Id="C26493" Action="None" />
+    <Rule Id="C26473" Action="None" />
+    <Rule Id="C26496" Action="None" />
+    <Rule Id="C26497" Action="None" />
+    <Rule Id="C26409" Action="None" />
+    <Rule Id="C26447" Action="None" />
+    <Rule Id="C26465" Action="None" />
   </Rules>
 </RuleSet>

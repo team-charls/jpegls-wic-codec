@@ -8,7 +8,7 @@ module;
 module property_store;
 
 import std;
-import winrt;
+import winrt_base;
 import charls;
 import <win.hpp>;
 
