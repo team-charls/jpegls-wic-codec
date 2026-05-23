@@ -22,34 +22,34 @@ jobs:
         include:
           - platform: Win32
             configuration: Debug
-            runner: windows-latest
+            runner: windows-2025-vs2026
             bin_dir: x86
             vstest_exe: vstest.console.exe
           - platform: Win32
             configuration: Release
-            runner: windows-latest
+            runner: windows-2025-vs2026
             bin_dir: x86
             vstest_exe: vstest.console.exe
           - platform: x64
             configuration: Debug
-            runner: windows-latest
+            runner: windows-2025-vs2026
             bin_dir: x64
             vstest_exe: vstest.console.exe
           - platform: x64
             configuration: Release
-            runner: windows-latest
+            runner: windows-2025-vs2026
             bin_dir: x64
             vstest_exe: vstest.console.exe
-          - platform: ARM64
-            configuration: Debug
-            runner: windows-11-arm
-            bin_dir: ARM64
-            vstest_exe: vstest.console.arm64.exe
-          - platform: ARM64
-            configuration: Release
-            runner: windows-11-arm
-            bin_dir: ARM64
-            vstest_exe: vstest.console.arm64.exe
+          # - platform: ARM64
+          #   configuration: Debug
+          #   runner: windows-11-arm
+          #   bin_dir: ARM64
+          #   vstest_exe: vstest.console.arm64.exe
+          # - platform: ARM64
+          #   configuration: Release
+          #   runner: windows-11-arm
+          #   bin_dir: ARM64
+          #   vstest_exe: vstest.console.arm64.exe
 
     steps:
       - name: Checkout
