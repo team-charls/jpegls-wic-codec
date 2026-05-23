@@ -3,9 +3,6 @@
 
 module;
 
-// ReSharper disable once CppInconsistentNaming
-#define _CRT_MEMCPY_S_INLINE inline
-
 // ReSharper disable once CppUnusedIncludeDirective
 #include <Unknwn.h> // Required to enable classic COM support in WinRT.
 

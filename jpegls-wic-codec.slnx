@@ -1,0 +1,33 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="Win32" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".clang-format" />
+    <File Path=".clang-tidy" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="CHANGELOG.md" />
+    <File Path="default.ruleset.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+    <File Path="REUSE.toml" />
+    <File Path="SECURITY.md" />
+  </Folder>
+  <Project Path="charls/src/CharLS.vcxproj" Id="1e31f9f1-f175-4082-b3e2-b1f0eca3f44c" />
+  <Project Path="setup/bootstrapper/bootstrapper.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Platform Solution="*|Win32" Project="x86" />
+  </Project>
+  <Project Path="setup/installer/installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Platform Solution="*|Win32" Project="x86" />
+  </Project>
+  <Project Path="setup/shell-change-notify-custom-action/shell-change-notify-custom-action.vcxproj" Id="f2617be9-5342-498b-bcca-0174192f010f" />
+  <Project Path="src/jpegls-wic-codec.vcxproj" Id="e3900ae2-ae06-4e77-9055-bc4d23ae4f36" />
+  <Project Path="std-header-units/std-header-units.vcxproj" Id="154ad843-e510-4271-a1dc-8eb291482c38" />
+  <Project Path="test/test.vcxproj" Id="56d6a643-419c-4019-a859-c951dab1d912" />
+</Solution>
