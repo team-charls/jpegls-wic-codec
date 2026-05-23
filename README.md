@@ -53,7 +53,7 @@ The following application have been validated to work with the JPEG-LS WIC codec
 The standard Windows 10 Microsoft Photos application cannot be used at this moment as it is limited to the WIC codecs that are pre-installed on Windows or are provided by Microsoft in the Microsoft Store.
 Microsoft currently does not make it possible to create WIC codecs that can be uploaded to the Microsoft Store.
 
-#### 16 bit grayscale images may display as only containg black pixels
+#### 16 bit grayscale images may display as only containing black pixels
 
 Windows has full support for the 16 bit grayscale pixel format (GUID_WICPixelFormat16bppGray).
 It expect however that the full dynamic range (0 .. 65535) is used. To be able to display the image
@@ -120,7 +120,7 @@ Note \*\*: BGR(A) images will be converted and saved as RGB(A). JPEG-LS provides
 Remark: to build this repository Visual Studio 2022 17.14 or newer with the extension HeatWave for VS2022 installed is needed.
 
 1. Clone this repo, use clone --recurse-submodules to ensure the CharLS git submodule is also cloned correctly in your local git repository.
-2. Use Visual Studio to open the jpegls-wic-codec.sln. Batch build all projects.
+2. Use Visual Studio to open the jpegls-wic-codec.slnx. Batch build all projects.
 3. Or use a Developer Command Prompt and run MSBuild in the root of the cloned repository.
 
 ### Installation

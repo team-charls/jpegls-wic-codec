@@ -18,7 +18,7 @@ path = [
     "**/packages.config",
     "spelling.dic",
     "default.ruleset",
-    "jpegls-wic-codec.sln",
+    "jpegls-wic-codec.slnx",
     "global.json",
     "jpegls-wic-codec.sln.DotSettings",
     "restore-windows-photo-viewer.reg",

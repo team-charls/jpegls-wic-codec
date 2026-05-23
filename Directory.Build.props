@@ -89,7 +89,7 @@
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
         C5204 = '': class has virtual functions, but its trivial destructor is not virtual; instances of objects derived from this class may not be destructed correctly
-        C5246 = the initialization of a subobject should be wrapped in braces [prevents simple usage of std::byte]
+        C5246 = the initialization of a sub object should be wrapped in braces [prevents simple usage of std::byte]
       -->
       <DisableSpecificWarnings Condition="'$(JPEGLS_WIC_CODEC_ALL_WARNINGS)'!=''">4265;4365;4514;4571;4623;4625;4626;4668;4686;4710;4711;4738;4774;4820;4946;5026;5027;5039;5045;5204;5246</DisableSpecificWarnings>
 
@@ -108,6 +108,9 @@
         NOIME: Exclude includes for Input Method Manager definitions from Windows.h (not used).
         NOMINMAX: Prevent that the Windows SDK header files define the macros min and max (conflict with C++ std::min\max).
 
+        * UCRT *
+        _CRT_MEMCPY_S_INLINE=inline: Enable workaround for module defect in UCRT headers.
+
         * WINRT *
         WINRT_LEAN_AND_MEAN: If defined, disables rarely-used WinRT features (in order to reduce compile times)
         WINRT_NO_SOURCE_LOCATION (prevents full namespace names in the binary).
@@ -119,7 +122,7 @@
         _USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0: Keep function name info short to reduce binary size.
       -->
       <PreprocessorDefinitions>
-        WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;%(PreprocessorDefinitions)
+        WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;_CRT_MEMCPY_S_INLINE=inline;%(PreprocessorDefinitions)
       </PreprocessorDefinitions>
 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>

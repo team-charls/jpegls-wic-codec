@@ -61,11 +61,11 @@ jobs:
         uses: microsoft/setup-msbuild@v3
 
       - name: Restore NuGet packages
-        run: nuget restore jpegls-wic-codec.sln
+        run: nuget restore jpegls-wic-codec.slnx
 
       - name: Build
         run: >
-          msbuild jpegls-wic-codec.sln
+          msbuild jpegls-wic-codec.slnx
           /p:Configuration=${{ matrix.configuration }}
           /p:Platform=${{ matrix.platform }}
           /p:JPEGLS_WIC_CODEC_PROFILE=true

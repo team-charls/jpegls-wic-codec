@@ -33,7 +33,7 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild jpegls-wic-codec.sln /t:jpegls-wic-codec:rebuild /p:Configuration="Release" /p:Platform="x64" /nodeReuse:false
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild jpegls-wic-codec.slnx /t:jpegls-wic-codec:rebuild /p:Configuration="Release" /p:Platform="x64" /nodeReuse:false
 
       - name: SonarQube Scan
         if: (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)) && github.actor != 'dependabot[bot]'
