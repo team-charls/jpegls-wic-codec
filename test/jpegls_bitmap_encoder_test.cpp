@@ -5,7 +5,7 @@
 
 import std;
 import <win.hpp>;
-import test.winrt;
+import winrt_base;
 
 import hresults;
 import guids;

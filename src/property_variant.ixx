@@ -8,7 +8,7 @@ module;
 export module property_variant;
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import "macros.hpp";

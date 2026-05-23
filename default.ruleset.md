@@ -47,3 +47,33 @@ as they check if the variable is used before initialized.
 
 - C26821:  Consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view).  
 **Rationale**: see C26481.
+
+- C26436: The type X with a virtual function needs either public virtual or protected non-virtual destructor (c.35).
+**Rationale**: Using winRT as a module
+
+- C26432: f you define or delete any default operation in the type define or delete them all (c.21).
+**Rationale**: Using winRT as a module
+
+- C26466: Don't use static_cast downcasts. A cast from a polymorphic type should use dynamic_cast (type.2).
+**Rationale**: Using winRT as a module
+
+- C26493: Don't use C-style casts (type.4).
+**Rationale**: Using winRT as a module
+
+- C26473: Don't cast between pointer types where the source type and the target type are the same (type.1).
+**Rationale**: Using winRT as a module
+
+- C26496: The variable 'hr' does not change after construction, mark it as const (con.4).
+**Rationale**: Using winRT as a module
+
+- C26497: You can attempt to make '' constexpr 
+**Rationale**: Using winRT as a module
+
+- C26409: Avoid calling new and delete explicitly, use std::make_unique<T> instead (r.11).
+**Rationale**: Using winRT as a module
+
+- C26447: The function is declared 'noexcept' but calls function 'AddRef()' which may throw exceptions (f.6).
+**Rationale**: Using winRT as a module
+
+ - C26465: Don't use const_cast to cast away const or volatile. const_cast is not required; constness or volatility is not being removed by this conversion (type.3).
+ **Rationale**: Using winRT as a module

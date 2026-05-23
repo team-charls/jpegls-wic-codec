@@ -1,11 +1,11 @@
-﻿// SPDX-FileCopyrightText: © 2018 Team CharLS
+// SPDX-FileCopyrightText: © 2018 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module jpegls_bitmap_frame_decode;
 
 import std;
 import <win.hpp>;
-import winrt;
+import winrt_base;
 
 using std::int32_t;
 using std::uint32_t;

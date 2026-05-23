@@ -3,7 +3,7 @@
 
 export module test.util;
 
-import test.winrt;
+import winrt_base;
 import <win.hpp>;
 
 using winrt::com_ptr;

@@ -1,10 +1,10 @@
-﻿// SPDX-FileCopyrightText: © 2019 Team CharLS
+// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 export module com_factory;
 
 import <win.hpp>;
-import test.winrt;
+import winrt_base;
 
 import guids;
 

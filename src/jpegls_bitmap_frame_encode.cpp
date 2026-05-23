@@ -8,7 +8,7 @@ module;
 module jpegls_bitmap_frame_encode;
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

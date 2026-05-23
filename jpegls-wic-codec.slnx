@@ -19,6 +19,7 @@
     <File Path="REUSE.toml" />
     <File Path="SECURITY.md" />
   </Folder>
+  <Project Path="build-winrt-modules/build-winrt-modules.vcxproj" Id="d38f75a5-0917-4578-8e2a-8df7d4481f1c" />
   <Project Path="charls/src/CharLS.vcxproj" Id="1e31f9f1-f175-4082-b3e2-b1f0eca3f44c" />
   <Project Path="setup/bootstrapper/bootstrapper.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
     <Platform Solution="*|Win32" Project="x86" />
