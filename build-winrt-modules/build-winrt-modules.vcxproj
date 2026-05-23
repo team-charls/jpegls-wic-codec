@@ -67,6 +67,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dummy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
