@@ -1,8 +1,11 @@
 ﻿adbe
 anymap
 BGRA
+Bootstrapper
 BRGA
 bugprone
+BUILDARCH
+BUILDARCHSHORT
 cfamily
 charls
 COMDAT
@@ -12,6 +15,7 @@ Dsonar
 fccd
 fmtlib
 hkey
+HKLM
 hresults
 inproc
 Inproc
@@ -25,10 +29,12 @@ Multiframe
 NOIME
 NOMCX
 NOMINMAX
+norestart
 NOSERVICE
 nullptr'
 onecore
 Qspectre
+redist
 RGBA
 runsettings
 Shlwapi
@@ -36,6 +42,7 @@ slnx
 sonarqube
 STDC
 UCRT
+VCRUNTIME
 vstest
 vswhere
 windowscodecs

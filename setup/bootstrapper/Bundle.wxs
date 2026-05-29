@@ -87,7 +87,7 @@
             Hash="58A32CD725FB36273E6576C0BD76B8A962F0E5411580CC50AEAABE80A75BECB8FED43B018B2D4BD483E6910BEDFAA3491DFBA8EDDC9E96855DB851EEEF3F5CDC"
             Size="6990696"
             Version="14.51.36231.0"
-            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.x86.exe" />
+            DownloadUrl="https://aka.ms/vs/18/release/14.51.36231/vc_redist.x86.exe" />
       </ExePackage>
       <?endif?>
 
@@ -112,7 +112,7 @@
             Hash="3DECE58F72DDCB2574C33BD4CC41FDE8B4304C5BC0A9E6A0CF9EB9E095A389F5659462475AB366A6D8A6820999FD5F03AB17F865C921C481632B236A05EE5B35"
             Size="18779992"
             Version="14.51.36231.0"
-            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.x64.exe" />
+            DownloadUrl="https://aka.ms/vs/18/release/14.51.36231/vc_redist.x64.exe" />
       </ExePackage>
       <?endif?>
 
@@ -137,7 +137,7 @@
             Hash="A24977481AF9481BF77FB746807C8B1166D5E091B097D135A51BE8A216872B5C78E6E8A37B131A6593BE93E561BD39DDC0580C57142D92B3FC95402D7760B1D3"
             Size="11869640"
             Version="14.51.36231.0"
-            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.arm64.exe" />
+            DownloadUrl="https://aka.ms/vs/18/release/14.51.36231/vc_redist.arm64.exe" />
       </ExePackage>
       <?endif?>
 
