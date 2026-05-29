@@ -63,14 +63,14 @@
         After="REG_ARCH" />
 
     <!-- Visual C++ 2015-2022 Redistributable runtime msi package version -->
-    <Variable Name="VCRUNTIME_VER" Type="version" Value="14.50.35719.0" />
+    <Variable Name="VCRUNTIME_VER" Type="version" Value="14.51.36231.0" />
 
     <Chain>
       <!-- Visual C++ 2015-2022 Redistributable (x86) -->
       <?if $(sys.BUILDARCHSHORT) = "X86" ?>
       <ExePackage
           Id="VC_REDIST_X86"
-          DisplayName="Microsoft Visual C++ v14 Redistributable (x86) - 14.50.35719"
+          DisplayName="Microsoft Visual C++ v14 Redistributable (x86) - 14.51.36231"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -82,12 +82,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.x86.exe"
-            ProductName="Microsoft Visual C++ v14 Redistributable (x86) - 14.50.35719"
-            Description="Microsoft Visual C++ v14 Redistributable (x86) - 14.50.35719"
-            Hash="A6687EF328597C90093A4278A12A0059496711801D84A40DC730511BADDE3D94199368D57FDC0926D8A3E19D2D2AEEC8FE58337B91CC69AEB4DFA251833CA5A6"
-            Size="6876208"
-            Version="14.50.35719.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/1c82a588-774f-4cd2-930d-9380f7e34e75/E7267C1BDF9237C0B4A28CF027C382B97AA909934F84F1C92D3FB9F04173B33E/VC_redist.x86.exe" />
+            ProductName="Microsoft Visual C++ v14 Redistributable (x86) - 14.51.36231"
+            Description="Microsoft Visual C++ v14 Redistributable (x86) - 14.51.36231"
+            Hash="58A32CD725FB36273E6576C0BD76B8A962F0E5411580CC50AEAABE80A75BECB8FED43B018B2D4BD483E6910BEDFAA3491DFBA8EDDC9E96855DB851EEEF3F5CDC"
+            Size="6990696"
+            Version="14.51.36231.0"
+            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.x86.exe" />
       </ExePackage>
       <?endif?>
 
@@ -95,7 +95,7 @@
       <?if $(sys.BUILDARCHSHORT) = "X64" ?>
       <ExePackage
           Id="VC_REDIST_X64"
-          DisplayName="Microsoft Visual C++ v14 Redistributable (x64) - 14.50.35719"
+          DisplayName="Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36231"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -107,12 +107,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.x64.exe"
-            ProductName="Microsoft Visual C++ v14 Redistributable (x64) - 14.50.35719"
-            Description="Microsoft Visual C++ v14 Redistributable (x64) - 14.50.35719"
-            Hash="B618F601A1989A696C8EFA0208EFD977A3BFE9A8DF8ACE8FAE9EEF20262240E7EEFCB67CE466FE166BDC606D80D594D2DE80B3B4E530749AAB8E99F5CECD86D4"
-            Size="18558944"
-            Version="14.50.35719.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/6f02464a-5e9b-486d-a506-c99a17db9a83/8995548DFFFCDE7C49987029C764355612BA6850EE09A7B6F0FDDC85BDC5C280/VC_redist.x64.exe" />
+            ProductName="Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36231"
+            Description="Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36231"
+            Hash="3DECE58F72DDCB2574C33BD4CC41FDE8B4304C5BC0A9E6A0CF9EB9E095A389F5659462475AB366A6D8A6820999FD5F03AB17F865C921C481632B236A05EE5B35"
+            Size="18779992"
+            Version="14.51.36231.0"
+            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.x64.exe" />
       </ExePackage>
       <?endif?>
 
@@ -120,7 +120,7 @@
       <?if $(sys.BUILDARCHSHORT) = "A64" ?>
       <ExePackage
           Id="VC_REDIST_ARM64"
-          DisplayName="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.50.35719"
+          DisplayName="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.51.36231"
           Cache="remove"
           PerMachine="yes"
           Permanent="yes"
@@ -132,12 +132,12 @@
           UninstallArguments="/uninstall /quiet /norestart">
         <ExePackagePayload
             Name="VC_redist.arm64.exe"
-            ProductName="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.50.35719"
-            Description="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.50.35719"
-            Hash="5DA5D37877DA4FEDF6E50117D3CAE587E2321522C467B2C124EFF2176526C87CB2C415E6A06C7DF14C4ED4A6C296EF646638FB161F5AA52FAE6CC26DD43ADAD6"
-            Size="11740976"
-            Version="14.50.35719.0"
-            DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/1c82a588-774f-4cd2-930d-9380f7e34e75/FCDA7B24413F170BD456052F08AE49FB60AC1638F083AAB7A35AFEB957AEB1D6/VC_redist.arm64.exe" />
+            ProductName="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.51.36231"
+            Description="Microsoft Visual C++ v14 Redistributable (Arm64) - 14.51.36231"
+            Hash="A24977481AF9481BF77FB746807C8B1166D5E091B097D135A51BE8A216872B5C78E6E8A37B131A6593BE93E561BD39DDC0580C57142D92B3FC95402D7760B1D3"
+            Size="11869640"
+            Version="14.51.36231.0"
+            DownloadUrl="https://aka.ms/vs/18/release/vc_redist.arm64.exe" />
       </ExePackage>
       <?endif?>
 

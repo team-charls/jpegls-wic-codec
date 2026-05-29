@@ -5,6 +5,7 @@ BRGA
 bugprone
 cfamily
 charls
+COMDAT
 cppcoreguidelines
 DICOM
 Dsonar
@@ -26,15 +27,18 @@ NOMCX
 NOMINMAX
 NOSERVICE
 nullptr'
+onecore
 Qspectre
 RGBA
 runsettings
+Shlwapi
 slnx
 sonarqube
 STDC
 UCRT
 vstest
 vswhere
+windowscodecs
 wixext
 wixproj
 Zack
