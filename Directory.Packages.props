@@ -6,5 +6,6 @@
   <ItemGroup>
     <PackageVersion Include="WixToolset.Bal.wixext" Version="7.0.0" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Windows.CppWinRT" Version="3.0.260715.1" />
   </ItemGroup>
 </Project>

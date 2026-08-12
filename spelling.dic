@@ -46,6 +46,7 @@ VCRUNTIME
 vstest
 vswhere
 windowscodecs
+winrt
 wixext
 wixproj
 Zack
